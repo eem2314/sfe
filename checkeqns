@@ -1,0 +1,9 @@
+# checkeqns: print the number of times an equation label is referenced
+# so we can rm the equation number for unreferenced equations
+
+grep '\label{eqn' sfe.tex | sed -e 's/.*label{\([^}]*\)}/\1/' >Eqns
+cat Eqns | while read eqn
+do
+	let n=`grep Eqn{$eqn sfe.tex | wc -l`
+	echo "$eqn used " $n
+done

@@ -1,0 +1,59 @@
+
+% table:params-units
+\begin{table}[ht]
+\centering
+% \begin{scriptsize}
+% \begin{footnotesize}
+% \begin{small}
+\begin{tabular}{|c|l|l|l|l|} \hline
+Symbol			& \CCol{Description}				& \CCol{SI}			& \CCol{USCS}		& USCS output			\\ \hline
+$z$            & altitude ($m$)					& m					& $ft$				& $ft$					\\ \hline
+$\eta$         & amplitude of oscillation		&  -					& -					& -						\\ \hline
+$q_c$          & calibrated dynamic pressure	& $N/m^2$ ($Pa$)	& $lb_f/in^2$		& $lb_f/ft^2$			\\ \hline
+$\delta$			& pressure ratio					& -					& -					& -						\\ \hline
+$q$            & dynamic pressure				& $N/m^2$ ($Pa$)	& $lb_f/in^2$		& $lb_f/ft^2$			\\ \hline
+$\omega$       & frequency							& $rad/s$ \dag		& $rad/s$			& $Hz$					\\ \hline
+$g$            & growth factor					& -					& -					&							\\ \hline
+$M$            & Mach number						& -					& -					&							\\ \hline
+$\bar{\omega}$ & reduced frequency				& -					& -					&							\\ \hline
+$\rho$         & fluid density					& $kg/m^3$			& $lb_f s^2/in^4$	& $slug/ft^3$			\\ \hline
+$\bar{\sigma}$ & reduced stability factor		&  -					& -					&							\\ \hline
+$d$            & structural damping				&  -					& -					&							\\ \hline
+$\sigma$       & stability factor				& $rad/s$			& $rad/s$			& $Hz$					\\ \hline
+$P$            & static pressure					& $Pa$				& $lb_f/in^2$		& $lb_f/ft^2$			\\ \hline
+$P_t$          & total pressure					& $Pa$				& $lb_f/in^2$		& $lb_f/ft^2$			\\ \hline
+$V_c$          & calibrated airspeed			& $m/s$				& $in/s$				& $knots$				\\ \hline
+$V_e$          & equivalent airspeed 			& $m/s$				& $in/s$				& $knots$				\\ \hline
+$a$            & sonic velocity					& $m/s$				& $in/s$				& $knots$				\\ \hline
+$V$            & true airspeed					& $m/s$				& $in/s$				& $knots$				\\ \hline
+\multicolumn{5}{|l|}{\dag frequency is always converted to Hz for output}												\\ \hline
+\end{tabular}
+% \end{scriptsize}
+% \end{footnotesize}
+% \end{small}
+\caption{Parameter units: SI, USCS, and USCS output} \label{table:params-units}
+% index all symbols. Prefix them with an equals sign
+% to force them to appear first.
+\index{parameters!builtin}
+\index{builtin!parameters}
+\index{=z@$z$ (altitude)}\index{altitude}
+\index{=qc@$q_c$ (calibrated dynamic pressure)}\index{calibrated dynamic pressure}\index{pressure!calibrated dynamic}
+\index{=q@$q$ (dynamic pressure)}\index{dynamic pressure}\index{pressure!dynamic}
+\index{=omega@$\omega$ (frequency)}\index{frequency}
+\index{=eta@$\eta$ (\Gc\ norm)}\index{generalized coordinates!norm}
+\index{=g@$g$ (growth factor)}\index{growth factor}
+\index{=m@$M$ (Mach number)}\index{Mach number}
+\index{=omega@$\bar{\omega}$ (reduced frequency)}\index{reduced frequency}
+\index{=rho@$\rho $ (density)}\index{fluid density}\index{density}
+\index{=rho0@$\rho_{0}$ (ref. density)}\index{reference density}\index{density!reference}
+\index{=sigma@$\Rsf$ reduced stability factor}
+\index{=d@$d$ (structural damping)}\index{structural damping}
+\index{=sigma@$\sigma$ stability factor}
+\index{=ps@$P$ (static pressure)}\index{static pressure}\index{pressure!static}
+\index{=p0@$P_{0}$ (ref. static pressure)}\index{reference static pressure}
+\index{=vc@$V_{c}$ (calib. airspeed)}\index{calibrated airspeed}\index{airspeed!calibrated}
+\index{=ve@$V_{e}$ (equiv. airspeed)}\index{equivalent airspeed}\index{airspeed!equivalent}
+\index{=a@$a$ (sonic velocity)}\index{sonic velocity}
+\index{=vt@$V_{t}$ (true airspeed)}\index{true airspeed}\index{airspeed!true}
+\end{table}
+

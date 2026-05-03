@@ -1,0 +1,2 @@
+# list all figures in includegraphics commands
+grep '^[^%]*\\includegrap' book.tex | sed -e 's/^.*{\([^}]*\)}/\1/'

@@ -119,7 +119,11 @@
 
 % Table mods
 \newcommand{\CCol}[1]{\multicolumn{1}{c|}{#1}}
+
+% Begin the document
 \begin{document}
+
+\frontmatter
 
 \begin{center}
 \begin{figure}[ht]	% complains if h
@@ -132,8 +136,12 @@
 
 \vspace{1cm}
 \Large{Edward E. Meyer}
-\par
+
+\vspace{1cm}
 \Large{\ttfamily flapsconsulting@gmail.com}
+
+\vspace{1cm}
+\today
 
 \vspace{3cm}
 \small{Typeset by the author using the \LaTeX\ document processing system}
@@ -141,7 +149,6 @@
 
 \author{Edward E. Meyer}
 
-\frontmatter
 \chapter*{Preface}
 \addcontentsline{toc}{chapter}{Preface}
 \input{preface.tex}
@@ -349,9 +356,6 @@ $\mathbb{C}^n$, $\mathbb{C}^{m \times n}$ & & the complex $n$-vectors
    and $m$ by $n$ matrices \\
 $\hat{\Matrix{D}}$, $\Matrix{D}$ & & complex ($n_e,n_e$) dynamic matrix
 	and it's real equivalent (\Eqn{eqn:flut} \\
-% $d$ & & structural damping coefficient \\
-% $\Vector{\hat{f}}_y$, $\Vector{f}_y$ & & complex residual and its real
-% 	equivalent (\Eqn{eqn:flut}) \\
 $\Matrix{M}$, $\Matrix{K}$, $\Matrix{G}$,
 	&  & $(n_e,n_e)$ mass, stiffness, gyroscopic, viscous damping, \\
 $\Matrix{C}$, $\Matrix{Q}$, $\Matrix{T}$ & & unsteady aero and
@@ -363,17 +367,14 @@ $\Vector{q}$ & & vector of $n_e$ complex \Gc\
 	$\eta\Vector{\hat{y}}$ (\Eqn{eqn:gcsplit}) \\
 $\Vector{\chi}$ & & real vector of physical motion of the structure
 	at discrete points (\Eqn{eqn:motion}) \\
-% $\Re(), \Im()$ & & real and imaginary parts of a complex variable \\
 $s$ & & Laplace variable $\sigma + i\omega$ \\
 $\bar{s}$ & & $sc/2V$, complex reduced frequency \\
 $V$ & & velocity (true airspeed) \\
 $\Vector{\hat{y}}$, $\Vector{y}$ & & complex eigenvector and its real
 	equivalent (\Eqn{eqn:flut}) \\
-% $z$ & & geometric altitude \\
 $\eta$ & & 2-norm of the \Gc\ (\Eqn{eqn:normalization}) \\
 $\omega$ & & oscillation frequency (imaginary part of the complex frequency) \\
 $\bar{\omega}$ & & reduced frequency $\omega c/2V$ \\
-% $\Omega$ & & spin rate (gyroscopic components) \\
 $\Matrix{\Phi}$ & & transformation from generalized to physical coordinates (\Eqn{eqn:motion}) \\
 $\rho$ & & fluid density \\
 $\sigma$ & & stability factor (real part of the Laplace variable) \\
@@ -554,23 +555,6 @@ and/or decreasing the cost of solutions. A partial list includes
 		reduced frequencies, a reduced frequency where the eigenvalue is
 		real is a flutter point \cite{pitt2000complex}.
 \end{description}
-% A major drawback to these methods is that because they solve the equations
-% as an eigenvalue problem, they cannot be used with controls equations
-% or nonlinearities and are tedious to use for parameter studies.
-% Gyroscopic terms are sometimes possible with modifications to the formulation.
-% 
-% Another drawback is that solutions generally use unsteady aerodynamics at
-% a fixed Mach number, matching the true Mach number at only one velocity,
-% so some sort of iteration or interpolation
-% is necessary to produce a so-called \emph{matched Mach} solution
-% \cite{demasi2024introduction,pitt1999new}.
-% 
-% In contrast, solving the flutter equations as a system of nonlinear equations
-% avoids these drawbacks; the flutter equation used here (\Eqn{eqn:flut})
-% allows control systems, gyroscopics, viscous damping, nonlinearities, unsteady
-% aerodynamics which are functions of complex reduced frequency ($\bar{s}$)
-% and Mach number. Any of the matrices can be quasi-linear functions of
-% discrete \Gc.
 A significant limitation of traditional flutter solution methods stems
 from their formulation as an eigenvalue problem. This approach inherently
 restricts their application, precluding the direct incorporation of
@@ -579,10 +563,6 @@ parameter studies becomes a tedious endeavor. While some modifications
 to the formulation may allow for the inclusion of gyroscopic terms,
 this is not a universally straightforward capability.
 
-% Another notable drawback is that these solutions typically rely on
-% unsteady aerodynamics at a fixed Mach number. This means the true
-% Mach number is accurately represented at only a single velocity point,
-% necessitating iteration or interpolation to achieve a "matched Mach" solution.
 While these formulations aim to improve solution accuracy under
 non-flutter conditions, they yield identical flutter speeds, provided the
 aerodynamics are at the same Mach number. However, this often overlooks
@@ -633,7 +613,6 @@ $x_i$ & & $i\text{th}$ element of vector $\Vector{x}$ \\
 $\tau$ & & arclength along a curve (\Figref{fig:pac}) \\
 $\Step$ & & stepsize in the continuation process (\Eqn{eqn:predictor}) \\
 $()^T$ & & transpose \\
-% \end{tabular}
 \end{longtable}
 \end{small}
 \index{numerical continuation!nomenclature}
@@ -691,10 +670,6 @@ variables ($\Vector{x}$) are treated equally -- there is no
 ``continuation parameter'', simplifying both the presentation and
 programming of the method.
 
-% so-called pseudo-arclength methods take steps along the tangent
-% to the curve, avoiding the problem with limit points and the complexity of
-% choosing locally optimal continuation parameters.
-% This is perhaps the simplest numerical continuation method to explain.
 As with all continuation methods, tracing a curve starts from a known solution
 $\Vector{x}_0$, computing points on the curve $\Vector{x}_1$, $\Vector{x}_2$, 
 $\Vector{x}_3$,  ...  $\Vector{x}_n$.
@@ -754,16 +729,13 @@ Considering $\Vector{x}$ to be a function of the arclength ($\tau$) along the
 curve, the tangent vector to the curve is the derivative of $\Vector{x}$
 with respect to this distance: $\Vector{t} = d\Vector{x}/d\tau$.
 Moreover, the tangent has unit length, since
-% \begin{displaymath}
 	$d\tau^2 = d\Vector{x}^T d\Vector{x} = \|d\Vector{x}\|_2^2$,
-% \end{displaymath}
 \begin{displaymath}
 \Vector{t}^T\Vector{t} =
 	\left(\frac{d\Vector{x}}{d\tau}\right)^T \frac{d\Vector{x}}{d\tau}
 	= \frac{d\Vector{x}^T d\Vector{x}}{d\tau^2} = 1
 \end{displaymath}
 
-% The tangent is always derived from the null vector of the Jacobian
 Computing the tangent relies on the fact that the tangent is the null
 vector of the Jacobian\footnote{although the focus here is on Jacobians with a single
 null vector, multiple null vectors will be treated in \Sectref{sect:optim}.},
@@ -799,11 +771,6 @@ $\Vector{t}_{j-1}^T \Vector{t}_j > 0$, that is, so that it points in roughly the
 same direction as the previous step.
 
 \subsection{The Predictor}
-% The distance along the curve is also known as the \emph{arclength};
-% the small steps taken in the predictor then are approximations to a
-% small change in arclength, hence the name \emph{pseudo-arclength}
-% continuation.
-% Computing the tangent will be a side-effect of the corrector process.
 The stepsize $\Step$ must be chosen carefully. Too large a step,
 and the corrector may not converge or may converge to the wrong root;
 too small a step means extra work. Den Heijer and Rheinboldt
@@ -855,9 +822,6 @@ a cost-saving technique is to evaluate and factorize the Jacobian
 at the beginning of the corrector step, then iterate using these factors
 in \Eqn{eqn:h}. If convergence is not achieved within a few iterations,
 re-evaluate the Jacobian and repeat the QR factorization.
-% predicted solution: a) constraining the continuation parameter,
-% b) constraining corrections to be orthogonal to the tangent,
-% c) minimum-norm.
 \begin{figure}[ht] 	% complains if h
 		\includegraphics[height=8cm,width=10cm]{pacmn.eps}
 	\centering
@@ -1377,16 +1341,6 @@ machine precision).
 a small constant factor more than a simple function evaluation.
 \end{itemize}
 
-% There are many AD libraries for most modern programming languages \cite{autodiff};
-% for application to flutter equations many of the features of these
-% libraries are unnecessary
-
-% The primary disadvantage of AD is the requirement of a specialized library.
-% While many excellent, freely available AD libraries exist \cite{autodiff},
-% the unique requirements of flutter analysis and the \Fina framework
-% necessitated the creation of its own custom AD library, tailored
-% to meet the specific demands of the solver.
-
 \section{Implementation}
 AD relies on two features of modern programming languages: creating new
 data types, and using these new types in arithmetic expressions.
@@ -1400,18 +1354,6 @@ An AD data type might be defined as
       double der;
    };
 \end{lstlisting}
-% In \Fina this concept is realized by the datatype called
-% \Code{Ad}\index{Ad@\Code{Ad} datatype}
-% which stands in place of a standard floating-point variable.
-
-% Crucially, each variable of type Ad is structured to store not just
-% a single real value, but also one or more derivatives. That is, each
-% \Code{Ad} variable has a primary real value plus a vector of its derivatives
-% with respect to a set of designated independent parameters.
-
-% These components are typically accessed via dedicated members. For example,
-% the following code:
-
 and used like this:
 \begin{lstlisting}
    Ad a;
@@ -1431,7 +1373,6 @@ Multiple independent variables require multiple derivatives, for example
    };
 \end{lstlisting}
 
-% \subsection{Overloaded operators and functions}
 The second programming language feature essential to AD is
 the ability to define how arithmetic functions and operations treat this
 new data type.
@@ -1510,122 +1451,6 @@ safety, accuracy, and effort on the part of the user:
 % 	\end{array} \right\}
 % \end{equation}
 
-% Move this section to Custom functions? or to the Fina manual
-% \subsection{Programming with AD}
-% A programmer can use this AD implementation without writing
-% any explicit differentiation code. The only change required from normal coding
-% practice is the use of the \Code{Ad} datatype in place of a standard
-% floating-point datatype, and identifying the independent variable by
-% setting it's \Code{der} to 1.
-% 
-% The following example illustrates a program that calculates both a value
-% and its derivative:
-% \begin{lstlisting}
-%    Ad myfunc(Ad s) {
-%       return sqrt(3.0*s + s*s + s*s*s);
-%    }
-%    main() {
-%       Ad s;
-%       s.value = 10.0;
-%       s.der = 1.0;    // Initialize s as the independent parameter
-% 
-%       Ad a = myfunc(s);
-% 
-%       std::cout << "a = " << a.value << std::endl;
-%       std::cout << "derivative of a wrt s = " << a.der << std::endl;
-%    }
-% \end{lstlisting}
-% In this stylized example, s is designated as the independent variable.
-% Compiling and running this program yields output (with calculated values for
-% \Code{s=10.0}):
-% \begin{lstlisting}
-%     a = 33.61559
-%     derivative of a wrt s = 1.78885
-% \end{lstlisting}
-% The derivative result is propagated through the function's entire
-% computation automatically.
-% 
-% \section{\Fina\ Implementation}
-% Automatic Differentiation is used extensively throughout \Fina, not only
-% for basic parameter values but critically for evaluating parametrized
-% matrices. With all parameters and matrices defined in terms of \Code{Ad}
-% objects, the calculation of the Jacobian ---the heart of numerical
-% continuation---becomes just a matter of extracting derivatives from the
-% resulting terms of the function. For instance, this applies to the flutter
-% function $\Vector{Dy}$, where $\Vector{D}$ is the dynamic matrix and
-% $\Vector{y}$ is the eigenvector (defined in terms of \Code{Ad} if there
-% are nonlinear generalized coordinates, or as simple complex otherwise).
-% 
-% \subsection{Custom Functions}
-% The most important consequence of \Fina's AD implementation is that it
-% makes user-written custom functions feasible. The complexity of derivative
-% computation is effectively hidden from the user through the established
-% mechanisms of operator and function overloading and \Cpp\ type aliases.
-% 
-% \subsubsection{AD-Aware Type Aliases}
-% The core \Cpp\ type aliases that enable derivative propagation within
-% user-written custom functions are:
-% \begin{lstlisting}
-% using Real = Ad;
-% using Complex = std::complex<Ad>;
-% using RealMatrix = matrix<Ad>;
-% using ComplexMatrix = cmatrix<Ad>;
-% \end{lstlisting}
-% By using these aliases instead of raw \Code{double} or
-% \Code{std::complex<double>}, the user
-% implicitly engages the AD system for all arithmetic operations.
-% 
-% \subsubsection{A User-Written Example}
-% A typical user-written custom function, designed to modify the stiffness matrix
-% based on a user-defined parameter, looks like this:
-% \begin{lstlisting}
-% int stiffcn(Pset& pset, Mset& mset, ComplexMatrix& ca) {
-%     Real sbfreq;
-%     pset.parval("sbfreq", sbfreq);
-%     
-%     Complex mass;
-%     mset.element("mass", 41, 41, mass);
-%     
-%     // Stiffness = mass * (natural frequency)^2
-%     ca(41, 41) = sbfreq * sbfreq * mass;
-%     
-%     return 0;
-% }
-% \end{lstlisting}
-% 
-% This example illustrates three key components of the \Fina\ system:
-% 
-% \paragraph{Parameter Access (\Code{Pset})}
-% \Code{Pset} is a \Cpp\ class containing all the standard and user-defined
-% independent and dependent parameters for the solution. The call
-% \Code{pset.parval("sbfreq", sbfreq)} invokes the specialized \Code{parval}
-% member function. This function not only evaluates the user-defined
-% parameter value but also returns the result in the \Code{Real} variable
-% \Code{sbfreq}, ensuring all necessary derivatives (typically $1.0$
-% if it is an independent parameter, or a calculated derivative if it is
-% dependent) are correctly initialized in the \Code{Ad} structure.
-% 
-% \paragraph{Matrix Element Access (\Code{Mset})}
-% \Code{Mset} holds all the major matrices specified for a flutter
-% solution. The member function \Code{element} provides access to a
-% specific matrix (identified by its role, e.g., ``mass'') and returns an
-% element according to row and column indices. In the example, the diagonal
-% element $(41, 41)$ of the mass matrix is accessed and returned into the
-% \Code{Complex} variable \Code{mass}.
-% 
-% \paragraph{Derivative Propagation}
-% The final assignment, \Code{ca(41, 41) = sbfreq * sbfreq *
-% mass;}, is the core of the implementation. The statement uses the
-% single-degree-of-freedom relation $\omega = \sqrt{k/m}$ to calculate the
-% equivalent stiffness and assigns it to the diagonal of the return matrix
-% \Code{ca}. Since \Code{sbfreq} and \Code{mass} are built on \Code{Ad}
-% and \Code{std::complex<Ad>}, the overloaded operators ensure that the
-% resulting \Code{ca(41,41)} element contains the correct real value
-% \textit{and} the mathematically exact derivatives with respect to all
-% independent parameters, making the final matrix directly usable for
-% Jacobian assembly.
-
-
 % =================================================================
 % Chapter Solving Flutter Equations
 % =================================================================
@@ -1651,15 +1476,6 @@ and a potentially difficult step:
 \begin{itemize}
 	\item compute the Jacobian matrix.
 \end{itemize}
-
-% Combined, \Eqna{eqn:normalization}{eqn:flut} are $2n_e+2$ real equations, so
-% to compute curves (see \Sectref{sect:background})
-% there needs to be $2n_e+3$ unknowns. The components of
-% the eigenvector $\Vector{y}$ account for $2n_e$ unknowns; the remaining 3
-% are chosen from the parameters comprising the flutter equation
-% (\Sectref{sect:flut-nomenclature}).
-% The eigenvector $\Vector{y}$ is not considered independent as it is
-% inherent to the solution.
 
 \section{Conversion to real}\label{sect:real-conversion}
 For several reasons, it is necessary to convert the equations to the
@@ -1852,11 +1668,6 @@ from $\hat{\Matrix{D}}\hat{\Vector{y}}$ with code like:
    }
 \end{lstlisting}
 
-% In addition to choosing the independent variables it is necessary to assign
-% equations (which may be constants) to the remaining parameters.
-% \Fina chooses equations from \Tableref{table:params-eqns} after the user has
-% specified independent and constant parameters.
-
 \section{Parametric Curves}\label{sect:gpset}\index{parametric curves}
 The \Newterm{parametric curves} computed by numerical continuation can be classified according to
 their origin. A \Newterm{core} curve is started from a free-vibration solution at
@@ -1874,9 +1685,6 @@ the analyst.
 
 Three independent variables which give this type of solution are
 $\omega$, $\sigma$, and $V$, at a constant altitude:
-% \footnote{these are not the only parameters that could be used for a core analysis.
-% $V_e, V_c, \bar{\omega}, q, \;\text{or}\; M$ could be used instead of $V$. Likewise
-% $d\;\text{or}\;g$ could be used instead of $\sigma$}:
 \begin{displaymath}
 	\Vector{p} = \left\{ \begin{array}{c}
 		\omega \\
@@ -2130,7 +1938,6 @@ The default units for the right and left sides of \Eqn{eqn:flut} in
 
 \begin{table}[hbt] % table:matrix-units
 \begin{center}
-% \begin{footnotesize}
 \begin{sloppypar}
 \begin{tabular}{|c|c|c|c|} \hline
 {\bf Matrix}       & {\bf SI }   & {\bf USCS}  & {\bf SI/USCS}     \\ \hline \hline
@@ -2143,7 +1950,6 @@ $\rule{0mm}{4mm}\Vector{q}$ & \multicolumn{3}{c|}{dimensionless}                
 \end{tabular}
 \end{sloppypar}
 \caption{Units for matrices in \Gc} \label{table:matrix-units}
-% \end{footnotesize}
 \end{center}
 \end{table}
 \index{units!matrix}
@@ -2159,8 +1965,6 @@ If the matrices are all in the United States Customary System (USCS)
 \cite{handbook2002specifications}\index{units!USCS},
 the parameter units must be changed using the \Code{units=USCS}
 option in the \Fina \Cmd{import} command.
-% \footnote{Output units in the SI system are the same as equation units with the
-% exception of frequency ($\omega$) which is output in Hz.}.
 
 Because the flutter equation is homogeneous with no right-hand-side, a set
 of matrices in USCS units can be converted to SI units by multiplying the unsteady
@@ -2355,8 +2159,6 @@ the QR factorization of the Jacobian can be updated
 and from that the vector $\Matrix{Q}_2$
 (\Eqn{eqn:qr})
 is the desired tangent (within an irrelevant sign).
-% Thus, the determination of limit cycle stability
-% requires little additional effort.
 
 \subparagraph{After tracing}
 When all \EOV curves have been traced, the independent variables are
@@ -2406,19 +2208,11 @@ which affects wing-mounted engines.
 The force-displacement curve and its describing function approximation
 for freeplay are shown in \Figref{fig:gap-force}.
 \begin{figure}[ht] 	% complains if h
-%		\includegraphics[height=2.5in,width=3.2in]{gap-force.pdf}
 		\includegraphics[height=2.5in,width=3.2in]{gap-force.eps}
 	\centering
 	\caption{Describing Function Approximation of Freeplay}\label{fig:gap-force}
 \end{figure}
 Evaluating the integral leads to
-% \begin{equation}
-% c(q_k,\delta)  =
-% 	\begin{cases}
-% 		\frac{1}{\pi} \left[ \pi - 2 \sin^{-1}(1/\gamma) - \sin(2\sin^{-1}(1/\gamma)) \right] & \text{if} \gamma = \left|q_k\right|/\delta \geq 1 \\
-% 		0 & \text{otherwise}
-% 	\end{cases}
-% \end{equation}
 \begin{align}
 \label{eqn:gap}
 c_j(\gamma_j)  & = 
@@ -2432,15 +2226,11 @@ c_j(\gamma_j)  & =
 for a gap $\delta_j$. Another common nonlinearity is bilinearity,
 illustrated in \Figref{fig:bilinear-force}.
 \begin{figure}[!ht]	% complains if !h
-%		\includegraphics[height=2.5in,width=3.2in]{bilinear-force.pdf}
 		\includegraphics[height=2.5in,width=3.2in]{bilinear-force.eps}
 	\centering
 	\caption{Describing Function Approximation of Bilinear Force}\label{fig:bilinear-force}
 \end{figure}
 with describing function
-% represents a bilinear element with $r$ the ratio of stiffnesses above and
-% below $\delta_j$, the diagonal is multiplied by
-
 \begin{align}
 \label{eqn:bilinear}
 b_j(\gamma_j,r_j) & =
@@ -2454,7 +2244,6 @@ Figure \ref{fig:df} shows the factors $c$ and $b$; note the transitions
 at $\delta$ have been smoothed to avoid numerical problems with the
 continuation method.
 \begin{figure}[!ht]	% complains if !h
-%	\includegraphics[height=2.4in,width=3.2in]{df.pdf}
 	\includegraphics[height=2.4in,width=3.2in]{df.eps}
 \centering
 \caption{Describing functions}\label{fig:df}
@@ -2464,93 +2253,6 @@ Analytical forms of many other describing functions have been
 derived \cite{gelb1968multiple}; if an appropriate one is not
 found, it may be possible to derive the analytical form using
 \Eqn{eqn:df-defn}.
-
-% \subsection{Computing Describing Functions Numerically}
-% \label{sect:computing-df}
-% If it is not practical to derive an analytic expression for a
-% describing function, it could be evaluated numerically by using
-% a fast Fourier transform and taking the fundamental harmonic.
-% Repeating this at several oscillation amplitudes (and possibly
-% frequency), then interpolating the result.
-% % An experimental framework for doing this requires the user to supply
-% % 3 functions either as an input file named-section\index{named-section}
-% % \Sectref{sect:input-file} or in a file. These functions are compiled
-% % automatically at the beginning of a \Fina job, and run to create a set
-% % of interpolation coefficients giving the describing function as a
-% % function of specified generalized coordinate amplitudes. The user then
-% % applies the describing function to a matrix by calling a \Fina function,
-% % \Code{dfval}, either in a matrix-element equation or a custom evaluation
-% % function.  More details are in \Sectref{sect:df-approx}.
-% 
-% % \subsection{Creating a describing function}\label{sect:df-approx}
-% \index{describing function!creating}
-% % Analytical forms of many describing functions have been 
-% % derived \cite{gelb1968multiple}; if an appropriate one is not
-% % found, it may be possible to compute a numerical approximation
-% % using \Eqn{eqn:df-defn}.
-% An experimental framework for doing this requires the user to supply
-% 3 functions either as an input file named-section \Sectref{sect:input-file} or
-% in a file. These functions are compiled automatically at the beginning
-% of a \Fina job, and run to create a set of interpolation coefficients
-% giving the describing function as a function of specified generalized
-% coordinate amplitudes. The user then applies the describing function
-% to a matrix by calling a \Fina function, \Code{dfval}, either in
-% a matrix-element equation or a custom evaluation function. When called
-% from an equation it has the form
-% \begin{lstlisting}
-% dfval(dfid, gcno, {parameter-values})
-% \end{lstlisting}
-% so for example if the input file has a section named \Code{mybilinear}
-% containing the 3 functions needed to define a describing function which
-% needs 2 parameter values, to use it to multiply the $10^{th}$ diagonal
-% and give the 2 parameters the values $0.01$ and $3.5$:
-% \begin{lstlisting}
-% [10,10] *= dfval(mybilinear, 10, {0.01,3.5})
-% \end{lstlisting}
-% 
-% As with other builtin functions, when called from within a custom
-% function an additional parameter is required, and the declaration looks
-% like
-% \begin{lstlisting}
-% Real dfval(pset& ps, const string& dfid, int gcno,
-%                const vector<double>& params);
-% \end{lstlisting}
-% 
-% The 3 functions needed to create a describing function
-% must have the following signatures:
-% % \vspace{0.5em}
-% % \verb!vector<double> df_qs(const vector<double>& params)!
-% % \vspace{-.5em}
-% \begin{lstlisting}
-%    vector<double> df_qs(const vector<double>& params)
-% \end{lstlisting}
-% \begin{quote}
-% returns a vector with the oscillation amplitudes desired in the describing function
-% \end{quote}
-% % \verb!double df_fq(double y, const vector<double>& params)!
-% % \vspace{-.5em}
-% \begin{lstlisting}
-%    double df_fq(double y, const vector<double>& params)
-% \end{lstlisting}
-% \begin{quote}
-% returns the value of the ``force'' at displacement \Code{y},
-% \end{quote}
-% \begin{lstlisting}
-%    Interp* df_interp(const string& iid,
-%          const vector<double>& params,
-%          const vector<double>& qs, const vector<double>& fs)
-% \end{lstlisting}
-% % \vspace{-1.5em}
-% \begin{quote}
-% returns a new Interp object containing the interpolants used to fit the
-% describing function values \Code{fs}
-% \end{quote}
-% where \Code{params} are parameter values given as an argument to \Code{dfval}.
-% 
-% Examples of this experimental technique for computing describing
-% functions are in \Code{nl4.fp} \Sectref{ex:nl1234} and \Code{latent.fp}
-% \Sectref{ex:latent}.
-
 
 %------------------------------------------------------------------
 % controls chapter
@@ -2606,50 +2308,7 @@ Thus the matrices must have dimensions
 \Matrix{C}  : (n_o, n_s), \hspace{5mm}
 \Matrix{D}  : (n_o, n_i)
 \end{equation*}
-% If there are input and output time delays the controls equations can be written
-% in the frequency domain
-% \index{time delays}
-% \begin{align}\label{eqn:abcd1}
-% s\Vector{v} &= \Vector{Av} + \Vector{BGu_i} \\	\nonumber
-% \Vector{u_o} &= \Vector{HCv} + \Vector{HDGu_i} % \label{eqn:abcd2}
-% \end{align}
-% where
-% \begin{align}
-% \Matrix{G} &= \left[ \begin{array}{ccc}
-% \ddots &           &        \\
-%        & g_i e^{-st_i} &        \\
-%        &           & \ddots
-% \end{array}
-% \right] \;\; \in \mathbb{C}^{n_i \times n_i}	\nonumber	\\
-% \Matrix{H} &= \left[ \begin{array}{ccc}
-% \ddots &           &        \\
-%        & h_j e^{-st_j} &        \\
-%        &           & \ddots
-% \end{array}
-% \right]	\;\; \in \mathbb{C}^{n_o \times n_o}	\nonumber
-% \end{align}
-% are diagonal matrices, $g_i$ and $t_i$ are the (complex) gain
-% and time delay associated with the $i^{th}$ input channel, and
-% $h_j$ and $t_j$ are the (complex) gain and time delay associated with
-% the $j^{th}$ output channel.
 
-% In addition to input and output time delays there may be
-% \Newterm{internal} time delays which are represented by exponentials
-% multiplying terms of the $\Matrix{A}$ matrix; each term may be
-% multiplied by multiple time delays and each time delay may multiply
-% multiple elements:
-% \begin{equation}
-% \begin{split}
-% \Matrix{A}(s) &= \left[ A_{ij} e^{-st_{ij}} \right] \\
-% t_{ij} &= \sum_{l=1}^{m_{ij}} t_{k_l}
-% \end{split}		\nonumber
-% \end{equation}
-
-% Moreover, the $\Matrix{A}$ matrix may be a function of one or more parameters
-% such as altitude or true airspeed so in general $\Matrix{A}$ is written
-% $\Matrix{A}(s,\Vector{p})$ where $\Vector{p}$ is a vector of parameter values.
-
-% \subsection{Structural Equations}
 \subsection{Creating the $\Matrix{T}$ Matrix}
 A simple control system with an actuator driving a control surface
 is shown schematically in \Figref{fig:lti-schematic}.
@@ -2659,20 +2318,7 @@ is shown schematically in \Figref{fig:lti-schematic}.
 	\caption{Simple control surface with control system}\label{fig:lti-schematic}
 \end{figure}
 \index{LTI control system!creating $\Matrix{T}$}
-% The flutter equation used in \Fina (\Eqn{eqn:flut}) can be written
-% \begin{align}\label{eqn:lti-struct}
-% \Vector{Dq} &= \Vector{f} \;\; \in \mathbb{C}^{n_e} \nonumber \\
-% \Matrix{D} &=
-% 	\left[ s^2 \Matrix{M} + s \Omega\Matrix{G} + s \Matrix{C} +
-% 	 (1 + id) \Matrix{K} - q \Matrix{Q} (\bar{s},M) + \Matrix{T} \right]
-% \end{align}
-% where $\Vector{f}$ are external forces and $\Matrix{T}$ is
-% a user-defined matrix which can be used for control-system terms.
 
-% In order to combine the control-system equations with the structural
-% equations it is first necessary to relate the input $(\Vector{u_i})$
-% and output $(\Vector{u_o})$ of the controls equations to structural degrees
-% of freedom.
 The control-system input $\Vector{u_i}$ is related to the
 \Gc\ $\Vector{q}$ by
 \begin{equation}\label{eqn:abcd-uq}
@@ -2694,10 +2340,6 @@ or
 \begin{equation}\label{eqn:abcd5}
 \Matrix{BS\Phi}_i \Vector{q} + \left( \Matrix{A} - s\Matrix{I} \right) \Vector{v} = 0
 \end{equation}
-
-% If the control-system output $\Vector{u_o}$ is related kinematically to
-% the \Gc\ by an $(n_e, n_o)$ matrix $\Matrix{E}$
-% then the external force applied to the structure due to $\Vector{u_o}$ is
 Assuming the output from the control system moves one or more generalized
 coordinates, that motion can be transformed into forces on structural
 nodes with an equation like
@@ -2724,17 +2366,6 @@ in \Eqn{eqn:abcd}} $\hat{\Matrix{D}}\hat{\Vector{y}} - \Vector{f}_o = 0$,
 \Vector{v}
 \end{array} \right\} = \Vector{0}
 \end{equation}
-
-% When the input gain
-% $(\Matrix{G})$
-% is zero, the second row of equation
-% \Eqn{eqn:abcd-combtd} reduces to the eigenvalue problem
-% \begin{equation}
-% \left(\Matrix{A} - s\Matrix{I}\right)\Vector{v} = \Matrix{0}
-% \end{equation}
-% and $\Vector{v}$ is zero except when $s$ is an eigenvalue of $\Matrix{A}$;
-% everywhere else the equations reduce to the open-loop structural
-% equations, as they should.
 
 The $\Matrix{T}$ matrix is therefore
 \begin{equation}
@@ -2815,20 +2446,8 @@ undergoing small displacements given by 3 angles at a node,
 			r_3
 		\end{array} \right\}		\nonumber
 \end{equation}
-% $\theta_1$, $\theta_2$, and $\theta_3$, and spinning at a rate
-% $\Omega$ about an axis $\Vector{r}$
 will produce moments
 about the $x$, $y$, and $z$ axes as illustrated in \Figref{fig:gyro}.
-% The axis
-% \begin{equation}
-% \Vector{r} = \left\{ \begin{array}{c}
-% 			r_1 \\
-% 			r_2 \\
-% 			r_3
-% 		\end{array} \right\}, \hspace{10mm}
-% 		||\Vector{r}||_2 = 1.0   \nonumber
-% \end{equation}
-% is normalized to length 1.0.
 \begin{figure}[ht]
 		\includegraphics[height=7.5cm,width=8.5cm]{gyro.eps}
 	\centering
@@ -2911,8 +2530,7 @@ The coefficients ($c_{z\theta}$, etc) in \Eqn{eqn:10} are derivatives of the
 forces and moments with respect to apparent pitch and yaw angles between the
 propeller axis and the freestream airflow.
 Due to symmetry the number of coefficients in \Eqn{eqn:10} can be reduced:
-\begin{align}
-\label{eqn:symm}
+\begin{align}\label{eqn:symm}
 c_{y\psi} &= -c_{z\theta} \nonumber \\
 c_{n\theta} &= -c_{m\psi} \nonumber \\
 c_{y\theta} &= c_{z\psi} \nonumber \\
@@ -2920,7 +2538,7 @@ c_{nr} &= c_{mq} \nonumber \\
 c_{yq} &= c_{zr}
 \end{align}
 
-Substituting \ref{eqn:effaoa} and \ref{eqn:symm} into \ref{eqn:10}
+Substituting \Eqn{eqn:effaoa} and \Eqn{eqn:symm} into \Eqn{eqn:10}
 \begin{align}
 \label{eqn:10a}
 F_z/qa &= c_{z\theta}(\theta - \frac{l}{V}\dot{\theta} + c_{z\psi}(\psi - \frac{l}{V}\dot{\psi}) + c_{zr}\frac{r}{V}(\dot{\psi} - \frac{l}{V}\ddot{\psi}) \nonumber \\
@@ -3033,7 +2651,6 @@ Furthermore, the physical motion of points on the structure is given by
               & =  \Re \left[\Matrix{\Phi}\Vector{q} e^{\sigma t}
 				  			\left(\cos \omega t + i \sin \omega t \right) \right]	\nonumber
 \end{align}
-% and \Eqn{eqn:eta-def}
 \begin{equation}
 \Vector{q} = \eta \Vector{y} = \eta \left(\Vector{y}_r + i\Vector{y}_i \right) \nonumber
 \end{equation}
@@ -3065,21 +2682,12 @@ negative if backward.
 While the flutter equations, as presented in \Eqn{eqn:flut}, provide
 a fundamental framework, they often lack the necessary features for
 practical application.
-% A critical aspect of flutter analysis is conducting parameter studies
-% – investigating the boundary between stability and instability across a range
-% of flight parameters (e.g., velocity, altitude) and design parameters
-% (e.g., stiffnesses, mass distribution, structural damping).
-% In essence, flutter analysis inherently involves a series of such studies.
 This chapter introduces facilities that enable
 the customization of these equations by introducing new parameters, and
 allowing matrices to become functions of parameters, thereby tailoring them
 for specific analytical tasks.
 
 \section{Parameters}\label{sect:parameters}
-% \Fina has a set of pre-defined parameters which are sufficient for
-% many flutter analyses. Additional parameters can be defined and
-% applied to flutter analyses, used in the same way builtin parameters
-% are used.
 Many flutter analyses can be done using only the basic parameters
 listed in \Tableref{table:params-eqns}. To refer to parameters in
 a computer program they need short, descriptive names. \Fina uses
@@ -3104,22 +2712,6 @@ Calibrated airspeed and dynamic pressure are from
 ``Measurement of Aircraft Speed and Altitude'' \cite{gracey1980measurement}.
 
 \input{params-names.tex}
-
-% Not all parameters in \Tableref{table:gpset-eqns} appear in \Eqn{eqn:flut}, where
-% the main candidates for independent parameters appear to be the Laplace
-% variable $s$ and the dynamic pressure $q$.
-% Instead of solving the flutter equation with dynamic pressure ($q$) independent,
-% it could be solved with equivalent airspeed ($V_e$), true airspeed ($V$),
-% reduced frequency ($\bar{\omega}$), Mach number ($M$), or altitude ($z$)
-% independent provided another parameter is set to a constant; for example if
-% altitude ($z$) is independent, set the Mach number to a constant, then the true
-% airspeed is $V = Ma(z)$ and dynamic pressure is $q = \rho(z)V^2/2$.
-% Instead of stability factor ($\sigma$), structural damping ($d$) could be used
-% to simulate some early flutter analysis techniques, or growth factor ($g$)
-% which gives results close to structural damping for low damping.
-
-
-% \newpage
 
 \subsection{Defining New Parameters}\label{sect:newpar}
 \index{parameters!user-defined}
@@ -3401,33 +2993,17 @@ are several builtin constants: \index{builtin!constants}
 
 \begin{description}
 \item[\Code{radps2Hz}] $2\pi$ $(\text{radian}/\text{sec})/\text{Hz}$
-% \item[\Code{radps2Hz}] conversion factor from \si{\radian \per \s} to \si{\Hz}
-% (\SI{1/2\pi}{\Hz \per (\radian \per \s)})
-% (\qty{1/2\pi}{\Hz \per (\radian \per \s)})
 \index{conversion factor!radps2Hz}\index{radps2Hz@\Code{radps2Hz}}
                 
 \item[\Code{radps2rpm}]
 $2\pi/60$ $(\text{radian}/\text{sec})/\text{rpm}$
-% \si[\per-mode=fraction]{(\radian \per \s) \per \rpm|}
-% \num[quotient-mode = fraction]{2\pi/60}\si[per-mode=fraction]{(\radian \per \s) \per \rpm}
 \index{conversion factor!radps2rpm}\index{radps2rpm@\Code{radps2rpm}}
                 
 \item[\Code{mps2knot}] \SI{1.9438445}{\knot \per (\m \per \s)}
-% conversion factor from meters/second
-% (m/s) to knot (nautical-miles/hour)
-% \begin{equation}
-% \frac{knot}{m/s} = \frac{nmi}{hr}\frac{s}{m} =
-% 	\frac{nmi}{1852 m}\frac{3600 s}{hr} = 1.9438445 \nonumber
-% \end{equation}
 \index{conversion factor!mps2knot}\index{mps2knot@\Code{mps2knot}}
                 
 \item[\Code{Pa2psf}] \SI{0.02088543423}{(\lb \per \square \ft) \per \Pa},
 \si{\Pa} = \si{\N \per \square \m}.
-% conversion factor from Pascal ($N/m^2$) to $lb_f/ft^2$ (psf)
-% \begin{equation}
-% \frac{lb_f/ft^2}{Pa} = \frac{1}{4.4482216152605}\frac{lb_f}{N} (0.3048\frac{m}{ft})^2
-% 	= 0.02088543423 \; psf/Pa \nonumber
-% \end{equation}
 \index{conversion factor!Pa2psf}\index{Pa2psf@\Code{Pa2psf}}
                 
 \item[\Code{pi}] $\pi = 3.1415926535897932384626433.... $
@@ -3455,15 +3031,6 @@ of other parameters. All parameters, builtin and user-defined have
 real values in an automatic differentiation data type, meaning that
 a parameter's value and its derivatives with respect to the independent
 variables are computed simultaneously.\index{automatic differentiation!in \Fina equations}
-% XXX needs work
-% Derivatives of parameters may be used in equations by enclosing
-% parameter names in \Code{ d()}; for example
-% \begin{lstlisting}
-%    drf = d(rf)/d(vtas)
-% \end{lstlisting}
-% defines a parameter (\Code{drf}) as the derivative of
-% \Code{rf} with respect to \Code{vtas}.
-% \index{derivatives!parameter}
 \par
 It is important to note that {\bfseries the value of a parameter used in
 an equation is always in equation units\/} (\Sectref{sect:units}).
@@ -3540,7 +3107,6 @@ in a \Fina input file: custom \Cpp code to create or modify a matrix;
 \Cpp code to create a describing function; and \Octlab
 scripts to manipulate \Fina matrices.
 Any of these may be included in the input file as named-sections
-% (\Sectref{sect:input-file})
 which are split from the input file, written to temporary files, and
 if containing \Cpp code, compiled and made available to all \Fina
 commands.
@@ -3627,12 +3193,10 @@ like this:
    Real vtas;
    plt.parval("vtas", vtas);
 \end{lstlisting}
-% \Code{Ad}
 Real variables can be treated like \Cpp doubles
 (arithmetic, trig functions, etc), and can be mixed with \Cpp
 doubles and complex.
 
-% Complex variables use the standard \Cpp template \Code{complex}:
 \begin{lstlisting}
    Real sigma;
    plt.parval("sigma", sigma);
@@ -3842,7 +3406,6 @@ In dynamic analysis
 	among different groups
 \end{itemize}
 More important for flutter equations is isolating certain substructures to allow for:
-% the elimination of stiffness coupling for certain degrees-of-freedom to facilitate
 \begin{itemize}
 \item stiffness parameter studies
 \item nonlinearities with describing functions
@@ -3886,7 +3449,7 @@ subscripts refer to dof common with B, and \Ss\ B has
 \right]	\nonumber
 \end{equation}
 The merged \Ss\ C will have
-\begin{equation}\label{eqn:merged-ss}
+\begin{displaymath}
 \Matrix{C} = \left[
 \begin{array}{ccc}
    \Matrix{A}_{ii} & \Matrix{A}_{ia} & \Matrix{0} \\
@@ -3894,7 +3457,7 @@ The merged \Ss\ C will have
    \Matrix{0} & \Matrix{B}_{ia} & \Matrix{B}_{ii}
 \end{array}
 \right]
-\end{equation}
+\end{displaymath}
 In general there is mass and stiffness coupling between the
 interior and boundary dof of a static \Ss, hence
 there is also mass and stiffness coupling between
@@ -3927,11 +3490,11 @@ to the attachment dof:
 \right\}		\nonumber
 \end{equation}
 Assuming $\Vector{f}_i$ is negligible, these 2 equations result in
-\begin{equation}\label{eqn:static-cond}
+\begin{displaymath}
 \left[\Matrix{K}_{aa}
 	- \Matrix{K}_{ai}\Matrix{K}_{ii}^{-1}\Matrix{K}_{ia}\right]
 		\Vector{x}_a = \Vector{f}_a
-\end{equation}
+\end{displaymath}
 and the condensed stiffness matrix
 \begin{equation}\label{eqn:condensedK}
 \Matrix{\bar{K}}_{aa} = 
@@ -4012,33 +3575,27 @@ and stiffness matrices with the form shown in \Figref{fig:ss-cms}.
 Two characteristics of this method make it particularly attractive
 for many structural-dynamics analyses:
 \begin{itemize}
-\item
-{\bfseries They can be treated like static superelements\/}.
-Because the attachment dof are left as nodal dof, the dynamic superelement
-can be merged with other (static or dynamic) superelements
-as though it were a static superelement.
-% For example, if superelement A is a static superelement,
-% while superelement B is a dynamic superelement, the
-% merged mass and stiffness matrices will appear as in figure
-% \ref{SUPEREL-F3}.
-                
-\item {\bfseries No stiffness coupling.} The other important
-	characteristic of Craig and Bampton CMS is that there is no
-	stiffness coupling between the interior dof and the attachment
-	dof so when the \Ss\ is merged with other \Sss\ there is no
-	stiffness coupling between the interior dof and other \Sss.
-	Nor is there stiffness coupling between interior dof
-	(the interior portion of the stiffness matrix is diagonal).
-	This property makes it easy to do parameter studies of the
-	influence of stiffness of a \Ss\ on, for example flutter speed.
+	\item {\bfseries They can be treated like static superelements\/}.
+		Because the attachment dof are left as nodal dof, the dynamic superelement
+		can be merged with other (static or dynamic) superelements
+		as though it were a static superelement.
+	\item {\bfseries No stiffness coupling.} The other important
+		characteristic of Craig and Bampton CMS is that there is no
+		stiffness coupling between the interior dof and the attachment
+		dof so when the \Ss\ is merged with other \Sss\ there is no
+		stiffness coupling between the interior dof and other \Sss.
+		Nor is there stiffness coupling between interior dof
+		(the interior portion of the stiffness matrix is diagonal).
+		This property makes it easy to do parameter studies of the
+		influence of stiffness of a \Ss\ on, for example flutter speed.
 \end{itemize}
 Disadvantages to this method include
 \begin{itemize}
-\item Once a CMS structure is assembled the attachment dof are no longer
-of interest and just add to the cost of a flutter analysis.
-\item the vibration modes for the interior dof with the attachment dof
-	supported are not as realistic for some structures as branch modes,
-	as illustrated in the following example.
+	\item Once a CMS structure is assembled the attachment dof are no longer
+		of interest and just add to the cost of a flutter analysis.
+	\item the vibration modes for the interior dof with the attachment dof
+			supported are not as realistic for some structures as branch modes,
+			as illustrated in the following example.
 \end{itemize}
 
 \subsection{Example: comparison of BMA and CMS modes}
@@ -4112,10 +3669,6 @@ matrix
 	\end{array} \right]
 \end{equation*}
 \index{=Phi@$\Matrix{\Phi}$!branch modes}
-% where the $i$ subscript refers to the interior dof of the root,
-% $j$ the interior of the branch, $b$ the boundary between them,
-% $m$ and $p$ the number of modes retained in the root ($\Phi$) and
-% branch ($\Phi$) eigenvectors, respectively.
 Applying this transformation to the static-merged mass and stiffness
 matrices gives the branch-mode mass and stiffness:
 \begin{equation}
@@ -4624,7 +4177,6 @@ strut frequency parameter variations can be easily and
 accurately performed
 \end{itemize}
 
-
 % ------------------------------------------------------------------
 % Examples chapter
 % ------------------------------------------------------------------
@@ -4682,12 +4234,6 @@ Some properties of the Goland wing from \cite{goland1945flutter} pg. A-202:
 \item[total mass] = \qty[per-mode = symbol]{0.746}{\slug\per\ft}
 		$\times$ \qty{20}{\ft}
 		$\times$ \qty[per-mode = symbol]{14.594}{\kg\per\slug} = \qty{217.74}{\kg}
-% \item[weight] \US{4}{\lb\per\square\ft}(\US{120}{\square\ft}) =
-% 	\SI{480}{lb} = \SI{217.7}{kg} distributed
-% 	over 12 concentrated masses = \SI{18.14}{kg} per mass.
-% \item[radius of gyration about center of gravity] is 25 percent chord = 0.4572 m,
-% so the moment of inertia for each concentrated mass =
-% $18.14(0.4572^2) =$ \SI{3.79}{\kg.\square\m}
 
 \item[center of gravity] at 43 percent chord from le, the ea (y axis) is at
 	33 percent, so the cg is at x = \US{0.6}{ft} = \SI{0.18288}{m}
@@ -4698,11 +4244,6 @@ Some properties of the Goland wing from \cite{goland1945flutter} pg. A-202:
 	$\times$ \qty[per-mode = symbol]{14.594}{\kg\per\slug}
 	$\times$ \qty[per-mode = symbol]{0.0929}{\square\metre\per\square\ft}
 	= \qty{52.68}{\kg\square\meter}
-%	\SI{4.395}{\kg.\square\metre} per mass (a bit higher than with the radius
-%	of gyration above)
-% \item[static imbalance] S = \US{0.447}{\slug.\ft\per\ft} = m $\times$ cg, so
-% cg = (\US{0.447}{\slug\ft\per\ft})({0.746 slug/ft})(\SI{0.3048}{\m\per\ft})
-%    = \SI{0.1826}{\m}, same as above
 
 \item[bending stiffness] EI/m = \US{31.7e+6}{\lb.\cubic\ft\per\slug}, so
 \item[EI] = \US{31.7e+6}{\lb.\cubic\ft\per\slug}
@@ -4829,7 +4370,6 @@ solver.
 	\caption{2 modes tracked using various formulations: vtas-g}
 			\label{fig:methodsvg}
 \end{figure}
-% \Figrefs{fig:methodsgf,fig:methodsvg}
 Figures \ref{fig:methodsgf} and \ref{fig:methodsvg}
 show this comparison. As expected,
 the 2 formulations with matched Mach number give the same flutter speed;
@@ -5051,7 +4591,6 @@ Capabilities demonstrated include
 Three example problems illustrate whirl flutter:
 \Code{reed.fp} demonstrates whirl flutter on a simple rigid propeller
 to validate the \Fina implementation of \cite{reed1961analytical},
-% in \Figref{fig:whirl-gaf},
 \Code{whirl.fp} is the Goland wing with 2
 propellers attached, and \Code{whirlnl.fp} is the same but with freeplay
 on the propeller mounts. For these a gyro matrix is created with the \Cmd{gyro}
@@ -5230,14 +4769,6 @@ $Km$            & $\deg K$           & $Pa$ ($N/m^2$)        & $kg/m^3$      & $
 \index{s-plane approximation|see{rational-function approximation}}
 \index{RFA|see{rational-function approximation}}
 \index{rational-function approximation|textbf}
-% The \Cmd{pz} command can approximate
-% \footnote{unlike interpolation, which passes through a set of points,
-% an approximation in general does not}
-% generalized unsteady aerodynamic matrices using a rational function
-% approximation often referred to as \Newterm{s-plane approximation}
-% aerodynamics, even though the approximation is done
-% with respect to complex reduced-frequency $\bar{s} = s/V$,
-% not the Laplace variable $s = \sigma + i\omega$.
 Unsteady aerodynamics used for flutter calculations are typically
 functions of reduced frequency ($\bar{\omega}$). It is sometimes desirable
 to improve the accuracy of growing or decaying amplitude ($\sigma \ne 0)$)
@@ -5726,39 +5257,13 @@ The file consists of blocks of data:
 \end{description}
 
 % ------------------------------------------------------------------
-% \newpage
-% \section{Importing Matrix Market files into \Octlab}\label{sect:mm-matlab}
-% \Fina uses Matrix Market format mainly for visualizing matrices
-% in \Cmd{matview} \Sectref{ref:matrix-display}.
-% Occasionally it is useful to import a matrix into \Octlab for processing,
-% for example to compute eigenvalues of a matrix, or to compute the
-% difference between 2 matrices (as done in the \Fina script
-% \Cmd{diffmm} \Sectref{sect:utility}).
-% Here are 3 \Octlab functions included in \Fina for importing,
-% exporting and getting information about Matrix Market files: \index{matrix!market}
-%  		\includepdf[pagecommand={},width=\textwidth]{mm_matlab.pdf}
 
-
-% ------------------------------------------------------------------
-
-
-% XXX I've tried several things to get the bibliography and index in
-% the TOC - the latest is to include package tocbibind - it's almost right
-% bibliography
 \newpage
 
-% \bibliography{/home/eem2314/bib/repo/eem}
-% \bibliographystyle{acm}
-% \bibliographystyle{plain}
-% \addcontentsline{toc}{chapter}{\numberline{}\bibname}
 \printbibliography[heading=bibintoc]
 
-% \cleardoublepage
-% \clearpage
 \newpage
 \phantomsection
-% \addcontentsline{toc}{chapter}{\numberline{}\indexname}
-% \addtocontents{toc}{\numberline{}\indexname}
 \printindex
 
 \end{document}

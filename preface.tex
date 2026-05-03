@@ -1,0 +1,36 @@
+
+This book grew out of a problem I faced when writing
+my PhD thesis on flutter of windmill blades.
+I needed to study the effects of varying properties such
+as blade stiffness, mass properties, and aerodynamic properties,
+but existing solution techniques made studies like these
+very tedious.
+
+A classmate suggested two techniques that seemed like a good
+fit for my problem: continuation methods and automatic differentiation.
+The key advantage continuation methods have over traditional
+eigenvalue methods is the use of derivatives of the equations.
+With these derivatives continuation methods can trace continuous curves,
+in addition to solving flutter problems that are difficult or
+impossible with traditional techniques.
+
+When I joined Boeing after graduation I showed some results to
+a senior flutter engineer who convinced me to let others
+try the program I developed for my thesis.
+It was an immediate success, largely due to its ability to
+perform parameter studies.
+During my 32 year career at Boeing I added numerous features,
+but some of the more important ones had to wait until I retired.
+
+In retirement I wrote a completely new implementation of the method in
+modern C++, designed around nonlinear flutter, extensible plugins,
+automatic differentiation, and parallel execution.
+This program, called \emph{Fina}, serves as the computational foundation
+for this book and is available as open-source software.
+To generate the example problems, I added a small beam modeling capability,
+which is ideal for demonstrating the solver's capabilities and providing
+reproducible test cases for the journal articles I have written.
+
+I have chosen to publish this book as open-access.
+My ultimate goal is simply to share this knowledge and improve the
+discipline of flutter analysis -- not to become fabulously wealthy.

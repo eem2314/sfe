@@ -1,0 +1,87 @@
+
+
+\subsection{Computing Describing Functions Numerically}
+\label{sect:computing-df}
+If it is not practical to derive an analytic expression for a
+describing function, it could be evaluated numerically by using
+a fast Fourier transform and taking the fundamental harmonic.
+Repeating this at several oscillation amplitudes (and possibly
+frequency), then interpolating the result.
+% An experimental framework for doing this requires the user to supply
+% 3 functions either as an input file named-section\index{named-section}
+% \Sectref{sect:input-file} or in a file. These functions are compiled
+% automatically at the beginning of a \Fina job, and run to create a set
+% of interpolation coefficients giving the describing function as a
+% function of specified generalized coordinate amplitudes. The user then
+% applies the describing function to a matrix by calling a \Fina function,
+% \Code{dfval}, either in a matrix-element equation or a custom evaluation
+% function.  More details are in \Sectref{sect:df-approx}.
+
+% \subsection{Creating a describing function}\label{sect:df-approx}
+\index{describing function!creating}
+% Analytical forms of many describing functions have been 
+% derived \cite{gelb1968multiple}; if an appropriate one is not
+% found, it may be possible to compute a numerical approximation
+% using \Eqn{eqn:df-defn}.
+An experimental framework for doing this requires the user to supply
+3 functions either as an input file named-section \Sectref{sect:input-file} or
+in a file. These functions are compiled automatically at the beginning
+of a \Fina job, and run to create a set of interpolation coefficients
+giving the describing function as a function of specified generalized
+coordinate amplitudes. The user then applies the describing function
+to a matrix by calling a \Fina function, \Code{dfval}, either in
+a matrix-element equation or a custom evaluation function. When called
+from an equation it has the form
+\begin{lstlisting}
+dfval(dfid, gcno, {parameter-values})
+\end{lstlisting}
+so for example if the input file has a section named \Code{mybilinear}
+containing the 3 functions needed to define a describing function which
+needs 2 parameter values, to use it to multiply the $10^{th}$ diagonal
+and give the 2 parameters the values $0.01$ and $3.5$:
+\begin{lstlisting}
+[10,10] *= dfval(mybilinear, 10, {0.01,3.5})
+\end{lstlisting}
+
+As with other builtin functions, when called from within a custom
+function an additional parameter is required, and the declaration looks
+like
+\begin{lstlisting}
+Real dfval(pset& ps, const string& dfid, int gcno,
+               const vector<double>& params);
+\end{lstlisting}
+
+The 3 functions needed to create a describing function
+must have the following signatures:
+% \vspace{0.5em}
+% \verb!vector<double> df_qs(const vector<double>& params)!
+% \vspace{-.5em}
+\begin{lstlisting}
+   vector<double> df_qs(const vector<double>& params)
+\end{lstlisting}
+\begin{quote}
+returns a vector with the oscillation amplitudes desired in the describing function
+\end{quote}
+% \verb!double df_fq(double y, const vector<double>& params)!
+% \vspace{-.5em}
+\begin{lstlisting}
+   double df_fq(double y, const vector<double>& params)
+\end{lstlisting}
+\begin{quote}
+returns the value of the ``force'' at displacement \Code{y},
+\end{quote}
+\begin{lstlisting}
+   Interp* df_interp(const string& iid,
+         const vector<double>& params,
+         const vector<double>& qs, const vector<double>& fs)
+\end{lstlisting}
+% \vspace{-1.5em}
+\begin{quote}
+returns a new Interp object containing the interpolants used to fit the
+describing function values \Code{fs}
+\end{quote}
+where \Code{params} are parameter values given as an argument to \Code{dfval}.
+
+Examples of this experimental technique for computing describing
+functions are in \Code{nl4.fp} \Sectref{ex:nl1234} and \Code{latent.fp}
+\Sectref{ex:latent}.
