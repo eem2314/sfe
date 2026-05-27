@@ -506,9 +506,9 @@ be written as
 		 	\hat{\Matrix{D}}\hat{\Vector{y}} = \Vector{0}
 \end{equation}
 
-This is a system of $n_e$ complex equations, homogeneous in $\Vector{\hat{y}}$,
-and nonlinear in one or more parameters. In spite of this, it is termed
-a \emph{linear} flutter equation if none of the matrices are
+This is a system of $n_e$\index{ne@$n_e$} complex equations, homogeneous
+in $\Vector{\hat{y}}$, and nonlinear in one or more parameters. In spite of
+this, it is termed a \emph{linear} flutter equation if none of the matrices are
 dependent on $\Vector{q}$.
 
 In addition to allowing for more matrix types than usual, solving as nonlinear
@@ -2278,7 +2278,7 @@ and $n_e$ is the size of the structural matrices.
 
 \Fina has 2 ways of providing matrix $\Matrix{T}$:
 \begin{itemize}
-	\item a custom \Cpp function written by the user,
+	\item a custom \Cpp function written by the user \Sectref{sect:custom-functions},
 	\item a linear, time-invariant (LTI) control system designed, for
 		example in \Simulink.
 \end{itemize}
@@ -2291,11 +2291,11 @@ block diagram in \Figref{fig:abcd-block}
 	\centering
 	\caption{Linear control system block diagram}\label{fig:abcd-block}
 \end{figure}
-and mathematically in time-domain state-space form
+and mathematically in frequency-domain state-space form
 (\cite{brogan1982modern} p. 367):
 \begin{align}
 \label{eqn:abcd}
-\dot{\Vector{v}} &= \Vector{Av} + \Vector{Bu_i} 	\nonumber \\
+s{\Vector{v}} &= \Vector{Av} + \Vector{Bu_i} 	\nonumber \\
 \Vector{u_o} &= \Vector{Cv} + \Vector{Du_i}
 \end{align}
 where the input and output, $\Vector{v}_i$ and $\Vector{v}_o$,
@@ -2319,77 +2319,83 @@ is shown schematically in \Figref{fig:lti-schematic}.
 \end{figure}
 \index{LTI control system!creating $\Matrix{T}$}
 
-The control-system input $\Vector{u_i}$ is related to the
-\Gc\ $\Vector{q}$ by
-\begin{equation}\label{eqn:abcd-uq}
-\Vector{u_i} = \Matrix{S\Phi}_i \Vector{q}
+Input to the control system, $\Vector{u_i}$, can come from an external signal,
+for instance an angle-of-attack sensor, or from structural displacements like
+control-surface motions.
+Input from an external signal leads to a forcing function on the right-hand
+side of the flutter equation, \Eqn{eqn:flut}, a dynamic response problem.
+Since the interest here is on the aeroelastic stability of the structure with
+a control system, only systems with input due to structural motion will be considered.
+Furthermore, restricting to linear flutter, the input is related to the
+eigenvector by an $(n_i,n_e)$ transformation
+\begin{equation}\label{eqn:abcd-ui}
+	\Vector{u_i} = \Matrix{\Phi}_i \Vector{y}
 \end{equation}
 \index{=Phi@$\Matrix{\Phi}_i$!LTI}
-where $\Matrix{\Phi}_i$ is an $(n_i,n_e)$ transformation matrix,
-usually consisting of rows of the modes matrix (the basis for
-the \Gc), and $\Matrix{S}$ is an $(n_i,n_i)$
-diagonal matrix whose elements are either 1, $s$ or $s^2$ depending
-on whether the corresponding element of $\Vector{u_i}$ is a displacement,
-velocity or acceleration.
+% where $\Matrix{\Phi}_i$ is an $(n_i,n_e)$ transformation matrix,
+% usually consisting of rows of the modes matrix (the basis for the \Gc).
+% and $\Matrix{S}$ is an $(n_i,n_i)$ diagonal matrix whose elements are either 1,
+% $s$ or $s^2$ depending on whether the corresponding element of $\Vector{u_i}$ is
+% a displacement, velocity or acceleration.
 
-Substituting \Eqn{eqn:abcd-uq} into \Eqn{eqn:abcd}
+Substituting \Eqn{eqn:abcd-ui} into \Eqn{eqn:abcd}
 \begin{equation*}
-s\Vector{v} = \Vector{Av} + \Matrix{BS\Phi}_i \Vector{q}
+s\Vector{v} = \Vector{Av} + \Matrix{B\Phi}_i \Vector{y}
 \end{equation*}
 or
-\begin{equation}\label{eqn:abcd5}
-\Matrix{BS\Phi}_i \Vector{q} + \left( \Matrix{A} - s\Matrix{I} \right) \Vector{v} = 0
+\begin{equation}\label{eqn:lti-T2}
+\Matrix{B\Phi}_i \Vector{y} + \left( \Matrix{A} - s\Matrix{I} \right) \Vector{v} = 0
 \end{equation}
-Assuming the output from the control system moves one or more generalized
+Assuming the output from the control system affects one or more generalized
 coordinates, that motion can be transformed into forces on structural
 nodes with an equation like
 \begin{equation}\label{eqn:lti-f}
-\Vector{f}_o = \Matrix{K}\Matrix{\Phi}_o\Vector{u}_o
+\Vector{f}_o = \Matrix{K}_o\Vector{u}_o
+		= \Matrix{K}_o\left(\Vector{Cv} + \Vector{Du}_i\right)
+		= \Matrix{K}_o\left(\Vector{Cv} + \Vector{D\Phi}_i\Vector{y}\right)
 \end{equation}
-where $\Matrix{\Phi}_o$ is an ($n_e, n_o$) transformation matrix.
+where $\Matrix{K}_o$ is an ($n_e, n_o$) transformation matrix.
 
-Substituting \Eqn{eqn:abcd} and \Eqn{eqn:abcd-uq} into \Eqn{eqn:lti-f}
-\begin{equation}\label{eqn:abcd-force}
-\Vector{f}_o = \Matrix{K\Phi}_o \left( \Vector{Cv} + \Matrix{D}\Vector{u}_i \right) = \Matrix{K\Phi}_o \left( \Vector{Cv} + \Matrix{DS\Phi}_i \Vector{q} \right)
+% Substituting \Eqn{eqn:abcd} and \Eqn{eqn:abcd-ui} into \Eqn{eqn:lti-f}
+% \begin{equation*}
+% \Vector{f}_o = \Matrix{K\Phi}_o \left( \Vector{Cv} + \Matrix{D}\Vector{u}_i \right) = \Matrix{K\Phi}_o \left( \Vector{Cv} + \Matrix{D\Phi}_i \Vector{y} \right)
+% \end{equation*}
+When added into the flutter equation, \Eqn{eqn:flut},
+\footnote{$\hat{\Matrix{D}}$ is the dynamic matrix, \Eqn{eqn:flut}, not to be
+confused with $\Matrix{D}$ in \Eqn{eqn:abcd}}
+\begin{equation}\label{eqn:lti-force}
+\hat{\Matrix{D}}\hat{\Vector{y}} + \Vector{f}_o = \left(\hat{\Matrix{D}} +
+		\Matrix{K}_o\Matrix{D\Phi}_i\right)\hat{\Vector{y}}
+		+ \Matrix{K}_o\Matrix{Cv} = 0
 \end{equation}
-and since\footnote{$\hat{\Matrix{D}}$ is the dynamic matrix, not to be confused with $\Matrix{D}$
-in \Eqn{eqn:abcd}} $\hat{\Matrix{D}}\hat{\Vector{y}} - \Vector{f}_o = 0$,
-\Eqn{eqn:abcd5} and \Eqn{eqn:abcd-force} can be assembled into a matrix:
+\Eqn{eqn:lti-T2} and \Eqn{eqn:lti-force} can be combined into:
 \begin{equation}\label{eqn:abcd-combtd}
-\left[ \begin{array}{cc}
-	\hat{\Matrix{D}} -\Matrix{K}\Matrix{\Phi}_o\Matrix{DS\Phi}_i
-	& -\Matrix{K}\Matrix{\Phi}_o\Matrix{C}   \\
-	\Matrix{BS\Phi}_i  &  \Matrix{A} - s\Matrix{I}
-\end{array} \right]
-\left\{ \begin{array}{c}
-\Vector{q} \\
-\Vector{v}
-\end{array} \right\} = \Vector{0}
+	\left[ \begin{array}{cc}
+		\hat{\Matrix{D}} & 0   \\
+			0  &  0
+	\end{array} \right] +
+	\left[ \begin{array}{cc}
+		\Matrix{K}_o\Matrix{D\Phi}_i
+		& \Matrix{K}_o\Matrix{C}   \\
+		\Matrix{B\Phi}_i  &  \Matrix{A} - s\Matrix{I}
+	\end{array} \right]
+	\left\{ \begin{array}{c}
+		\hat{\Vector{y}} \\
+		\Vector{v}
+	\end{array} \right\} = \Vector{0}
 \end{equation}
 
 The $\Matrix{T}$ matrix is therefore
 \begin{equation}
 \Matrix{T} = \left[ \begin{array}{cc}
-	-\Matrix{K\Phi}_o\Matrix{DS\Phi}_i & -\Matrix{K}\Matrix{\Phi}_o\Matrix{C} \\
-	\Matrix{BS\Phi}_i  &  \Matrix{A} - sI
+	\Matrix{K}_o\Matrix{D\Phi}_i & \Matrix{K}_o\Matrix{C} \\
+	\Matrix{B\Phi}_i  &  \Matrix{A} - sI
 \end{array} \right]
 \end{equation}
-To account for the additional $n_s$ \Gc\ ($\Vector{v}$)
-$\Vector{q}$ is replaced with
-\begin{equation}
-\Vector{q} \leftarrow \left\{ \begin{array}{c}
-\Vector{q} \\
-\Vector{v}
-\end{array} \right\}
-\end{equation}
-and $n_s$ rows and columns of zeros must be added to
-the rest of the matrices, for example
-\begin{equation}
-\Matrix{M} \leftarrow \left[ \begin{array}{cc}
-\Matrix{M} & \Matrix{0}       \\
-\Matrix{0} &  \Matrix{0}
-\end{array} \right]
-\end{equation}
+
+The eigenvector has an additional $n_s$ elements, the control system
+state vector $\Vector{v}$, and $n_s$ rows and columns of zeros must
+be added to the dynamic matrix.
 
 % =================================================================
 % Chapter Whirl Flutter
@@ -5231,7 +5237,7 @@ The file consists of blocks of data:
 	\item[$ni$ lines] (1 float per line) input time delays
 	\item[$no$ lines] (1 float per line) output time delays
 	\item[$ni$ lines] (1 float per line) exponents of s in the S matrix
-                (see \Eqn{eqn:abcd-uq}).
+                (see \Eqn{eqn:abcd-ui}).
    \item[$ns*ns$ lines] (1 float per line) elements of the A matrix by rows
 	\item[$ns*ni$ lines] (1 float per line) elements of the (ns,ni) B matrix by rows
    \item[$no*ns$ lines] (1 float per line) elements of the (no,ns) C matrix by rows
