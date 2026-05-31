@@ -29,6 +29,7 @@
 \let\US\SI
 \DeclareUSUnit\slug{slug}
 \DeclareUSUnit\ft{ft}
+\DeclareUSUnit\inch{in}
 \DeclareUSUnit\lb{lb}
 \DeclareUSUnit\lbf{lb_f}
 \DeclareUSUnit\knot{knot}
@@ -4216,7 +4217,7 @@ with the aerodynamic center (ac), elastic axis (ea), and center of gravity (cg).
 	\caption{Goland wing} \label{fig:goland-wing}
 \end{figure}
 
-The \Cmd{fem} command is used to model the
+The \Fina \Cmd{fem} command is used to model the
 Goland wing for some of the example problems. This has several advantages:
 \begin{itemize}
 	\item flutter analyses can be done in nodal, modal, BMA,
@@ -4229,40 +4230,40 @@ Goland wing for some of the example problems. This has several advantages:
 
 Some properties of the Goland wing from \cite{goland1945flutter} pg. A-202:
 \begin{description}
-\item[span] \US{20}{\ft} = \SI{6.096}{m}
-\item[chord] \US{6}{\ft} = \SI{1.829}{m}
+\item[span] \US{20}{\ft} = \US{240}{\inch} = \SI{6.096}{m}
+\item[chord] \US{6}{\ft} = \US{72}{\inch} = \SI{1.829}{m}
 \item[elastic axis] 33 percent chord from the leading edge, on the y axis, so
 	the leading edge is at
 	\newline
-	$x_{le}$ = -0.33 $\times$ \qty{6}{\ft} $\times$ \qty[per-mode=symbol]{0.3048}{\m\per\ft}
-	= \qty{-0.6035}{\m}.
+	$x_{le}$ = -0.33 $\times$ \qty{72}{\inch} = \qty{-23.76}{\inch} = \qty{-0.6035}{\m}.
 \item[mass] (m) = \qty[per-mode = symbol]{0.746}{\slug\per\ft}
 \item[total mass] = \qty[per-mode = symbol]{0.746}{\slug\per\ft}
-		$\times$ \qty{20}{\ft}
-		$\times$ \qty[per-mode = symbol]{14.594}{\kg\per\slug} = \qty{217.74}{\kg}
+		$\times$ \qty{20}{\ft} = \qty{14.92}{\slug} = \qty{217.74}{\kg}
 
-\item[center of gravity] at 43 percent chord from le, the ea (y axis) is at
-	33 percent, so the cg is at x = \US{0.6}{ft} = \SI{0.18288}{m}
+\item[center of gravity] is at 43 percent chord from le; the ea (y axis) is at
+	33 percent, so the cg is at x = \US{7.2}{\inch} = \SI{0.18288}{m}
 
 \item[moment of inertia] I = \qty[per-mode = symbol]{1.943}{\slug.\square\ft\per\ft}
 \item[total moment of inertia] = \qty[per-mode = symbol]{1.943}{\slug.\square\ft\per\ft}
 	$\times$ \qty{20}{\ft} = \qty[per-mode = symbol]{38.86}{\slug.\square\ft}
-	$\times$ \qty[per-mode = symbol]{14.594}{\kg\per\slug}
-	$\times$ \qty[per-mode = symbol]{0.0929}{\square\metre\per\square\ft}
+	% $\times$ \qty[per-mode = symbol]{14.594}{\kg\per\slug}
+	% $\times$ \qty[per-mode = symbol]{0.0929}{\square\metre\per\square\ft}
 	= \qty{52.68}{\kg\square\meter}
 
 \item[bending stiffness] EI/m = \US{31.7e+6}{\lb.\cubic\ft\per\slug}, so
 \item[EI] = \US{31.7e+6}{\lb.\cubic\ft\per\slug}
 		$\times$ \qty[per-mode = symbol]{0.746}{\slug\per\ft}
-		$\times$ \qty[per-mode = symbol]{0.41325}{\N.\square\m\per\lb.\square\ft}
-		\newline = \qty{9.773e+6}{\N.\square\m}
-
+		% $\times$ \qty[per-mode = symbol]{0.41325}{\N.\square\m\per\lb.\square\ft}
+		% \newline = \qty{9.773e+6}{\N.\square\m}
+		= \US{23.64e+6}{\lb.\square\ft}
 \item[torsional stiffness] GJ/I = \US{1.23e+6}{\lb.\ft\per\slug}, so
 \item[GJ] = \qty[per-mode = symbol]{1.23e+6}{\lb.\ft\per\slug}
 		$\times$ \qty[per-mode=symbol]{1.943}{\slug.\square\ft\per\ft}
-		$\times$ \qty[per-mode=symbol]{4.448}{\N\per\lb}
-		$\times$ \qty[per-mode=symbol]{0.0929}{\square\m\per\square\ft}
-	\newline = \SI{9.875e+5}{\N\square\m}
+		% $\times$ \qty[per-mode=symbol]{4.448}{\N\per\lb}
+		% $\times$ \qty[per-mode=symbol]{0.0929}{\square\m\per\square\ft}
+	% \newline = \SI{9.875e+5}{\N\square\m}
+		$\times$ \qty[per-mode=symbol]{144}{\square\inch\per\square\ft}
+		= \US{3.4414e+8}{\lb.\square\inch}
 
 \item[aerodynamic center (ac)] at 0.25 chord from the leading edge,
 	at x = 6 $\times$ (\qty{-0.33}{\ft} + \qty{0.25}{\ft})
