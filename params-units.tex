@@ -6,27 +6,28 @@
 % \begin{footnotesize}
 % \begin{small}
 \begin{tabular}{|c|l|l|l|l|} \hline
-Symbol			& \CCol{Description}				& \CCol{SI}			& \CCol{USCS}		& USCS output			\\ \hline
-$z$            & altitude ($m$)					& m					& $ft$				& $ft$					\\ \hline
-$\eta$         & amplitude of oscillation		&  -					& -					& -						\\ \hline
-$q_c$          & calibrated dynamic pressure	& $N/m^2$ ($Pa$)	& $lb_f/in^2$		& $lb_f/ft^2$			\\ \hline
-$\delta$			& pressure ratio					& -					& -					& -						\\ \hline
-$q$            & dynamic pressure				& $N/m^2$ ($Pa$)	& $lb_f/in^2$		& $lb_f/ft^2$			\\ \hline
-$\omega$       & frequency							& $rad/s$ \dag		& $rad/s$			& $Hz$					\\ \hline
-$g$            & growth factor					& -					& -					&							\\ \hline
-$M$            & Mach number						& -					& -					&							\\ \hline
-$\bar{\omega}$ & reduced frequency				& -					& -					&							\\ \hline
-$\rho$         & fluid density					& $kg/m^3$			& $lb_f s^2/in^4$	& $slug/ft^3$			\\ \hline
-$\bar{\sigma}$ & reduced stability factor		&  -					& -					&							\\ \hline
-$d$            & structural damping				&  -					& -					&							\\ \hline
-$\sigma$       & stability factor				& $rad/s$			& $rad/s$			& $Hz$					\\ \hline
-$P$            & static pressure					& $Pa$				& $lb_f/in^2$		& $lb_f/ft^2$			\\ \hline
-$P_t$          & total pressure					& $Pa$				& $lb_f/in^2$		& $lb_f/ft^2$			\\ \hline
-$V_c$          & calibrated airspeed			& $m/s$				& $in/s$				& $knots$				\\ \hline
-$V_e$          & equivalent airspeed 			& $m/s$				& $in/s$				& $knots$				\\ \hline
-$a$            & sonic velocity					& $m/s$				& $in/s$				& $knots$				\\ \hline
-$V$            & true airspeed					& $m/s$				& $in/s$				& $knots$				\\ \hline
-\multicolumn{5}{|l|}{\dag frequency is always converted to Hz for output}												\\ \hline
+Symbol			& \CCol{Description}					& \CCol{SI}			& \CCol{USCS}		& USCS output			\\ \hline
+$a$            & sonic velocity						& $m/s$				& $in/s$				& $knots$				\\ \hline
+$b$            & $\bar{\omega}$ reference length& m					& $ft$				& $ft$					\\ \hline
+$d$            & structural damping					&  -					& -					&							\\ \hline
+$\delta$			& pressure ratio						& -					& -					& -						\\ \hline
+$\eta$         & amplitude of oscillation			&  -					& -					& -						\\ \hline
+$g$            & growth factor						& -					& -					&							\\ \hline
+$M$            & Mach number							& -					& -					&							\\ \hline
+$\omega$       & frequency								& $rad/s$ \dag		& $rad/s$			& $Hz$					\\ \hline
+$\bar{\omega}$ & reduced frequency					& -					& -					&							\\ \hline
+$P$            & static pressure						& $Pa$				& $lb_f/in^2$		& $lb_f/ft^2$			\\ \hline
+$P_t$          & total pressure						& $Pa$				& $lb_f/in^2$		& $lb_f/ft^2$			\\ \hline
+$q_c$          & calibrated dynamic pressure		& $N/m^2$ ($Pa$)	& $lb_f/in^2$		& $lb_f/ft^2$			\\ \hline
+$q$            & dynamic pressure					& $N/m^2$ ($Pa$)	& $lb_f/in^2$		& $lb_f/ft^2$			\\ \hline
+$\rho$         & fluid density						& $kg/m^3$			& $lb_f s^2/in^4$	& $slug/ft^3$			\\ \hline
+$\bar{\sigma}$ & reduced stability factor			&  -					& -					&							\\ \hline
+$\sigma$       & stability factor					& $rad/s$			& $rad/s$			& $Hz$					\\ \hline
+$V_c$          & calibrated airspeed				& $m/s$				& $in/s$				& $knots$				\\ \hline
+$V_e$          & equivalent airspeed 				& $m/s$				& $in/s$				& $knots$				\\ \hline
+$V$            & true airspeed						& $m/s$				& $in/s$				& $knots$				\\ \hline
+$z$            & altitude ($m$)						& m					& $ft$				& $ft$					\\ \hline
+\multicolumn{5}{|l|}{\dag by default, frequency is converted to Hz for output}												\\ \hline
 \end{tabular}
 % \end{scriptsize}
 % \end{footnotesize}
@@ -36,6 +37,7 @@ $V$            & true airspeed					& $m/s$				& $in/s$				& $knots$				\\ \hline
 % to force them to appear first.
 \index{parameters!builtin}
 \index{builtin!parameters}
+\index{=b@$b$ (reference length)}\index{reference length}
 \index{=z@$z$ (altitude)}\index{altitude}
 \index{=qc@$q_c$ (calibrated dynamic pressure)}\index{calibrated dynamic pressure}\index{pressure!calibrated dynamic}
 \index{=q@$q$ (dynamic pressure)}\index{dynamic pressure}\index{pressure!dynamic}

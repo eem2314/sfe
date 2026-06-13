@@ -5,29 +5,30 @@
 % \begin{footnotesize}
 % \begin{small}
 \begin{tabular}{|c|l|l|} \hline
-Symbol			& \CCol{Description}					& \CCol{Equations}		\\ \hline \hline
-$z$            & altitude ($m$)						& $z(\rho)$\dag						\\ \hline
-$\eta$         & amplitude of oscillation			&  \ddag									\\ \hline
-$q_c$          & calibrated dynamic pressure		& $P(1 + 0.2M^2)^{3.5} - 1$		\\ \hline
+Symbol			& \CCol{Description}					& \CCol{Equations}			\\ \hline \hline
+$a$            & sonic velocity						& $a(z)$\dag							\\ \hline
+$b$            & $\bar{\omega}$ reference length& \ddag									\\ \hline
+$d$            & structural damping					& \ddag									\\ \hline
 $\delta$			& pressure ratio						& $P(z)/P(0)$							\\ \hline
-$q$            & dynamic pressure					& $\rho V^2/2 = \rho(0) V_e^2/2$	\\ \hline
-$\omega$       & frequency								& $2\bar{\omega} V/c$				\\ \hline
+$\eta$         & amplitude of oscillation			&  \ddag									\\ \hline
 $g$            & growth factor						& $2\sigma/\omega$          		\\ \hline
 $M$            & Mach number							& $V/a $									\\ \hline
-$\bar{\omega}$ & reduced frequency					& $\omega c/2V$						\\ \hline
+$\omega$       & frequency								& $\bar{\omega} V/b$				\\ \hline
+$\bar{\omega}$ & reduced frequency					& $\omega b/V$						\\ \hline
+$P$            & static pressure 					& $P(z)$\dag							\\ \hline
+$P_t$          & total pressure 						& $P + q$								\\ \hline
+$q$            & dynamic pressure					& $\rho V^2/2 = \rho(0) V_e^2/2$	\\ \hline
+$q_c$          & calibrated dynamic pressure		& $P(1 + 0.2M^2)^{3.5} - 1$		\\ \hline
 $\rho$         & fluid density						& $\rho(z)$\dag						\\ \hline
-$\bar{\sigma}$ & reduced stability factor			&  $\sigma c/2V$						\\ \hline
-$d$            & structural damping					& \ddag									\\ \hline
+$\bar{\sigma}$ & reduced stability factor			&  $\sigma b/V$						\\ \hline
 $\sigma$       & stability factor					& \ddag									\\ \hline
-$P$            & static pressure ($Pa$)			& $P(z)$\dag							\\ \hline
-$P_t$          & total pressure ($Pa$)				& $P + q$								\\ \hline
 $V_c$          & calibrated airspeed				& $V_e[1+\frac{1}{8}(1-\delta)M^2+
 										\frac{3}{640}(1-10\delta^2+9\delta^2)M^4]$			\\ \hline
 $V_e$          & equivalent airspeed 				& $V \sqrt{ \rho(z)/\rho(0)}
 																	= \sqrt{2q/\rho(0)}$				\\ \hline
-$a$            & sonic velocity						& $a(z)$\dag							\\ \hline
-$V$            & true airspeed ($m/s$)				& $Ma(z) = \omega c/2\bar{\omega}
+$V$            & true airspeed 						& $Ma(z) = \omega b/\bar{\omega}
 										= \sqrt{2q/\rho(z)} = V_e\sqrt{\rho(0)/\rho(z)}$	\\ \hline
+$z$            & altitude 								& $z(\rho)$\dag						\\ \hline
 \multicolumn{3}{|l|}{\dag \hspace{2mm}table lookup in std atmosphere tables}		\\
 \multicolumn{3}{|l|}{\ddag \hspace{2mm}always either constant or independent}		\\ \hline
 \end{tabular}
@@ -39,24 +40,25 @@ $V$            & true airspeed ($m/s$)				& $Ma(z) = \omega c/2\bar{\omega}
 % to force them to appear first.
 \index{parameters!builtin}
 \index{builtin!parameters}
-\index{=z@$z$ (altitude)}\index{altitude}
-\index{=qc@$q_c$ (calibrated dynamic pressure)}\index{calibrated dynamic pressure}\index{pressure!calibrated dynamic}
-\index{=q@$q$ (dynamic pressure)}\index{dynamic pressure}\index{pressure!dynamic}
-\index{=omega@$\omega$ (frequency)}\index{frequency}
+\index{=a@$a$ (sonic velocity)}\index{sonic velocity}
+\index{=b@$b$ (reference length)}\index{reference length}
+\index{=d@$d$ (structural damping)}\index{structural damping}
 \index{=eta@$\eta$ (\Gc\ norm)}\index{generalized coordinates!norm}
 \index{=g@$g$ (growth factor)}\index{growth factor}
 \index{=m@$M$ (Mach number)}\index{Mach number}
 \index{=omega@$\bar{\omega}$ (reduced frequency)}\index{reduced frequency}
+\index{=omega@$\omega$ (frequency)}\index{frequency}
+\index{=ps@$P$ (static pressure)}\index{static pressure}\index{pressure!static}
+\index{=p0@$P_{0}$ (ref. static pressure)}\index{reference static pressure}
+\index{=qc@$q_c$ (calibrated dynamic pressure)}\index{calibrated dynamic pressure}\index{pressure!calibrated dynamic}
+\index{=q@$q$ (dynamic pressure)}\index{dynamic pressure}\index{pressure!dynamic}
 \index{=rho@$\rho $ (density)}\index{fluid density}\index{density}
 \index{=rho0@$\rho_{0}$ (ref. density)}\index{reference density}\index{density!reference}
 \index{=sigma@$\Rsf$ reduced stability factor}
-\index{=d@$d$ (structural damping)}\index{structural damping}
 \index{=sigma@$\sigma$ stability factor}
-\index{=ps@$P$ (static pressure)}\index{static pressure}\index{pressure!static}
-\index{=p0@$P_{0}$ (ref. static pressure)}\index{reference static pressure}
 \index{=vc@$V_{c}$ (calib. airspeed)}\index{calibrated airspeed}\index{airspeed!calibrated}
 \index{=ve@$V_{e}$ (equiv. airspeed)}\index{equivalent airspeed}\index{airspeed!equivalent}
-\index{=a@$a$ (sonic velocity)}\index{sonic velocity}
 \index{=vt@$V_{t}$ (true airspeed)}\index{true airspeed}\index{airspeed!true}
+\index{=z@$z$ (altitude)}\index{altitude}
 \end{table}
 

@@ -22,6 +22,7 @@ all-am:
 SRC = \
 sfe.tex \
 params-eqns.tex \
+params-names.tex \
 params-units.tex \
 preface.tex
 
