@@ -602,12 +602,12 @@ $\Vector{h}^i$ & & $i\text{th}$ corrector step (\Eqn{eqn:h}) \\
 $\Matrix{J}$ & & Jacobian matrix of partial derivatives (\Eqn{eqn:jacobian}) \\
 $\Matrix{Q}$, $\Matrix{R}$ & & QR factors of the transposed Jacobian (\Eqn{eqn:qr}) \\
 $\mathbb{R}^n$, $\mathbb{R}^{m \times n}$ & & the real $n$-vectors and $m$ by $n$ matrices \\
-$\Vector{t}$ & & tangent vector (\Eqn{eqn:Jt}) \\
+$\Vector{t}$ & & tangent m-vector (\Eqn{eqn:Jt}) \\
 $\|\Vector{x}\|_2$ & & 2-norm of vector $\Vector{x} =
    \sqrt{\Vector{x}^T\Vector{x}}$ \index{2-norm!real}\\
 $\|\Vector{x}\|_\infty$ & & maximum-norm of vector $\Vector{x} = {\displaystyle \max_{i=1,\ldots n} |x_i|}$ \\
 $\Vector{w}$ & & projection vector (\Eqn{eqn:project}) \\
-$\Vector{x}$ & & independent variables \\
+$\Vector{x}$ & & m independent variables \\
 $\Vector{x}_j^i$ & & $i\text{th}$ corrector iteration at the $j\text{th}$
    continuation step (\Eqn{eqn:predictor}) \\
 $x_i$ & & $i\text{th}$ element of vector $\Vector{x}$ \\
@@ -631,17 +631,17 @@ known as continuation methods put them on a more solid theoretical footing
 Modern numerical continuation is a class of techniques for solving
 underdetermined systems of nonlinear equations:
 \begin{align}\label{eqn:fx}
-\Vector{f}(\Vector{x}) = \Vector{0} & \in \mathbb{R}^{m} \nonumber \\
-\Vector{x} & \in \mathbb{R}^{n}
+\Vector{f}(\Vector{x}) = \Vector{0} & \in \mathbb{R}^{n} \nonumber \\
+\Vector{x} & \in \mathbb{R}^{m}
 \end{align}
-where the number of equations $m$
-is fewer than the number of independent variables $n$.
+where the number of equations $n$
+is fewer than the number of independent variables $m$.
 Because there are fewer equations than unknowns, there are an infinite
 number of solutions.
-Depending on the difference $n-m$, the solution space consists of
-curves ($n-m = 1$), surfaces ($n-m = 2$), volumes ($n-m = 3$), and so on
+Depending on the difference $m-n$, the solution space consists of
+curves ($m-n = 1$), surfaces ($m-n = 2$), volumes ($m-n = 3$), and so on
 \footnote{throughout this book, only curves are considered; with the
-exception of \Sectref{sect:optim}, $n = m+1$}.
+exception of \Sectref{sect:optim}, $m = n+1$}.
 
 Most continuation methods use a predictor-corrector approach,
 reminiscent of ordinary differential equation solvers.
@@ -673,7 +673,7 @@ programming of the method.
 
 As with all continuation methods, tracing a curve starts from a known solution
 $\Vector{x}_0$, computing points on the curve $\Vector{x}_1$, $\Vector{x}_2$, 
-$\Vector{x}_3$,  ...  $\Vector{x}_n$.
+$\Vector{x}_3$,  ...  .
 At a converged solution $\Vector{x}_j$, the process for computing the
 next point is shown in \Figref{fig:pac}.
 \begin{figure}[ht] 	% complains if h
@@ -711,7 +711,7 @@ Mathematically the next point is found by a 2-step process:
 
 \subsection{The Jacobian}
 The most important term in the method is the \emph{Jacobian} matrix
-$\Matrix{J}$, an $(m,n)$ matrix of derivatives of $\Vector{f}$ with
+$\Matrix{J}$, an $(n,m)$ matrix of derivatives of $\Vector{f}$ with
 respect to $\Vector{x}$:
 \begin{equation}\label{eqn:jacobian}
 	\Matrix{J} = \Vector{f}'(\Vector{x}) =
@@ -802,9 +802,11 @@ QR factorization of the transpose of $\Vector{J}$:
 		\Matrix{0} \\
 	\end{array}\right] = \Matrix{Q}_1 \Matrix{R}_1
 \end{equation}
-where $\Matrix{Q}$ is an $(n,n)$ orthogonal matrix, and $\Matrix{R}_1$
-is an $(m,m)$ upper-triangular matrix. Because we are only considering
-curves, $n = m+1$, and $\Vector{Q}_2$ is a vector.
+where $\Matrix{Q}$ is an $(m,m)$ orthogonal matrix, and $\Matrix{R}_1$
+is an $(n,n)$ upper-triangular matrix. Because we are only considering
+curves, $m = n+1$, and $\Vector{Q}_2$ is an m-vector, in fact it is the
+null vector of the Jacobian $\left(\Matrix{J} \Vector{Q}_2 = \Vector{0}\right)$,
+useful for computing the tangent.
 
 Substituting \Eqn{eqn:qr} into \Eqn{eqn:corrector} yields the
 minimum-norm solution $\Vector{h}^i$:
@@ -902,13 +904,13 @@ are inexpensive and easily implemented \Sectref{sect:bifurcation}.
 \section{Homotopy}\label{sect:homotopy}
 \index{numerical continuation!homotopy}\index{homotopy}
 One of the earliest applications of numerical continuation was solving a system
-of $m$ nonlinear equations in $m$ unknowns
+of $n$ nonlinear equations in $n$ unknowns
 $\Vector{f}(\Vector{x})=\Vector{0}$ using a
 technique known as a \Newterm{homotopy},
 where an initial guess ($\Vector{x}_0$) to a solution is continuously
 deformed to an actual solution by adding a variable and converting the
 problem to numerical continuation.
-Homotopy proceeds by creating a function of $m$ equations in $m+1$
+Homotopy proceeds by creating a function of $n$ equations in $n+1$
 unknowns
 $\Vector{g}(\Vector{y})$
 from 
@@ -917,7 +919,7 @@ $\Vector{f}$ and the additional variable $h$:
 \Vector{y} = \left\{\begin{array}{c}
 	\Vector{x} \\
 	h \\
-\end{array} \right\} \;\; \in \mathbb{R}^{m+1} \nonumber
+\end{array} \right\} \;\; \in \mathbb{R}^{n+1} \nonumber
 \end{equation}
 The function $\Vector{g}$ is defined so that when $h = 0$
 $\Vector{x}_0$
@@ -951,17 +953,17 @@ if it passes a target $\hat{p}$ for some parameter $p$, reduce the stepsize
 ($\Step$) to give the desired value:
 \begin{align}
 \hat{p} & = p + \Step \frac{dp}{d\tau}
-	= p + \Step\sum_{j=1}^n \frac{\partial p}{\partial x_j}\frac{dx_j}{d\tau} \nonumber \\
+	= p + \Step\sum_{j=1}^m \frac{\partial p}{\partial x_j}\frac{dx_j}{d\tau} \nonumber \\
 	& = p + \Step \Vector{c} \Vector{t}  \nonumber \\
 \Step & = \frac{\hat{p} - p}{\Vector{c}\Vector{t}} \nonumber \\
 \Vector{c} & = \left[ \frac{\partial p}{\partial x_j} \right] 
-\in \mathbb{R}^{1 \times n}
+\in \mathbb{R}^{1 \times m}
 \end{align}
 and add an equation to constrain the corrector to converge ``exactly''
 to $\hat{p}$:
 \begin{align}
-f_{m+1} & = p - \hat{p} = 0  \nonumber \\
-\frac{\partial f_{m+1}}{\partial x_j} & = \Matrix{J}_{m+1:} = \frac{\partial p}{\partial x_j}
+f_{n+1} & = p - \hat{p} = 0  \nonumber \\
+\frac{\partial f_{n+1}}{\partial x_j} & = \Matrix{J}_{n+1:} = \frac{\partial p}{\partial x_j}
 	= \Vector{c}
 \end{align}
 If the parameter $p$ is a component of $\Vector{x}$, $\Vector{c}$ is all zeros
@@ -981,7 +983,7 @@ the tangent is a hyper-surface and we want choose the direction on it
 which increases (or decreases) one particular independent variable most
 rapidly. This is done by projecting a special vector onto the hypersurface:
 \begin{equation} \label{eqn:project}
-\bar{\Vector{t}} = \Matrix{Q}_2\Matrix{Q}_2^t\,\Vector{w} \;\; \in \mathbb{R}^n
+\bar{\Vector{t}} = \Matrix{Q}_2\Matrix{Q}_2^t\,\Vector{w} \;\; \in \mathbb{R}^m
 \end{equation}
 where $\Vector{w}$ is all zeros but plus or minus 1 in the spot for
 the variable to be optimized.
@@ -1062,9 +1064,9 @@ Premultiplying the augmented Jacobian by $\Matrix{Q}^t$
 		\left[ \Matrix{R} \;\; \Matrix{Q}^t \Vector{t} \right] =
 		\tilde{\Matrix{R}}
 \end{align*}
-Assuming we are tracing curves and the (m,n) Jacobian has one more
+Assuming we are tracing curves and the (n,m) Jacobian has one more
 column than rows, the transposed Jacobian has a QR factorization
-with an (n,m) R with the form
+with an (m,n) R with the form
 \begin{align*}
 	\Vector{R}: \left[ \begin{array}{ccc}
 		X & X & X \\
@@ -1074,7 +1076,7 @@ with an (n,m) R with the form
 		\end{array} \right]
 \end{align*}
 and appending the tangent to the last column results in a square
-(n,n) upper-triangular matrix $\tilde{\Matrix{R}}$
+(m,m) upper-triangular matrix $\tilde{\Matrix{R}}$
 \begin{align*}
 	\tilde{\Matrix{R}} =\left[\Vector{R} \;\; \Matrix{Q}^t\Vector{t} \right]:
 		\left[ \begin{array}{cccc}
@@ -1089,7 +1091,7 @@ so the determinant of the augmented Jacobian is
 	\det \left[ \Matrix{J}^T \;\; \Vector{t} \right] =
 		\det\left( \Matrix{Q}\tilde{\Matrix{R}} \right) =
 		\det\left( \Matrix{Q} \right) \det\left(\tilde{\Matrix{R}} \right) =
-		(-1)^k \prod_{i=1}^n \tilde{R_{ii}}
+		(-1)^k \prod_{i=1}^m \tilde{R_{ii}}
 \end{align*}
 where $k$ is the number of Householder reflections
 \footnote{In LAPACK routine DGEQRF the number of reflections is the
@@ -1159,45 +1161,45 @@ A singular value decomposition (SVD) (\cite{golub2013matrix} \S 2.4)
 of the Jacobian at $\Vector{x}_b$,
 \begin{equation}
 \Matrix{J} = \Matrix{U}\Matrix{\Sigma}\Matrix{V}^T, \hspace{0.2in} 
-	\Matrix{U} \in \mathbb{R}^{m \times m}, \;\;\;
-	\Matrix{V} \in \mathbb{R}^{m+1 \times m+1}		\nonumber
+	\Matrix{U} \in \mathbb{R}^{n \times n}, \;\;\;
+	\Matrix{V} \in \mathbb{R}^{n+1 \times n+1}		\nonumber
 \end{equation}
 reveals the rank and is necessary for branching from the bifurcation.
 $\Matrix{U}$ and $\Matrix{V}$ are the left and right orthogonal singular
 vectors, respectively, and
-$\Matrix{\Sigma} = \Diag (\sigma_1, \dots \sigma_m) \in \mathbb{R}^{m \times m+1}$
+$\Matrix{\Sigma} = \Diag (\sigma_1, \dots \sigma_m) \in \mathbb{R}^{n \times n+1}$
 is a diagonal matrix with the singular values on the first $m$ diagonals
 with $\sigma_{i+1} \le \sigma_i$,
 and the last ($m+1$) column zero.
 At regular points on the curve
-the rank of $\Matrix{J}$ is $m$ and all singular values
+the rank of $\Matrix{J}$ is $n$ and all singular values
 are positive.
 With one rank deficiency the last singular value is zero.
-In practice the smallest singular value $\sigma_m$ will not be exactly zero
+In practice the smallest singular value $\sigma_n$ will not be exactly zero
 because the bifurcation point is only an approximation, but it
 should be small relative to the largest:
 \begin{equation*}
-\sigma_m \leq \epsilon_r \sigma_1
+\sigma_n \leq \epsilon_r \sigma_1
 \end{equation*}
 for some small $\epsilon_r$, for example $\sqrt{\epsilon_m}$
 where $\epsilon_m$ is the machine precision or machine epsilon
 (\cite{golub2013matrix}, \S 2.7).
 
 \subsection{Branching from Bifurcations}
-At a regular point on the curve the last column of $\Matrix{V}$, $\Vector{v}_{m+1}$,
+At a regular point on the curve the last column of $\Matrix{V}$, $\Vector{v}_{n+1}$,
 is a Jacobian null vector,
 and (within a sign) is the tangent vector.
-At a bifurcation point the last column of $\Matrix{U}$ ($\Vector{u}_m$),
+At a bifurcation point the last column of $\Matrix{U}$ ($\Vector{u}_n$),
 and the last two columns of $\Matrix{V}$ are left and right null vectors, respectively:
 \begin{align}
-\Vector{u}_m^T\Matrix{J} &= \Vector{0} \nonumber \\
-\Matrix{J}\Vector{v}_m &= \Matrix{J} \Vector{v}_{m+1} = \Vector{0},
+\Vector{u}_n^T\Matrix{J} &= \Vector{0} \nonumber \\
+\Matrix{J}\Vector{v}_n &= \Matrix{J} \Vector{v}_{n+1} = \Vector{0},
 \end{align}
 and there are two tangents,
 combinations of the right null vectors:
 \begin{equation}
 \label{eqn:tanb}
-\Vector{t}_k = \alpha_k \Vector{v}_m + \beta_k \Vector{v}_{m+1}, \hspace{0.2in} k=1,2.
+\Vector{t}_k = \alpha_k \Vector{v}_n + \beta_k \Vector{v}_{n+1}, \hspace{0.2in} k=1,2.
 \end{equation}
 The task is to find the scalars $(\alpha_k,\; \beta_k,\, k=1,2)$.
 
@@ -1217,13 +1219,13 @@ Multiplying
 by the left null vector eliminates the second term,
 resulting in a scalar equation both tangents must satisfy
 \begin{equation}
-\Vector{u}_m^T\Vector{f}''\dot{\Vector{x}}\dot{\Vector{x}} =
-	\Vector{u}_m^T\Vector{f}''\Vector{t}\Vector{t} = 0.
+\Vector{u}_n^T\Vector{f}''\dot{\Vector{x}}\dot{\Vector{x}} =
+	\Vector{u}_n^T\Vector{f}''\Vector{t}\Vector{t} = 0.
 \end{equation}
 Substituting \Eqn{eqn:tanb}
 \begin{align}
-\Vector{u}_m^T\Vector{f}'' (\alpha_k\Vector{v}_m &+ \beta_k\Vector{v}_{m+1}) (\alpha_k\Vector{v}_m + \beta_k\Vector{v}_{m+1}) = \nonumber \\
- &     \Vector{u}_m^T\Vector{f}''\Vector{v}_m\Vector{v}_m \alpha_k^2 + 2\Vector{u}_m^T\Vector{f}''\Vector{v}_m\Vector{v}_{m+1}\alpha_k\beta_k + \Vector{u}_m^T\Vector{f}''\Vector{v}_{m+1}\Vector{v}_{m+1}\beta_k^2 \nonumber \\
+\Vector{u}_n^T\Vector{f}'' (\alpha_k\Vector{v}_n &+ \beta_k\Vector{v}_{n+1}) (\alpha_k\Vector{v}_n + \beta_k\Vector{v}_{n+1}) = \nonumber \\
+ &     \Vector{u}_n^T\Vector{f}''\Vector{v}_n\Vector{v}_n \alpha_k^2 + 2\Vector{u}_n^T\Vector{f}''\Vector{v}_n\Vector{v}_{n+1}\alpha_k\beta_k + \Vector{u}_n^T\Vector{f}''\Vector{v}_{n+1}\Vector{v}_{n+1}\beta_k^2 \nonumber \\
     &= a_{11} \alpha_k^2 + 2a_{12}\alpha_k\beta_k + a_{22}\beta_k^2 = 0.
 \end{align}
 Solving for $\alpha_k$ in terms of $\beta_k$ if $a_{11} \ne 0$,
@@ -1246,9 +1248,9 @@ necessary.
 Tangent vectors must have unit length, and the singular vectors are
 orthonormal, leading to
 \begin{align*}
-\Vector{t}_k^T\Vector{t}_k &= \alpha_k^2\Vector{v}_m^T\Vector{v}_m
-	+ 2\alpha_k\beta_k\Vector{v}_m^T\Vector{v}_{m+1}
-	+ \beta_k^2\Vector{v}_{m+1}^T\Vector{v}_{m+1} \nonumber \\
+\Vector{t}_k^T\Vector{t}_k &= \alpha_k^2\Vector{v}_n^T\Vector{v}_n
+	+ 2\alpha_k\beta_k\Vector{v}_n^T\Vector{v}_{n+1}
+	+ \beta_k^2\Vector{v}_{n+1}^T\Vector{v}_{n+1} \nonumber \\
   &= \alpha_k^2 + \beta_k^2 = 1.
 \end{align*}
 Substituting \Eqn{eqn:alpha}
@@ -1258,17 +1260,17 @@ Substituting \Eqn{eqn:alpha}
 \end{align*}
 It remains to compute the scalars
 \begin{align*}
- a_{11} &= \Vector{u}_m^T\Vector{f}''\Vector{v}_m\Vector{v}_m, \nonumber \\
- a_{12} &= \Vector{u}_m^T\Vector{f}''\Vector{v}_m\Vector{v}_{m+1}, \nonumber \\
- a_{22} &= \Vector{u}_m^T\Vector{f}''\Vector{v}_{m+1}\Vector{v}_{m+1},
+ a_{11} &= \Vector{u}_n^T\Vector{f}''\Vector{v}_n\Vector{v}_n, \nonumber \\
+ a_{12} &= \Vector{u}_n^T\Vector{f}''\Vector{v}_n\Vector{v}_{n+1}, \nonumber \\
+ a_{22} &= \Vector{u}_n^T\Vector{f}''\Vector{v}_{n+1}\Vector{v}_{n+1},
 \end{align*}
 containing
 second derivatives of $\Vector{f}(\Vector{x})$ which may not be
 readily available and must be approximated numerically.
 To this end let
 \begin{equation*}
-g(\xi_1,\xi_2) = \Vector{u}_m^T\Vector{f}(\Vector{x}_b
-	+ \xi_1 \Vector{v}_m + \xi_2 \Vector{v}_{m+1}).
+g(\xi_1,\xi_2) = \Vector{u}_n^T\Vector{f}(\Vector{x}_b
+	+ \xi_1 \Vector{v}_n + \xi_2 \Vector{v}_{n+1}).
 \end{equation*}
 Second order central difference approximations of the second
 derivatives with respect to arclength $\tau$ in the directions
