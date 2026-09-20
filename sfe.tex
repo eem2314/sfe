@@ -247,14 +247,14 @@ While established, this approach presents several limitations:
 	\item {\bf Equation Manipulation:} Requires approximation and manipulation of the original
 	   equations to fit the eigenvalue framework, obscuring their original form.
 \end{itemize}
-In contrast, treating the flutter equations as a system of nonlinear equations and
-tracing the evolution of each mode in a continuous fashion with numerical
-continuation avoids these drawbacks:
+In contrast, treating the flutter equations as a system of nonlinear
+equations and tracing the evolution of each mode in a continuous fashion
+with numerical continuation avoids these drawbacks:
 \begin{itemize}
 	\item {\bf Unified Parameter Treatment:} All parameters---including
 		generalized coordinates
-	    and user-defined parameters---are treated equally. Consequently, every \Fina
-		 analysis is inherently a parameter variation study.
+	    and user-defined parameters---are treated equally. Consequently,
+		 every analysis is inherently a parameter variation study.
 	\item {\bf Broad Range of Formulations:} including nonlinearities,
 		control systems, Laplace-domain aerodynamics, parametrized matrices,
 		and gyroscopics.
@@ -720,7 +720,9 @@ respect to $\Vector{x}$:
 \end{equation}
 The Jacobian is important because errors in computing it can make the
 continuation process fail or take excessive computer time;
-it is also used to predict the next solution in the tracking process.
+and because it produces the tangent vector which is used to
+predict the next solution in the tracking process, errors may cause
+poor predictions or even mode switching.\index{mode switching}
 The burden of computing these derivatives is made much easier by the use of
 \emph{automatic differentiation}\index{automatic differentiation!in numerical continuation},
 as detailed in \Chapref{chap:AD}.
@@ -771,7 +773,7 @@ The null vector must be normalized to 1 and the sign adjusted so that
 $\Vector{t}_{j-1}^T \Vector{t}_j > 0$, that is, so that it points in roughly the
 same direction as the previous step.
 
-\subsection{The Predictor}
+\subsection{The Predictor}\label{sect:predictor}
 The stepsize $\Step$ must be chosen carefully. Too large a step,
 and the corrector may not converge or may converge to the wrong root;
 too small a step means extra work. Den Heijer and Rheinboldt
@@ -784,7 +786,7 @@ in \cite{rheinboldt1986numerical}, with FORTRAN source code in \cite{pcon61},
 and translated into \Cpp in \Fina.
 \index{numerical continuation!stepsize}
 
-\subsection{The Corrector}
+\subsection{The Corrector}\label{sect:corrector}
 Because the Jacobian has more columns than rows the system of
 linear equations in the corrector step \Eqn{eqn:corrector} is
 an \emph{underdetermined} set of linear equations with an infinity
@@ -802,7 +804,7 @@ QR factorization of the transpose of $\Vector{J}$:
 \end{equation}
 where $\Matrix{Q}$ is an $(n,n)$ orthogonal matrix, and $\Matrix{R}_1$
 is an $(m,m)$ upper-triangular matrix. Because we are only considering
-curves, $n = m+1$, $\Vector{Q}_2$ is a vector.
+curves, $n = m+1$, and $\Vector{Q}_2$ is a vector.
 
 Substituting \Eqn{eqn:qr} into \Eqn{eqn:corrector} yields the
 minimum-norm solution $\Vector{h}^i$:
@@ -867,27 +869,35 @@ conditions are met:
 \section{Issues}\label{sect:issues}\index{numerical continuation!issues}
 Several things can go wrong in a continuation procedure, including
 \begin{itemize}
-	\item nonconvergence of the corrector: retry the step with a smaller stepsize.
-		If this does not cure the problem the Jacobian should be checked by finite
-		differencing.
+	\item nonconvergence of the corrector: retry the step with a smaller
+		stepsize; if this does not cure the problem the Jacobian should
+		be checked by finite differencing.
 	\item large angle between consecutive tangents. This may indicate
-		a discontinuity in the curve, mode switching, a bifurcation,
+		a slope discontinuity in the curve, mode switching, a bifurcation,
 		or just a sharp change in the curve; retry the step with a smaller
 		stepsize, monitoring the angle and the distance along the curve.
+		\index{mode switching!detecting}
 		When the distance exceeds the original stepsize there are 3 possibilities:
 		\begin{enumerate}
 			\item reducing the stepsize reduced the angle substantially so there
-				is not a discontinuity or mode switching,
+				is not a slope discontinuity or mode switching,
 			\item the angle has not reduced substantially so there appears to
-				be a discontinuity between two of the steps taken while monitoring,
+				be a slope discontinuity between two of the steps taken
+				while monitoring,
 			\item there is a bifurcation between two of the steps; the procedure
 				outlined in \Sectref{sect:bifurcation} shows how to branch from
 				the bifurcation point.
 		\end{enumerate}
+	\item a change in the sign of the determinant of the Jacobian matrix
+			augmented with the tangent vector (\Sectref{sect:bifurcation}),
+			indicating mode switching or (rarely) bifurcation.
 	\item a singular Jacobian indicates a bifurcation; very rare and
-		a bifurcation is more likely to be discovered using the
-		technique in \Sectref{sect:bifurcation}.
+		a bifurcation is more likely to be discovered with a change in
+		the sign of the determinant.
 \end{itemize}
+Mode switching can be very serious if undetected. Fortunately both checking
+the angle between subsequent tangents and the sign of the determinants
+are inexpensive and easily implemented \Sectref{sect:bifurcation}.
 
 \section{Homotopy}\label{sect:homotopy}
 \index{numerical continuation!homotopy}\index{homotopy}
@@ -990,89 +1000,133 @@ parameters that were included.
 Another practical application of this technique is in searching for
 start points for contours \Sectref{sect:contour-app}.
 
-\section{Bifurcation}\label{sect:bifurcation}
+\section{Mode Switching and Bifurcation}\label{sect:bifurcation}
 \index{bifurcation}
-Bifurcation, where a curve splits in two, is usually associated
-with nonlinear equations. Because so-called linear flutter equations
-are nonlinear in some parameters such as frequency and velocity
-(just not \Gc),
-it is possible to encounter bifurcation even with linear flutter
-equations \cite{meyer2015continuation}.
-Unfortunately, it is not always obvious when a bifurcation
-has been passed and only one of the branches is traced, possibly
-missing an important branch.
-Alhough bifurcation is rare, the consequences of missing one can be
-serious, so monitoring for bifurcation is done by default in \Cmd{flut}.
-Fortunately, detecting bifurcation and tracing both branches is
-inexpensive with this continuation method
-\index{numerical continuation!bifurcation}
+When tracing a curve with numerical continuation it is possible
+for the tracing to jump to another curve, especially when
+2 curves come close to one another and the algorithm takes too large
+a step for the local curvature.
+This so-called \emph{mode switching} can also be an indication that a
+bifurcation has been passed, where two curves become equal within
+the limits of floating-point computation.
+Regardless of which it is, there is a simple technique that is
+cheap enough that it should be done at each step in tracking curves.
 
-An easily computed method for detecting bifurcations
-is to monitor the determinant of the Jacobian matrix augmented with
-the tangent vector:
-\begin{equation*}
-	\mu(\Vector{x}) = \det \left[ \begin{array}{c}
+\subsection{Detecting Switching}
+The technique for detecting mode switching and the much rarer phenomenon
+bifurcation is the same: monitoring the sign of the determinant of the
+Jacobian matrix augmented with the tangent vector,
+\index{mode switching!detecting} \index{bifurcation!detecting}
+	$\det \left[ \begin{array}{c}
 		\Matrix{J} \\
 		\Vector{t}^T
 	\end{array} \right] =
 	\det \left[
 		\Matrix{J}^T \;\; \Vector{t}
-	\right]
-\end{equation*}
-a change in sign indicates the orientation has changed and a
-bifurcation has been passed (\cite{allgower1990numerical}, p. 81).
+	\right]$.
+Assuming the predictor-corrector scheme of \Sectref{sect:predictor}
+and \Sectref{sect:corrector}, with convergence there is a QR factorization
+of the transposed Jacobian which can be used to compute the determinant
+efficiently.
+\index{numerical continuation!bifurcation}
+
+%% An easily computed method for detecting bifurcations
+%% is to monitor the determinant of the Jacobian matrix augmented with
+%% the tangent vector:
+%% \begin{equation*}
+%% 	\mu(\Vector{x}) = \det \left[ \begin{array}{c}
+%% 		\Matrix{J} \\
+%% 		\Vector{t}^T
+%% 	\end{array} \right] =
+%% 	\det \left[
+%% 		\Matrix{J}^T \;\; \Vector{t}
+%% 	\right]
+%% \end{equation*}
+%% a change in sign indicates the orientation has changed and either
+%% the tracking algorithm has jumped to a different curve (mode switching)
+%% or a bifurcation has been passed (\cite{allgower1990numerical}, p. 81).
 \par
-Evaluating the determinant is simplified by recognizing that the
-tangent came from the QR factorization, that the determinant of an
-orthogonal matrix is $\pm 1$, and the determinant of a triangular matrix
+Evaluating the determinant is simplified by recognizing that
+%% the tangent came from the QR factorization, that
+the determinant of an orthogonal matrix is $\pm 1$,
+\footnote{the sign of the determinant of $\Matrix{Q}$ is determined by the
+number of Householder reflections in the factorization, as pointed out in
+\Sectref{sect:langou}.}
+and the determinant of a triangular matrix
 is the product of the diagonals \cite{meyer2015continuation}.
 Furthermore, the tangent and the QR factorization of the Jacobian
-it was computed from are available from the last corrector iteration,
-so the desired determinant is simply
+it was computed from are available from the last corrector iteration.
+Premultiplying the augmented Jacobian by $\Matrix{Q}^t$
 \begin{align*}
-	\det \left[
-		\Matrix{J}^T \;\; \Vector{t}
-	\right] &=
-	\det \left[
-		\Matrix{QR} \;\; \Vector{t}
-		\right] =
-	\det \left[ \Matrix{Q}_1 \;\; \Matrix{Q}_2 \right]
-		\left[ \begin{array}{cc}
-			\Matrix{R} & 0 \\
-			         0   & \xi
-		\end{array} \right]  \nonumber \\
-	&= \xi \det \Matrix{Q} \det \Matrix{R} =
-		(-1)^k \xi \prod_{i=1}^m R_{ii}
+	\Matrix{Q}^t \left[ \Matrix{J}^t \;\; \Vector{t} \right] =
+		\left[ \Matrix{R} \;\; \Matrix{Q}^t \Vector{t} \right] =
+		\tilde{\Matrix{R}}
 \end{align*}
-where $\xi = \Sgn{\Matrix{Q}_2^T\Vector{t}}$ adjusts the sign of $\Matrix{Q}_2$
-so it points in the proper direction,
-and $k$ is the number of Householder reflections for Householder-based
-QR factorizations as pointed out by Julien Langou in a posting to
-the lapack-forum:
-\begin{lstlisting}
- http://icl.cs.utk.edu/lapack-forum/viewtopic.php?f=2&t=1741
- Re: determinant in QR factorization
- Post by Julien Langou B; Sat Feb 06, 2010 2:01 pm
- For a QR factorization of an m-by-n matrix with m <= n,
- you have IN GENERAL n-1 Householder reflections (all the
- columns except the last), with m > n, you have IN GENERAL n
- Householder reflections. And that could be as simple as that.
- But it happens sometimes that we do not need to a Householder
- reflection for a given column (if it is already in the correct
- form). For LAPACK 3.1 and before, this was when the updated
- i-th column of A is already the column of the triangular
- matrix R (i.e. the zeros are already here, no need to apply
- a Householder reflection). For LAPACK 3.2 (and after), this
- is when the updated i-th column of A is already the column of
- the triangular matrix R (i.e. the zeros are already here) AND
- R(i,i) is real nonnegative (if we have the zeros but R(i,i)
- is negative (or has a nonzero imaginary part), we would
- do a reflection to get a real nonnegative diagonal element
- for R(i,i)).  All this to say that you should scan TAU from
- 1 to n (m > n ) or 1 to n-1 (m <= n) and count the nonzero
- elements. Say you get k nonzeros in TAU.  Then $(-1)^k$.
-\end{lstlisting}
+Assuming we are tracing curves and the (m,n) Jacobian has one more
+column than rows, the transposed Jacobian has a QR factorization
+with an (n,m) R with the form
+\begin{align*}
+	\Vector{R}: \left[ \begin{array}{ccc}
+		X & X & X \\
+		0 & X & X \\
+		0 & 0 & X \\
+		0 & 0 & 0
+		\end{array} \right]
+\end{align*}
+and appending the tangent to the last column results in a square
+(n,n) upper-triangular matrix $\tilde{\Matrix{R}}$
+\begin{align*}
+	\tilde{\Matrix{R}} =\left[\Vector{R} \;\; \Matrix{Q}^t\Vector{t} \right]:
+		\left[ \begin{array}{cccc}
+		X & X & X & X \\
+		0 & X & X & X \\
+		0 & 0 & X & X \\
+		0 & 0 & 0 & X
+		\end{array} \right]
+\end{align*}
+so the determinant of the augmented Jacobian is
+\begin{align*}
+	\det \left[ \Matrix{J}^T \;\; \Vector{t} \right] =
+		\det\left( \Matrix{Q}\tilde{\Matrix{R}} \right) =
+		\det\left( \Matrix{Q} \right) \det\left(\tilde{\Matrix{R}} \right) =
+		(-1)^k \prod_{i=1}^n \tilde{R_{ii}}
+\end{align*}
+where $k$ is the number of Householder reflections
+\footnote{In LAPACK routine DGEQRF the number of reflections is the
+number of nonzero elements in the TAU array \Sectref{sect:langou}}.
 
+%% A further simplification is possible by accounting for the fact
+%% that the tangent is a null vector of the Jacobian, so
+%% $\Matrix{Q}^t \Vector{t}$ will be approximately zero except for
+%% the last element which will be approximately $\pm 1$ since
+%% the last column of $\Matrix{Q}$ is (within a sign) the tangent.
+%% An even cheaper version of the determinant is therefore
+%% \begin{align*}
+%% 	\det \left[ \Matrix{J}^T \;\; \Vector{t} \right] =
+%% 		(-1)^k \Vector{Q}_{:m}^t\Vector{t} \prod_{i=1}^m \tilde{R_{ii}}
+%% \end{align*}
+
+%% so the desired determinant is simply
+%% \begin{align*}
+%% 	\det \left[
+%% 		\Matrix{J}^T \;\; \Vector{t}
+%% 	\right] &=
+%% 	\det \left[
+%% 		\Matrix{QR} \;\; \Vector{t}
+%% 		\right] =
+%% 	\det \left[ \Matrix{Q}_1 \;\; \Matrix{Q}_2 \right]
+%% 		\left[ \begin{array}{cc}
+%% 			\Matrix{R} & 0 \\
+%% 			         0   & \xi
+%% 		\end{array} \right]  \nonumber \\
+%% 	&= \xi \det \Matrix{Q} \det \Matrix{R} =
+%% 		(-1)^k \xi \prod_{i=1}^m R_{ii}
+%% \end{align*}
+%% where $\xi = \Sgn{\Matrix{Q}_2^T\Vector{t}}$ adjusts the sign of $\Matrix{Q}_2$
+%% so it points in the proper direction,
+%% and $k$ is the number of Householder reflections for Householder-based
+
+\subsection{Locating a Bifurcation}
 To locate the bifurcation point more precisely the
 continuation process could proceed with a smaller stepsize from
 the point prior to the sign change; however the Newton corrector will
@@ -5266,6 +5320,34 @@ The file consists of blocks of data:
 	\item[$ntd$ lines] (1 float per line) time delays
 \end{description}
 
+\section{Determinant of Q}\label{sect:langou}
+When computing the determinant of a QR factorization, the determinant
+of $\Matrix{Q}$ is $\pm 1$ with the sign determined by the number
+of Householder reflections performed in the factorization,
+as pointed out by Julien Langou in a posting to the lapack-forum:
+\begin{lstlisting}
+ http://icl.cs.utk.edu/lapack-forum/viewtopic.php?f=2&t=1741
+ Re: determinant in QR factorization
+ Post by Julien Langou B; Sat Feb 06, 2010 2:01 pm
+ For a QR factorization of an m-by-n matrix with m <= n,
+ you have IN GENERAL n-1 Householder reflections (all the
+ columns except the last), with m > n, you have IN GENERAL n
+ Householder reflections. And that could be as simple as that.
+ But it happens sometimes that we do not need to a Householder
+ reflection for a given column (if it is already in the correct
+ form). For LAPACK 3.1 and before, this was when the updated
+ i-th column of A is already the column of the triangular
+ matrix R (i.e. the zeros are already here, no need to apply
+ a Householder reflection). For LAPACK 3.2 (and after), this
+ is when the updated i-th column of A is already the column of
+ the triangular matrix R (i.e. the zeros are already here) AND
+ R(i,i) is real nonnegative (if we have the zeros but R(i,i)
+ is negative (or has a nonzero imaginary part), we would
+ do a reflection to get a real nonnegative diagonal element
+ for R(i,i)).  All this to say that you should scan TAU from
+ 1 to n (m > n ) or 1 to n-1 (m <= n) and count the nonzero
+ elements. Say you get k nonzeros in TAU.  Then $(-1)^k$.
+\end{lstlisting}
 % ------------------------------------------------------------------
 
 \newpage
