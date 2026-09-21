@@ -793,7 +793,7 @@ an \emph{underdetermined} set of linear equations with an infinity
 of solutions. The smallest solution is the one closest to the
 predicted point; known as the \emph{minimum norm}
 solution (\cite{golub2013matrix} \S 5.6.2), it can be computed with a
-QR factorization of the transpose of $\Vector{J}$:
+QR factorization of the transpose of $\Matrix{J}$:
 \begin{equation}
 \label{eqn:qr}
 \Matrix{J}^{t} = \Matrix{QR} = \left[ \Matrix{Q}_1 \;\; \Matrix{Q}_2 \right]
@@ -802,10 +802,11 @@ QR factorization of the transpose of $\Vector{J}$:
 		\Matrix{0} \\
 	\end{array}\right] = \Matrix{Q}_1 \Matrix{R}_1
 \end{equation}
-where $\Matrix{Q}$ is an $(m,m)$ orthogonal matrix, and $\Matrix{R}_1$
-is an $(n,n)$ upper-triangular matrix. Because we are only considering
-curves, $m = n+1$, and $\Vector{Q}_2$ is an m-vector, in fact it is the
-null vector of the Jacobian $\left(\Matrix{J} \Vector{Q}_2 = \Vector{0}\right)$,
+where $\Matrix{Q}$ is an $(m,m)$ orthogonal matrix, $\Matrix{R}$ is
+an $(m,n)$ upper-triangular matrix, and $\Matrix{R}_1$
+is an $(n,n)$ upper-triangular matrix. If $m = n+1$, $\Vector{Q}_2$ is a
+vector, in fact it is the null vector of the Jacobian
+$\left(\Matrix{J} \Vector{Q}_2 = \Vector{0}\right)$,
 useful for computing the tangent.
 
 Substituting \Eqn{eqn:qr} into \Eqn{eqn:corrector} yields the
@@ -978,26 +979,29 @@ vector for curves, a plane for surfaces, and so on for higher dimensions.
 By restricting the tangent to being a vector in the higher dimensional
 spaces, it is possible, and useful, to trace a curve.
 
-The idea is simple: with more independent variables ($n > m+1$)
-the tangent is a hyper-surface and we want choose the direction on it
+The idea is straightforward: with more independent variables ($m > n+1$)
+the nullspace of the Jacobian is more than one-dimensional and
+we can choose the direction on it
 which increases (or decreases) one particular independent variable most
-rapidly. This is done by projecting a special vector onto the hypersurface:
+rapidly. This is done by projecting a special vector onto the nullspace:
 \begin{equation} \label{eqn:project}
-\bar{\Vector{t}} = \Matrix{Q}_2\Matrix{Q}_2^t\,\Vector{w} \;\; \in \mathbb{R}^m
+\bar{\Vector{t}} = \Matrix{Q}_2\Matrix{Q}_2^T\,\Vector{w} \quad \in \mathbb{R}^m
 \end{equation}
 where $\Vector{w}$ is all zeros but plus or minus 1 in the spot for
 the variable to be optimized.
 The tangent is just $\bar{\Vector{t}}$ normalized with
 $\Vector{t} = \bar{\Vector{t}}/\|\bar{\Vector{t}}\|_2$
 
-This technique can be used as a type of unconstrained optimization.
+This yields a constrained steepest-ascent (descent) path through the
+infinity of solutions make possible by the additional variables.
 \index{optimization}\index{numerical continuation!optimization}
-For example, if we want to increase a flutter speed by changing some parameter values
-we could include all the relevant parameters in the solution and choose
-the vector $\Vector{w}$ to be all zeros except a $1$ in the element
-corresponding to velocity. Computing the tangent with this $\Vector{w}$
-then gives a path towards higher velocities with respect to all the
-parameters that were included.
+
+For example, if we want to increase a flutter speed by changing some
+parameter values we could include all the relevant parameters in the
+solution and choose the vector $\Vector{w}$ to be all zeros except
+a $1$ in the element corresponding to velocity. Computing the tangent
+with this $\Vector{w}$ then gives a path towards higher velocities
+with respect to all the parameters that were included.
 
 Another practical application of this technique is in searching for
 start points for contours \Sectref{sect:contour-app}.
@@ -1058,10 +1062,10 @@ and the determinant of a triangular matrix
 is the product of the diagonals \cite{meyer2015continuation}.
 Furthermore, the tangent and the QR factorization of the Jacobian
 it was computed from are available from the last corrector iteration.
-Premultiplying the augmented Jacobian by $\Matrix{Q}^t$
+Premultiplying the augmented Jacobian by $\Matrix{Q}^T$
 \begin{align*}
-	\Matrix{Q}^t \left[ \Matrix{J}^t \;\; \Vector{t} \right] =
-		\left[ \Matrix{R} \;\; \Matrix{Q}^t \Vector{t} \right] =
+	\Matrix{Q}^T \left[ \Matrix{J}^T \;\; \Vector{t} \right] =
+		\left[ \Matrix{R} \;\; \Matrix{Q}^T \Vector{t} \right] =
 		\tilde{\Matrix{R}}
 \end{align*}
 Assuming we are tracing curves and the (n,m) Jacobian has one more
@@ -1078,7 +1082,7 @@ with an (m,n) R with the form
 and appending the tangent to the last column results in a square
 (m,m) upper-triangular matrix $\tilde{\Matrix{R}}$
 \begin{align*}
-	\tilde{\Matrix{R}} =\left[\Vector{R} \;\; \Matrix{Q}^t\Vector{t} \right]:
+	\tilde{\Matrix{R}} =\left[\Vector{R} \;\; \Matrix{Q}^T\Vector{t} \right]:
 		\left[ \begin{array}{cccc}
 		X & X & X & X \\
 		0 & X & X & X \\
@@ -1093,49 +1097,22 @@ so the determinant of the augmented Jacobian is
 		\det\left( \Matrix{Q} \right) \det\left(\tilde{\Matrix{R}} \right) =
 		(-1)^k \prod_{i=1}^m \tilde{R_{ii}}
 \end{align*}
-where $k$ is the number of Householder reflections
+where $k$ is the number of Householder reflections.
 \footnote{In LAPACK routine DGEQRF the number of reflections is the
 number of nonzero elements in the TAU array \Sectref{sect:langou}}.
 
-%% A further simplification is possible by accounting for the fact
-%% that the tangent is a null vector of the Jacobian, so
-%% $\Matrix{Q}^t \Vector{t}$ will be approximately zero except for
-%% the last element which will be approximately $\pm 1$ since
-%% the last column of $\Matrix{Q}$ is (within a sign) the tangent.
-%% An even cheaper version of the determinant is therefore
-%% \begin{align*}
-%% 	\det \left[ \Matrix{J}^T \;\; \Vector{t} \right] =
-%% 		(-1)^k \Vector{Q}_{:m}^t\Vector{t} \prod_{i=1}^m \tilde{R_{ii}}
-%% \end{align*}
-
-%% so the desired determinant is simply
-%% \begin{align*}
-%% 	\det \left[
-%% 		\Matrix{J}^T \;\; \Vector{t}
-%% 	\right] &=
-%% 	\det \left[
-%% 		\Matrix{QR} \;\; \Vector{t}
-%% 		\right] =
-%% 	\det \left[ \Matrix{Q}_1 \;\; \Matrix{Q}_2 \right]
-%% 		\left[ \begin{array}{cc}
-%% 			\Matrix{R} & 0 \\
-%% 			         0   & \xi
-%% 		\end{array} \right]  \nonumber \\
-%% 	&= \xi \det \Matrix{Q} \det \Matrix{R} =
-%% 		(-1)^k \xi \prod_{i=1}^m R_{ii}
-%% \end{align*}
-%% where $\xi = \Sgn{\Matrix{Q}_2^T\Vector{t}}$ adjusts the sign of $\Matrix{Q}_2$
-%% so it points in the proper direction,
-%% and $k$ is the number of Householder reflections for Householder-based
+Because determinants are usually very large or very small, they must
+be treated as 2 numbers: a coefficient and an exponent. Only the sign
+of the coefficent is necessary for detecting mode switching or bifurcation.
 
 \subsection{Locating a Bifurcation}
 To locate the bifurcation point more precisely the
 continuation process could proceed with a smaller stepsize from
 the point prior to the sign change; however the Newton corrector will
 encounter numerical problems close to the bifurcation as the $\Matrix{R}$
-matrix approaches singularity
-and a final approximation ($\Vector{x}_b$)
-must be obtained by interpolation:
+matrix approaches singularity. A final approximation can be obtained by
+interpolation with
+	$\mu(\Vector{x}) = \det\left[\Matrix{J}(\Vector{x})^T \;\; \Vector{t}\right]$:
 \begin{equation}
 \label{eqn:interpolation}
 \Vector{x}_b \approx \Vector{x}_j - \frac{\mu_j}{\mu_{j+1}
@@ -1471,9 +1448,9 @@ facilitate this computation, but make it safer and more accurate.
 
 If we have a set of underdetermined nonlinear equations
 \begin{align}
-\Vector{f}(\Vector{x}) = \Vector{0} & \in \mathbb{R}^{m} \nonumber \\
-\Vector{x} & \in \mathbb{R}^{n} \nonumber \\
-n & \ge m	\nonumber
+\Vector{f}(\Vector{x}) = \Vector{0} & \in \mathbb{R}^{n} \nonumber \\
+\Vector{x} & \in \mathbb{R}^{m} \nonumber \\
+m & \ge n	\nonumber
 \end{align}
 that can be evaluated using AD, then the Jacobian
 \begin{displaymath}
@@ -1482,8 +1459,8 @@ that can be evaluated using AD, then the Jacobian
 can be evaluated with code like
 \begin{lstlisting}
    eval (x, f)
-   for (i=0; i<m; i++)
-      for (j=0; j<n; j++)
+   for (i=0; i<n; i++)
+      for (j=0; j<m; j++)
          J(i,j) = f(i).der(j)
 \end{lstlisting}
 Contrasting this with the three alternatives (manual coding, finite
@@ -2199,7 +2176,7 @@ can be modified to reflect the change in variables.
 A \emph{rank-one update} (\cite{golub2013matrix}) to the Jacobian which was
 used to compute the solution:
 \begin{equation}
-\Matrix{\hat{J}} = \Matrix{J} + \Vector{u}\Vector{v}^t
+\Matrix{\hat{J}} = \Matrix{J} + \Vector{u}\Vector{v}^T
 \end{equation}
 where
 \begin{align}
@@ -2731,7 +2708,7 @@ and assuming steady motion ($\sigma=0$), the motion at $t=0$ is
 \end{align}
 The scalar triple product \Eqn{eqn:scalar-triple-product} then is
 \begin{equation}
-t = \Vector{y}_i^t\Matrix{G}\Vector{y}_r
+t = \Vector{y}_i^T\Matrix{G}\Vector{y}_r
 \end{equation}
 and the sign of $t$ tells the type of precession: positive if forward,
 negative if backward.
@@ -3564,7 +3541,7 @@ and the condensed stiffness matrix
 	\Matrix{K}_{aa} - \Matrix{K}_{ai}\Matrix{K}_{ii}^{-1}\Matrix{K}_{ia}
 \end{equation}
 is equivalent to the transformation
-$\Matrix{\bar{K}}_{aa} = \Matrix{G}_a^t\Matrix{K}\Matrix{G}_a$
+$\Matrix{\bar{K}}_{aa} = \Matrix{G}_a^T\Matrix{K}\Matrix{G}_a$
 where
 \begin{equation} \label{eqn:static-ss}
 \Matrix{G}_a = \left[
@@ -3582,10 +3559,10 @@ reduces to the $a$ dof, and $\Matrix{I}_a$ is the identity order $a$.
 Guyan reduction \cite{guyan1965reduction}
 applies this transformation to the mass matrix
 \begin{equation}\label{eqn:guyanM}
-\Matrix{\bar{M}}_{aa} = \Matrix{G}_a^t\Matrix{M}\Matrix{G}_a =
+\Matrix{\bar{M}}_{aa} = \Matrix{G}_a^T\Matrix{M}\Matrix{G}_a =
 	\Matrix{M}_{aa} + \Matrix{M}_{ai}\Matrix{G}_{ia}
-		+ \Matrix{G}_{ia}^t \Matrix{M}_{ia}
-			+ \Matrix{G}_{ia}^t\Matrix{M}_{ii}\Matrix{G}_{ia}
+		+ \Matrix{G}_{ia}^T \Matrix{M}_{ia}
+			+ \Matrix{G}_{ia}^T\Matrix{M}_{ii}\Matrix{G}_{ia}
 \end{equation}
 In the past Guyan reduction was used extensively prior to solving
 the vibration eigenvalue problem; vibration modes were then used to
@@ -3701,7 +3678,7 @@ are solved:
 			\Matrix{K}^A\Matrix{\Phi}_m & = \Matrix{\Lambda}^A\Matrix{M}^{A+}\Matrix{\Phi}_m \\
 			\Matrix{M}^{A+} &= \left[\begin{array}{cc}
 				\Matrix{M}^A_{ii}  &  \Matrix{M}^A_{ia} \nonumber \\
-				\Matrix{M}^A_{ai}  &  \Matrix{M}^A_{aa} + \Matrix{G}^t_a\Matrix{M}^B\Matrix{G}_a
+				\Matrix{M}^A_{ai}  &  \Matrix{M}^A_{aa} + \Matrix{G}^T_a\Matrix{M}^B\Matrix{G}_a
 			\end{array}\right]
 		\end{align}
 		for $m$ eigenvectors
@@ -3735,8 +3712,8 @@ matrix
 Applying this transformation to the static-merged mass and stiffness
 matrices gives the branch-mode mass and stiffness:
 \begin{equation}
-	\Matrix{\bar{M}} = \Matrix{\Phi}^t \Matrix{M} \Matrix{\Phi},\hspace{0.5cm}
-	\Matrix{\bar{K}} = \Matrix{\Phi}^t \Matrix{K} \Matrix{\Phi},
+	\Matrix{\bar{M}} = \Matrix{\Phi}^T \Matrix{M} \Matrix{\Phi},\hspace{0.5cm}
+	\Matrix{\bar{K}} = \Matrix{\Phi}^T \Matrix{K} \Matrix{\Phi},
 \end{equation}
 illustrated in \Figref{fig:bm-km}. What is notable about this figure is
 although there is mass coupling between the root and branch, there
@@ -5001,11 +4978,11 @@ The corresponding interval in $\Vector{f}$ is approximately
 \end{equation}
 so the extended convergence criteria is
 \begin{equation}
-f_i \le \epsilon \sum_{j=1}^{n} |J_{ij} x_i| = \epsilon_i
+f_i \le \epsilon \sum_{j=1}^{m} |J_{ij} x_i| = \epsilon_i
 \end{equation}
 This same method can be used to compute $\epsilon_a$ in \Eqn{eqn:tradcc} as
 \begin{equation}
-\epsilon_a = \sqrt{\sum_{i=1}^{m} \epsilon_i} = \|\{\epsilon_i\}\|_2
+\epsilon_a = \sqrt{\sum_{i=1}^{n} \epsilon_i} = \|\{\epsilon_i\}\|_2
 \end{equation}
 provided the ratio of the smallest to largest $\epsilon_i$ is not too small.
 
