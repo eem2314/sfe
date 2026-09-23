@@ -869,39 +869,6 @@ conditions are met:
 		\|\Vector{h}_j\|_\infty \ge \theta\|\Vector{h}_{j-1}\|_\infty \;\;\text{for some}\;\;j \ge 2 \nonumber
 	\end{gather}
 
-\section{Issues}\label{sect:issues}\index{numerical continuation!issues}
-Several things can go wrong in a continuation procedure, including
-\begin{itemize}
-	\item nonconvergence of the corrector: retry the step with a smaller
-		stepsize; if this does not cure the problem the Jacobian should
-		be checked by finite differencing.
-	\item large angle between consecutive tangents. This may indicate
-		a slope discontinuity in the curve, mode switching, a bifurcation,
-		or just a sharp change in the curve; retry the step with a smaller
-		stepsize, monitoring the angle and the distance along the curve.
-		\index{mode switching!detecting}
-		When the distance exceeds the original stepsize there are 3 possibilities:
-		\begin{enumerate}
-			\item reducing the stepsize reduced the angle substantially so there
-				is not a slope discontinuity or mode switching,
-			\item the angle has not reduced substantially so there appears to
-				be a slope discontinuity between two of the steps taken
-				while monitoring,
-			\item there is a bifurcation between two of the steps; the procedure
-				outlined in \Sectref{sect:bifurcation} shows how to branch from
-				the bifurcation point.
-		\end{enumerate}
-	\item a change in the sign of the determinant of the Jacobian matrix
-			augmented with the tangent vector (\Sectref{sect:bifurcation}),
-			indicating mode switching or (rarely) bifurcation.
-	\item a singular Jacobian indicates a bifurcation; very rare and
-		a bifurcation is more likely to be discovered with a change in
-		the sign of the determinant.
-\end{itemize}
-Mode switching can be very serious if undetected. Fortunately both checking
-the angle between subsequent tangents and the sign of the determinants
-are inexpensive and easily implemented \Sectref{sect:bifurcation}.
-
 \section{Homotopy}\label{sect:homotopy}
 \index{numerical continuation!homotopy}\index{homotopy}
 One of the earliest applications of numerical continuation was solving a system
@@ -980,31 +947,78 @@ By restricting the tangent to being a vector in the higher dimensional
 spaces, it is possible, and useful, to trace a curve.
 
 The idea is straightforward: with more independent variables ($m > n+1$)
-the nullspace of the Jacobian is more than one-dimensional and
-we can choose the direction on it
-which increases (or decreases) one particular independent variable most
-rapidly. This is done by projecting a special vector onto the nullspace:
+the nullspace of the Jacobian (the tangent space) is more than
+one-dimensional and we can choose a direction in it that take us
+toward a goal. The goal is specified by a vector $\Vector{w}$ which
+is projected onto the tangent space:
 \begin{equation} \label{eqn:project}
 \bar{\Vector{t}} = \Matrix{Q}_2\Matrix{Q}_2^T\,\Vector{w} \quad \in \mathbb{R}^m
 \end{equation}
-where $\Vector{w}$ is all zeros but plus or minus 1 in the spot for
-the variable to be optimized.
-The tangent is just $\bar{\Vector{t}}$ normalized with
-$\Vector{t} = \bar{\Vector{t}}/\|\bar{\Vector{t}}\|_2$
-
+giving a vector $\bar{\Vector{t}}$ which is closest to $\Vector{w}$, the
+direction of the goal.
 This yields a constrained steepest-ascent (descent) path through the
 infinity of solutions make possible by the additional variables.
 \index{optimization}\index{numerical continuation!optimization}
 
-For example, if we want to increase a flutter speed by changing some
+where $\Vector{w}$ points in the direction we want the curve to go. Projecting
+it onto the nullspace gives a vector pointing in the direction of maximal
+increase is all zeros but plus or minus 1 in the spot for
+the variable to be optimized.
+The tangent is just $\bar{\Vector{t}}$, normalized with
+$\Vector{t} = \bar{\Vector{t}}/\|\bar{\Vector{t}}\|_2$
+
+
+For example, continuation-optimization is used in
+\Sectref{ex:goland-contours} to obtain starting points for tracing
+contours of dynamic pressure as a function of aerodynamic center and
+center of gravity.
+if we want to increase a flutter speed by changing some
 parameter values we could include all the relevant parameters in the
 solution and choose the vector $\Vector{w}$ to be all zeros except
 a $1$ in the element corresponding to velocity. Computing the tangent
 with this $\Vector{w}$ then gives a path towards higher velocities
 with respect to all the parameters that were included.
 
+\begin{figure}[ht]
+		\includegraphics[height=8cm,width=10cm]{asy/optim4.pdf}
+	\centering
+	\caption{3 methods for the corrector process }\label{fig:optim}
+\end{figure}
 Another practical application of this technique is in searching for
 start points for contours \Sectref{sect:contour-app}.
+
+\section{Issues}\label{sect:issues}\index{numerical continuation!issues}
+Several things can go wrong in a continuation procedure, including
+\begin{itemize}
+	\item nonconvergence of the corrector: retry the step with a smaller
+		stepsize; if this does not cure the problem the Jacobian should
+		be checked by finite differencing.
+	\item large angle between consecutive tangents. This may indicate
+		a slope discontinuity in the curve, mode switching, a bifurcation,
+		or just a sharp change in the curve; retry the step with a smaller
+		stepsize, monitoring the angle and the distance along the curve.
+		\index{mode switching!detecting}
+		When the distance exceeds the original stepsize there are 3 possibilities:
+		\begin{enumerate}
+			\item reducing the stepsize reduced the angle substantially so there
+				is not a slope discontinuity or mode switching,
+			\item the angle has not reduced substantially so there appears to
+				be a slope discontinuity between two of the steps taken
+				while monitoring,
+			\item there is a bifurcation between two of the steps; the procedure
+				outlined in \Sectref{sect:bifurcation} shows how to branch from
+				the bifurcation point.
+		\end{enumerate}
+	\item a change in the sign of the determinant of the Jacobian matrix
+			augmented with the tangent vector (\Sectref{sect:bifurcation}),
+			indicating mode switching or (rarely) bifurcation.
+	\item a singular Jacobian indicates a bifurcation; very rare and
+		a bifurcation is more likely to be discovered with a change in
+		the sign of the determinant.
+\end{itemize}
+Mode switching can be very serious if undetected. Fortunately both checking
+the angle between subsequent tangents and the sign of the determinants
+are inexpensive and easily implemented \Sectref{sect:bifurcation}.
 
 \section{Mode Switching and Bifurcation}\label{sect:bifurcation}
 \index{bifurcation}
@@ -1015,12 +1029,17 @@ a step for the local curvature.
 This so-called \emph{mode switching} can also be an indication that a
 bifurcation has been passed, where two curves become equal within
 the limits of floating-point computation.
-Regardless of which it is, there is a simple technique that is
-cheap enough that it should be done at each step in tracking curves.
+Regardless of which it is, there are two simple techniques that are
+cheap enough that they should be done at each step in tracking curves.
 
 \subsection{Detecting Switching}
-The technique for detecting mode switching and the much rarer phenomenon
-bifurcation is the same: monitoring the sign of the determinant of the
+The first test is to monitor the angle between tangents at subsequent
+solution points: $cos^{-1}\left(\Vector{t}_{j-1}^T\Vector{t}_j\right)$.
+If the angle is greater than, say 40 degrees, repeat the step with a
+smaller stepsize.
+
+The second technique for detecting mode switching and the much rarer phenomenon
+bifurcation is to monitor the sign of the determinant of the
 Jacobian matrix augmented with the tangent vector,
 \index{mode switching!detecting} \index{bifurcation!detecting}
 	$\det \left[ \begin{array}{c}

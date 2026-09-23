@@ -16,6 +16,7 @@
 
 SUFFIXES = .fig .tex .eps .ps .pdf
 
+SUBDIRS = asy
 
 FORCE:
 
