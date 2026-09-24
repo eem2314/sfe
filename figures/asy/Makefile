@@ -5,7 +5,7 @@
 
 SUFFIXES = .asy .pdf
 
-ASY = optim4.asy
+ASY = optim3.asy
 
 %.pdf:	%.asy
 	asy -f pdf $<

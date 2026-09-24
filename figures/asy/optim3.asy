@@ -26,7 +26,16 @@ pair fprime(pair t) {
 		return (1.0,0.0);
 }
 surface sol_manifold = surface(f, (-1.2, -1.2), (1.2, 1.2), 16, 16);
-draw(sol_manifold, surfacepen=material(rgb(0.85, 0.88, 0.95) + opacity(0.6)), meshpen=rgb(0.65, 0.7, 0.8) + 0.3pt);
+draw(sol_manifold, surfacepen=material(rgb(0.85, 0.88, 0.95) + opacity(0.6)),
+		meshpen=rgb(0.65, 0.7, 0.8) + 0.3pt);
+// Label the solution manifold
+triple solpt = (1.6, -0.05, 0.0);
+//!! triple solpt = (1.3, -0.6, 0.0);
+//!! real theta = 42.0;
+real theta = 0.0;
+label(rotate(theta) * Label("solution surface",
+		p=rgb(0.5, 0.4, 0.1)+fontsize(8pt)), 
+      solpt, align=N);
 
 // 2. Point x_0
 real x0_x = 0.0;
@@ -37,7 +46,8 @@ real x0_z = 0.0;
 pair p = (x0_x, x0_y);
 triple x0 = f(p);
 dot(x0, p=black + 4pt);
-label("$\mathbf{x}_0$", x0, align=SW);
+label("$\mathbf{x}_0$", x0-(0.03,0.03,-0.04), align=W);
+// label("$\mathbf{x}_0$", x0, align=W);
 
 // 3. Tangent plane at x_0 (z = 0)
 triple corner = (-0.9, -0.9, 0);
@@ -47,21 +57,47 @@ triple v_vec  = (0, 1.8, 0);
 path3 plane_boundary = corner -- (corner + u_vec) -- (corner + u_vec + v_vec) -- (corner + v_vec) -- cycle;
 
 // Fill the exact parallelogram
-draw(surface(plane_boundary), surfacepen=material(rgb(0.95, 0.92, 0.8) + opacity(0.45)));
+draw(surface(plane_boundary), surfacepen=material(rgb(0.95, 0.92, 0.8) + opacity(0.75)));
 
 // Draw the dashed border
 draw(plane_boundary, rgb(0.6, 0.5, 0.2) + 0.6pt + linetype("4 4"));
-//!! label("$\operatorname{null}(J) = \operatorname{span}(Q_2)$", corner + v_vec, align=NW, p=rgb(0.5, 0.4, 0.1));
-label("tangent plane", corner + v_vec/2, align=NW, p=rgb(0.5, 0.4, 0.1));
+
+// Label the tangent plane
+//!! label("tangent plane", corner + v_vec/2, align=NW, p=rgb(0.5, 0.4, 0.1));
+
+// 3a. The two endpoints of your NW edge
+//!! triple p1 = corner + v_vec;
+triple p1 = corner;
+//!! triple p2 = corner + u_vec + v_vec;
+triple p2 = corner + v_vec;
+
+// 3b. Project 3D points to the 2D page and find the angle in degrees
+pair s1 = project(p1);
+pair s2 = project(p2);
+real theta = degrees(s2 - s1)-2;
+
+// Optional: if the angle would put the text upside-down, flip it 180 degrees
+if (theta > 90) theta -= 180;
+if (theta < -90) theta += 180;
+
+// 3c. Draw the label rotated by theta at the midpoint
+triple nw_mid = 0.5 * (p1 + p2);
+label(rotate(theta) * Label("tangent plane", p=rgb(0.5, 0.4, 0.1)+fontsize(10pt)), 
+      nw_mid, align=NW);
+
 
 // 4. Vectors
-triple w     = (0.45, 0.55, 1.05);   // Unconstrained gradient
+//!! triple w     = (0.45, 0.55, 1.05);   // desired direction
+triple w     = (0.27, 0.33, 0.63);   // desired direction
 triple t_bar = (-0.20, 0.75, 0.0);    // Projected tangent
 
 draw(x0 -- (x0 + w), red + 1.2pt, Arrow3(DefaultHead3,size=6.0),
-		L=Label("$\mathbf{w}$", align=N, p=red));
+		L=Label("$\mathbf{w}$", align=W, p=red));
+
 draw(x0 -- (x0 + t_bar), deepblue + 1.5pt, Arrow3(DefaultHead3,size=7.0),
-		L=Label("$\bar{\mathbf{t}}_j$", align=E, p=deepblue));
+		L=Label("$\bar{\mathbf{t}}_j$", (5.8,1.0,2.0), p=deepblue));
+//		L=Label("$\bar{\mathbf{t}}_j$", (0.6,1.0), align=E, p=deepblue));
+
 draw((x0 + w) -- (x0 + t_bar), dashed + gray(0.4) + 0.8pt);
 
 // 5. Continuation path
@@ -93,6 +129,6 @@ triple p3 = f(x3);
 triple t_dir = (0.2, -0.75, 0.0);
 path3 my_curve = p0{t_dir} .. p1 .. p2 .. p3;
 draw(my_curve, deepgreen + 1.2pt);
-// dot(p1, red + 3pt);
+// dot(p1, red + 3pt);		// show the breakpoints
 // dot(p2, red + 3pt);
 // dot(p3, red + 3pt);
