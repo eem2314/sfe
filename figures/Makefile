@@ -14,6 +14,15 @@
 # - To extract pages from manual.pdf and create a new pdf file:
 #      texexec --pdfselect --selection=78,79,80 manual.pdf
 
+FORBIDDEN_DIR := /home/eem2314/sfe/repo/figures
+# FORBIDDEN_DIR := /path/to/forbidden/directory
+# Or use relative check, e.g., if forbidden dir name is 'src':
+# CURDIR is built-in and always represents the absolute path of the directory containing the Makefile
+
+ifeq ($(abspath $(CURDIR)),$(abspath $(FORBIDDEN_DIR)))
+$(error "do not run make in the repo!")
+endif
+
 SUFFIXES = .fig .tex .eps .ps .pdf
 
 SUBDIRS = asy
@@ -64,6 +73,7 @@ whirl-vso.fig
 EPS = $(FIGS:.fig=.eps)
 
 all: $(EPS)
+	cd asy && make
 
 # list of stuff to include in dist tarfile XXX no eps?
 EXTRA_DIST = $(nosrc) $(figs) $(eps)

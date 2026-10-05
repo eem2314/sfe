@@ -4,6 +4,15 @@
 #   to extract pages from sfe.pdf and create a new pdf file:
 #      texexec --pdfselect --selection=78,79,80 sfe.pdf
 
+FORBIDDEN_DIR := /home/eem2314/sfe/repo
+# FORBIDDEN_DIR := /path/to/forbidden/directory
+# Or use relative check, e.g., if forbidden dir name is 'src':
+# CURDIR is built-in and always represents the absolute path of the directory containing the Makefile
+
+ifeq ($(abspath $(CURDIR)),$(abspath $(FORBIDDEN_DIR)))
+$(error "make is not allowed to run in this directory!")
+endif
+
 SUFFIXES = .fig .tex .eps .ps .pdf
 
 SUBDIRS = figures
@@ -26,7 +35,7 @@ params-names.tex \
 params-units.tex \
 preface.tex
 
-sfe.pdf:	$(SRC) figures/$(FIGS)
+sfe.pdf:	$(SRC)
 	cd figures && make all
 	pdflatex sfe.tex
 	biber sfe

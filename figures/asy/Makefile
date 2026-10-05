@@ -3,9 +3,14 @@
 # files to be processed with Asymptote (asy)
 # NOTES:
 
+FORBIDDEN_DIR := /home/eem2314/sfe/repo/figures/asy
+ifeq ($(abspath $(CURDIR)),$(abspath $(FORBIDDEN_DIR)))
+$(error "do not run make in the repo!")
+endif
+
 SUFFIXES = .asy .pdf
 
-ASY = optim3.asy
+ASY = contour.dpress.asy
 
 %.pdf:	%.asy
 	asy -f pdf $<

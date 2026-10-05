@@ -960,13 +960,12 @@ This yields a constrained steepest-ascent (descent) path through the
 infinity of solutions make possible by the additional variables.
 \index{optimization}\index{numerical continuation!optimization}
 
-where $\Vector{w}$ points in the direction we want the curve to go. Projecting
-it onto the nullspace gives a vector pointing in the direction of maximal
-increase is all zeros but plus or minus 1 in the spot for
-the variable to be optimized.
 The tangent is just $\bar{\Vector{t}}$, normalized with
 $\Vector{t} = \bar{\Vector{t}}/\|\bar{\Vector{t}}\|_2$
 
+Figure \ref{fig:optim} shows this process for a case
+where $m = n+2$, so the solution is a surface and at any
+point on the surface the possible tangents form a flat surface.
 
 For example, continuation-optimization is used in
 \Sectref{ex:goland-contour} to obtain starting points for tracing
@@ -980,13 +979,23 @@ with this $\Vector{w}$ then gives a path towards higher velocities
 with respect to all the parameters that were included.
 
 \begin{figure}[ht]
-		\includegraphics[height=8cm,width=15cm]{asy/optim3.pdf}
+		\includegraphics[height=8cm,width=15cm]{asy/contour.dpress.pdf}
+		% \includegraphics[height=8cm,width=15cm]{asy/optim3.pdf}
 	\centering
 	\caption{Tangent by projecting $\Vector{w}$ onto the nullspace with $m=n+2$ }
 	\label{fig:optim}
 \end{figure}
+
 Another practical application of this technique is in searching for
 start points for contours \Sectref{sect:contour-app}.
+
+Suppose we have a function of 3 parameters, $p_1, p_2, p_3$
+\begin{figure}[ht]
+		\includegraphics[height=8cm,width=15cm]{asy/contour.pdf}
+	\centering
+	\caption{Contours starting from an optimization curve}
+	\label{fig:contours}
+\end{figure}
 
 \section{Issues}\label{sect:issues}\index{numerical continuation!issues}
 Several things can go wrong in a continuation procedure, including
@@ -1056,22 +1065,6 @@ of the transposed Jacobian which can be used to compute the determinant
 efficiently.
 \index{numerical continuation!bifurcation}
 
-%% An easily computed method for detecting bifurcations
-%% is to monitor the determinant of the Jacobian matrix augmented with
-%% the tangent vector:
-%% \begin{equation*}
-%% 	\mu(\Vector{x}) = \det \left[ \begin{array}{c}
-%% 		\Matrix{J} \\
-%% 		\Vector{t}^T
-%% 	\end{array} \right] =
-%% 	\det \left[
-%% 		\Matrix{J}^T \;\; \Vector{t}
-%% 	\right]
-%% \end{equation*}
-%% a change in sign indicates the orientation has changed and either
-%% the tracking algorithm has jumped to a different curve (mode switching)
-%% or a bifurcation has been passed (\cite{allgower1990numerical}, p. 81).
-\par
 Evaluating the determinant is simplified by recognizing that
 %% the tangent came from the QR factorization, that
 the determinant of an orthogonal matrix is $\pm 1$,

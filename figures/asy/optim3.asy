@@ -37,7 +37,7 @@ label(rotate(theta) * Label("solution surface",
 		p=rgb(0.5, 0.4, 0.1)+fontsize(8pt)), 
       solpt, align=N);
 
-// 2. Point x_0
+// 2. Point x_j
 real x0_x = 0.0;
 //!! real x0_y = 0.0;
 real x0_y = 0.05;
@@ -46,7 +46,7 @@ real x0_z = 0.0;
 pair p = (x0_x, x0_y);
 triple x0 = f(p);
 dot(x0, p=black + 4pt);
-label("$\mathbf{x}_0$", x0-(0.03,0.03,-0.04), align=W);
+label("$\mathbf{x}_j$", x0-(0.03,0.03,-0.04), align=W);
 // label("$\mathbf{x}_0$", x0, align=W);
 
 // 3. Tangent plane at x_0 (z = 0)
