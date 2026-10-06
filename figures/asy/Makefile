@@ -10,7 +10,9 @@ endif
 
 SUFFIXES = .asy .pdf
 
-ASY = contour.dpress.asy
+ASY = \
+contour.dpress.asy \
+contours3D.asy
 
 %.pdf:	%.asy
 	asy -f pdf $<
