@@ -771,7 +771,7 @@ triple grid_normal(triple[][] P, int i, int j) {
 
 int level = 11;
 int sample = 20;
-triple x0 = P[level][sample];
+triple xk = P[level][sample];
 triple n_hat = grid_normal(P, level, sample);
 // XXX reverse n_hat to face inwards
 n_hat = -n_hat;
@@ -782,10 +782,10 @@ triple v_hat = unit(cross(n_hat, u_hat));
 
 // 2. Draw the square tangent plane facet
 real h = 0.45; // Half-width of tangent patch
-triple c1 = x0 - h * u_hat - h * v_hat;
-triple c2 = x0 + h * u_hat - h * v_hat;
-triple c3 = x0 + h * u_hat + h * v_hat;
-triple c4 = x0 - h * u_hat + h * v_hat;
+triple c1 = xk - h * u_hat - h * v_hat;
+triple c2 = xk + h * u_hat - h * v_hat;
+triple c3 = xk + h * u_hat + h * v_hat;
+triple c4 = xk - h * u_hat + h * v_hat;
 
 draw(surface(c1 -- c2 -- c3 -- c4 -- cycle), 
      surfacepen=material(rgb(0.98, 0.94, 0.82) + opacity(0.55)));
@@ -802,27 +802,29 @@ triple t_bar = w_len * sin(tilt) * dir_in_plane + 0.10*n_hat;
 
 // 4. Draw vectors:
 // w
-draw(x0 -- (x0 + w_vec), rgb(0.80, 0.20, 0.15) + 1.0pt, Arrow3(size=6pt), L=Label("$\mathbf{w}$", EndPoint, align=N));
+draw(xk -- (xk + w_vec), rgb(0.80, 0.20, 0.15) + 1.5pt, Arrow3(size=6pt), L=Label("$\mathbf{w}$", EndPoint, align=N));
 // t_j
-draw(x0 -- (x0 + t_bar), green + 1.0pt, Arrow3(size=6.5pt), L=Label("$\bar{\mathbf{t}}_j$", EndPoint, align=E));
+draw(xk -- (xk + t_bar), green + 1.5pt, Arrow3(size=6.5pt), L=Label("$\bar{\mathbf{t}}_k$", EndPoint, align=E));
 // dashed line dropped from w to tangent plane
-draw((x0 + w_vec) -- (x0 + t_bar), gray(0.3) + 0.8pt + linetype("2 2"));
-dot(x0, white + 4pt, L=Label("$\mathbf{x}_0$", align=SW));
+draw((xk + w_vec) -- (xk + t_bar), gray(0.3) + 0.8pt + linetype("2 2"));
+dot(xk, white + 4pt, L=Label("$\mathbf{x}_k$", align=SW));
 // Optional: u (orange), v (yellow), surface normal (green)
-// draw((x0) -- (x0 + u_hat), orange + 1.0pt);
-// draw((x0) -- (x0 + v_hat), yellow + 1.0pt);
-// draw((x0) -- (x0 + n_hat), green + 1.0pt);
+// draw((xk) -- (xk + u_hat), orange + 1.0pt);
+// draw((xk) -- (xk + v_hat), yellow + 1.0pt);
+// draw((xk) -- (xk + n_hat), green + 1.0pt);
 
 // Optional: normal
-// draw((x0) -- (x0 + n_hat), green + 1.6pt);
+// draw((xk) -- (xk + n_hat), green + 1.6pt);
 
 // Optional: u, v axes
-// draw((x0) -- (x0 + u_hat), orange + 1.0pt);
-// draw((x0) -- (x0 + v_hat), yellow + 1.0pt);
+// draw((xk) -- (xk + u_hat), orange + 1.0pt);
+// draw((xk) -- (xk + v_hat), yellow + 1.0pt);
 
 // zero sample line
 // draw((P[0][0] -- P[1][0] -- P[2][0] -- P[3][0] -- P[4][0] -- P[5][0] -- P[6][0] -- P[7][0] -- P[8][0] -- P[9][0] -- P[10][0] -- P[11][0] -- P[12][0] -- P[13][0]),red+1.0pt);
 
 // optimization curve
-draw(((x0+0.01*n_hat){-t_bar} .. P[level-1][sample-2] .. P[level-2][sample-2] .. P[level-3][sample-1] .. P[level-4][sample]),white+1.0pt);
+triple x0 = P[0][0];
+dot(x0, red + 4pt, L=Label("$\mathbf{x}_0$", align=S));
+draw(((xk+0.01*n_hat){-t_bar} .. P[level-1][sample-2] .. P[level-2][sample-2] .. P[level-3][sample-1] .. P[level-4][sample] .. x0),white+1.0pt);
 

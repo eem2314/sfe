@@ -11,6 +11,7 @@ endif
 SUFFIXES = .asy .pdf
 
 ASY = \
+COexample.asy \
 contour.dpress.asy \
 contours3D.asy
 

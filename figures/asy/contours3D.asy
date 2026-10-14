@@ -771,9 +771,9 @@ for (triple[] pts : raw_contours) {
 		
 
 // 4. Optional: reference axes
-draw(O -- (1.0, 0, 0), black + 0.6pt, Arrow3(size=5pt), L=Label("x", EndPoint, align=S));
-draw(O -- (0, 1.0, 0), black + 0.6pt, Arrow3(size=5pt), L=Label("y", EndPoint, align=E));
-draw(O -- (0, 0, 0.5), black + 0.6pt, Arrow3(size=5pt), L=Label("z", EndPoint, align=N));
+// draw(O -- (1.0, 0, 0), black + 0.6pt, Arrow3(size=5pt), L=Label("x", EndPoint, align=S));
+// draw(O -- (0, 1.0, 0), black + 0.6pt, Arrow3(size=5pt), L=Label("y", EndPoint, align=E));
+// draw(O -- (0, 0, 0.5), black + 0.6pt, Arrow3(size=5pt), L=Label("z", EndPoint, align=N));
 
 // Returns the outward unit normal at grid point P[i][j]
 triple grid_normal(triple[][] P, int i, int j) {
@@ -836,19 +836,6 @@ triple dir_in_plane = cos(az) * u_hat + sin(az) * v_hat;
 triple w_vec = w_len * (cos(tilt) * n_hat + sin(tilt) * dir_in_plane);
 triple t_bar = w_len * sin(tilt) * dir_in_plane + 0.10*n_hat;
 
-// 4. Draw vectors:
-// w
-// draw(x0 -- (x0 + w_vec), rgb(0.80, 0.20, 0.15) + 1.0pt, Arrow3(size=6pt), L=Label("$\mathbf{w}$", EndPoint, align=N));
-// t_j
-// draw(x0 -- (x0 + t_bar), green + 1.0pt, Arrow3(size=6.5pt), L=Label("$\bar{\mathbf{t}}_j$", EndPoint, align=E));
-// dashed line dropped from w to tangent plane
-// draw((x0 + w_vec) -- (x0 + t_bar), gray(0.3) + 0.8pt + linetype("2 2"));
-// dot(x0, white + 4pt, L=Label("$\mathbf{x}_0$", align=SW));
-// Optional: u (orange), v (yellow), surface normal (green)
-// draw((x0) -- (x0 + u_hat), orange + 1.0pt);
-// draw((x0) -- (x0 + v_hat), yellow + 1.0pt);
-// draw((x0) -- (x0 + n_hat), green + 1.0pt);
-
 // Optional: normal
 // draw((x0) -- (x0 + n_hat), green + 1.6pt);
 
@@ -860,5 +847,25 @@ triple t_bar = w_len * sin(tilt) * dir_in_plane + 0.10*n_hat;
 // draw((P[0][0] -- P[1][0] -- P[2][0] -- P[3][0] -- P[4][0] -- P[5][0] -- P[6][0] -- P[7][0] -- P[8][0] -- P[9][0] -- P[10][0] -- P[11][0] -- P[12][0] -- P[13][0]),red+1.0pt);
 
 // optimization curve
-draw((P[level+2][sample+2] .. P[level+1][sample+2] .. (x0+0.01*n_hat){-t_bar} .. P[level-1][sample-2] .. P[level-2][sample-2] .. P[level-3][sample-1] ..  P[level-4][sample] .. P[level-5][sample] .. P[level-6][sample] .. P[level-7][sample] .. P[level-8][sample] .. P[level-9][sample] .. P[level-10][sample] .. P[level-11][sample]),red+1.0pt);
+// draw((P[level+2][sample+2] .. P[level+1][sample+2] .. (x0+0.01*n_hat){-t_bar} .. P[level-1][sample-2] .. P[level-2][sample-2] .. P[level-3][sample-1] ..  P[level-4][sample] .. P[level-5][sample] .. P[level-6][sample] .. P[level-7][sample] .. P[level-8][sample] .. P[level-9][sample] .. P[level-10][sample] .. P[level-11][sample]),red+1.0pt);
+draw((P[level+2][sample+2] .. P[level+1][sample+2] .. P[level][sample] ..
+  P[level-1][sample-2] .. P[level-2][sample-2] .. P[level-3][sample-1] ..
+  P[level-4][sample] .. P[level-5][sample] .. P[level-6][sample] ..
+  P[level-7][sample] .. P[level-8][sample] .. P[level-9][sample] ..
+  P[level-10][sample] .. P[level-11][sample]),red+1.0pt);
 
+// dots at the intersections
+dot(P[level+2][sample+2], black+4pt);
+dot(P[level+1][sample+2], black+4pt);
+dot(P[level][sample], black+4pt);
+dot(P[level-1][sample-2], black+4pt);
+dot(P[level-2][sample-2], black+4pt);
+dot(P[level-3][sample-1], black+4pt);
+dot( P[level-4][sample], black+4pt);
+dot(P[level-5][sample], black+4pt);
+dot(P[level-6][sample], black+4pt);
+dot(P[level-7][sample], black+4pt);
+dot(P[level-8][sample], black+4pt);
+dot(P[level-9][sample], black+4pt);
+dot(P[level-10][sample], black+4pt);
+dot(P[level-11][sample],black+4pt);

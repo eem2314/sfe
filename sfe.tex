@@ -959,49 +959,66 @@ direction of the goal.
 This yields a constrained steepest-ascent (descent) path through the
 infinity of solutions make possible by the additional variables.
 \index{optimization}\index{numerical continuation!optimization}
-
 The tangent is just $\bar{\Vector{t}}$, normalized with
-$\Vector{t} = \bar{\Vector{t}}/\|\bar{\Vector{t}}\|_2$
+$\Vector{t} = \bar{\Vector{t}}/\|\bar{\Vector{t}}\|_2$.
 
-Figure \ref{fig:optim} shows this process for a case
-where $m = n+2$, so the solution is a surface and at any
-point on the surface the possible tangents form a flat surface.
+%% Figure \ref{fig:optim} shows this process for a case
+%% where $m = n+2$, so the solution is a surface and at any
+%% point on the surface the possible tangents form a flat surface.
+%% 
+%% For example, continuation-optimization is used in
+%% \Sectref{ex:goland-contour} to obtain starting points for tracing
+%% contours of dynamic pressure as a function of aerodynamic center and
+%% center of gravity.
+%% if we want to increase a flutter speed by changing some
+%% parameter values we could include all the relevant parameters in the
+%% solution and choose the vector $\Vector{w}$ to be all zeros except
+%% a $1$ in the element corresponding to velocity. Computing the tangent
+%% with this $\Vector{w}$ then gives a path towards higher velocities
+%% with respect to all the parameters that were included.
 
-For example, continuation-optimization is used in
-\Sectref{ex:goland-contour} to obtain starting points for tracing
-contours of dynamic pressure as a function of aerodynamic center and
-center of gravity.
-if we want to increase a flutter speed by changing some
-parameter values we could include all the relevant parameters in the
-solution and choose the vector $\Vector{w}$ to be all zeros except
-a $1$ in the element corresponding to velocity. Computing the tangent
-with this $\Vector{w}$ then gives a path towards higher velocities
-with respect to all the parameters that were included.
+A small example illustrates the process.
+Suppose we have a function of three variables, $f(x_1,x_2,x_3) = 0$, so
+$n = 1, m = 3$ and the solution is a surface over a range of $x_1, x_2, x_3$.
+Suppose also that we know one solution of the equation, $\Vector{x}_0$,
+and we wish to find the minimum of $x_2$ on the surface.
 
 \begin{figure}[ht]
-		\includegraphics[height=8cm,width=15cm]{asy/contour.dpress.pdf}
-		% \includegraphics[height=8cm,width=15cm]{asy/optim3.pdf}
+		\includegraphics[height=9cm,width=12cm]{asy/COexample.pdf}
+	\centering
+	\caption{Solution surface for $f(x_1,x_2,x_3) = 0$ with a known solution
+		$\Vector{x}_0$ and goal $\Vector{g}$}
+	\label{fig:COexample}
+\end{figure}
+
+The Jacobian in this case is $\Vector{J} = \left[ \partial f/\partial x_1
+\;\;\partial f/\partial x_2\;\; \partial f/\partial x_3\right]$.
+The QR factorization of the transpose of $\Vector{J}$ (\Eqn{eqn:qr}):,
+\begin{equation}
+\Matrix{J}^{t} = \Matrix{QR} = \left[ \Matrix{Q}_1 \;\; \Matrix{Q}_2 \right]
+	\left[ \begin{array}{c}
+		\Matrix{R}_1 \\
+		\Matrix{0} \\
+	\end{array}\right]
+\end{equation}
+where $\Matrix{Q}_1$ is a $(3,1)$ vector, $\Matrix{R}_1$
+is just a number, and $\Matrix{Q}_2$ is a (3,2) matrix.
+
+\begin{figure}[ht]
+		\includegraphics[height=9cm,width=12cm]{asy/contour.dpress.pdf}
 	\centering
 	\caption{Tangent by projecting $\Vector{w}$ onto the nullspace with $m=n+2$ }
 	\label{fig:optim}
 \end{figure}
 
-Another practical application of this technique is in searching for
-start points for contours \Sectref{sect:contour-app}.
+Another practical application of this technique is searching for
+start points for contours.  % \Sectref{sect:contour-app}.
 
 \begin{figure}[ht]
 		\includegraphics[height=8cm,width=15cm]{asy/contours3D.pdf}
 	\centering
 	\caption{Contours started from a continuation-optimization curve}
 	\label{fig:contours3D}
-\end{figure}
-
-Suppose we have a function of 3 parameters, $p_1, p_2, p_3$
-\begin{figure}[ht]
-		\includegraphics[height=8cm,width=15cm]{asy/contour.pdf}
-	\centering
-	\caption{Contours starting from an optimization curve}
-	\label{fig:contours}
 \end{figure}
 
 \section{Issues}\label{sect:issues}\index{numerical continuation!issues}
@@ -1802,7 +1819,8 @@ to start branches at various velocities with variables
 		\text{alt}
 	\end{array}\right\}_{V=\text{constant}, \sigma=0}
 \end{displaymath}
-giving a plot like \Figref{fig:contour1}.
+giving a plot like \Figref{fig:contour1} showing the effects of altitude
+and fuel on flutter speed.
 
 \begin{figure}[ht] 	% complains if h
 		\includegraphics[height=2.5in,width=4.0in]{contour1.eps}
