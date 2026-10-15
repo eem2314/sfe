@@ -768,12 +768,14 @@ triple grid_normal(triple[][] P, int i, int j) {
     return n;
 }
 
+int x0level = 7;
+int x0sample = 5;
 int glevel = 13;
 int gsample = 30;
 triple g = P[glevel][gsample];
 dot(g, green + 4pt, L=Label("$\mathbf{g}$", align=NW));
-triple x0 = P[0][0];
-dot(x0, red + 4pt, L=Label("$\mathbf{x}_0$", align=S));
+triple x0 = P[x0level][x0sample];
+dot(x0, red + 4pt, L=Label("$\mathbf{x}_0$", align=SE));
 
 int level = 11;
 int sample = 20;
@@ -786,11 +788,7 @@ int M = P[level].length - 1;
 triple u_hat = unit(P[level][(sample + 1) % M] - P[level][(sample - 1 + M) % M]);
 triple v_hat = unit(cross(n_hat, u_hat));
 
-// Coordinate system u,v,n
-// draw(x0 -- x0+n_hat, black + 0.6pt, Arrow3(size=5pt), L=Label("$x_1$", EndPoint, align=S));
-// draw(x0 -- x0+u_hat, black + 0.6pt, Arrow3(size=5pt), L=Label("$x_3$", EndPoint, align=S));
-// draw(x0 -- x0-v_hat+0.5*n_hat, white + 0.6pt, Arrow3(size=5pt), L=Label("$x_2$", EndPoint, align=S));
-
+// Coordinate system
 xaxis3(Label("$x_1$", align=S), black+0.7pt, xmin=0);
 // Arrow3(size=5pt));
 yaxis3(Label("$x_2$", align=S), black+0.7pt, ymin=0);

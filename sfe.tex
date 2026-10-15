@@ -5,6 +5,7 @@
 \usepackage{amsmath}   % for math environments (includes pmatrix, bmatrix)
 \usepackage{amssymb}   % for math symbols
 \numberwithin{equation}{section}   % start numbering in each section instead of chapter
+\usepackage[section]{placeins}	% force figures to show in their section
 \usepackage{color}     % for revision highlights
 \usepackage{graphicx}
 % \usepackage[draft]{graphicx}  % ADDED DRAFT OPTION to prevent compilation failure due to missing images
@@ -979,9 +980,21 @@ $\Vector{t} = \bar{\Vector{t}}/\|\bar{\Vector{t}}\|_2$.
 
 A small example illustrates the process.
 Suppose we have a function of three variables, $f(x_1,x_2,x_3) = 0$, so
-$n = 1, m = 3$ and the solution is a surface over a range of $x_1, x_2, x_3$.
+$n = 1, m = 3$ and the solution is a surface over a range of $x_1, x_2, x_3$,
+\Figref{fig:COexample}.
 Suppose also that we know one solution of the equation, $\Vector{x}_0$,
 and we wish to find the minimum of $x_2$ on the surface.
+The continuation process of \Sectref{sect:pseudo} can be used to trace
+curves on the surface provided the modified tangent calculation \Eqn{eqn:project}
+is used to guide the curve toward the minimum of $x_2$ with
+\begin{equation*}
+	\Vector{w} = \left\{\begin{array}{c}
+			0 \\
+			-1 \\
+			0
+		\end{array}\right\}
+\end{equation*}
+
 
 \begin{figure}[ht]
 		\includegraphics[height=9cm,width=12cm]{asy/COexample.pdf}
@@ -993,7 +1006,7 @@ and we wish to find the minimum of $x_2$ on the surface.
 
 The Jacobian in this case is $\Vector{J} = \left[ \partial f/\partial x_1
 \;\;\partial f/\partial x_2\;\; \partial f/\partial x_3\right]$.
-The QR factorization of the transpose of $\Vector{J}$ (\Eqn{eqn:qr}):,
+The QR factorization of the transpose of $\Vector{J}$ (\Eqn{eqn:qr}),
 \begin{equation}
 \Matrix{J}^{t} = \Matrix{QR} = \left[ \Matrix{Q}_1 \;\; \Matrix{Q}_2 \right]
 	\left[ \begin{array}{c}
@@ -1001,8 +1014,12 @@ The QR factorization of the transpose of $\Vector{J}$ (\Eqn{eqn:qr}):,
 		\Matrix{0} \\
 	\end{array}\right]
 \end{equation}
-where $\Matrix{Q}_1$ is a $(3,1)$ vector, $\Matrix{R}_1$
-is just a number, and $\Matrix{Q}_2$ is a (3,2) matrix.
+gives a 3-vector $\Matrix{Q}_1$, a number $\Matrix{R}_1$,
+and a (3,2) matrix $\Matrix{Q}_2$. The two columns of $\Matrix{Q}_2$ are
+the basis for the tangent plane at each point along the curve. \Figref{fig:optim}
+shows the vector $\Vector{w}$ and it's projection onto the tangent plane,
+giving the tangent $\Vector{t}_k$ at $\Vector{x}_k$ to use in predicting
+step $\Vector{x}_{k+1}$.
 
 \begin{figure}[ht]
 		\includegraphics[height=9cm,width=12cm]{asy/contour.dpress.pdf}
@@ -1013,13 +1030,32 @@ is just a number, and $\Matrix{Q}_2$ is a (3,2) matrix.
 
 Another practical application of this technique is searching for
 start points for contours.  % \Sectref{sect:contour-app}.
+A quick, easy way to simulate a 3D plot of data is by showing fixed-value
+contours of one of three variables.
+Continuing with the example, the continuation-optimization procedure
+could be used to get start points for contours in $x_3$ by starting at
+$\Vector{x}_0$ as before, but this time using
+\begin{equation*}
+	\Vector{w} = \left\{\begin{array}{c}
+			0 \\
+			0 \\
+			1
+		\end{array}\right\}
+\end{equation*}
+giving an optimization curve and the $x_3$ contours started from various
+points on the curve in \Figref{fig:contours3D}.
 
 \begin{figure}[ht]
-		\includegraphics[height=8cm,width=15cm]{asy/contours3D.pdf}
+		\includegraphics[height=9cm,width=12cm]{asy/contours3D.pdf}
 	\centering
 	\caption{Contours started from a continuation-optimization curve}
 	\label{fig:contours3D}
 \end{figure}
+
+A major problem with computing contours, often solved with this
+technique, is finding with reasonable certainty all contour start points.
+In this example a search for start points using
+the traditional method of parameter variations 
 
 \section{Issues}\label{sect:issues}\index{numerical continuation!issues}
 Several things can go wrong in a continuation procedure, including

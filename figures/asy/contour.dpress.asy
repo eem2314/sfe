@@ -824,7 +824,12 @@ dot(xk, white + 4pt, L=Label("$\mathbf{x}_k$", align=SW));
 // draw((P[0][0] -- P[1][0] -- P[2][0] -- P[3][0] -- P[4][0] -- P[5][0] -- P[6][0] -- P[7][0] -- P[8][0] -- P[9][0] -- P[10][0] -- P[11][0] -- P[12][0] -- P[13][0]),red+1.0pt);
 
 // optimization curve
-triple x0 = P[0][0];
-dot(x0, red + 4pt, L=Label("$\mathbf{x}_0$", align=S));
-draw(((xk+0.01*n_hat){-t_bar} .. P[level-1][sample-2] .. P[level-2][sample-2] .. P[level-3][sample-1] .. P[level-4][sample] .. x0),white+1.0pt);
+int x0level = 7;
+int x0sample = 4;
+// triple x0 = P[0][0];
+triple x0 = P[x0level][x0sample];
+dot(x0, red + 4pt, L=Label("$\mathbf{x}_0$", align=SE));
+// draw(((xk+0.01*n_hat){-t_bar} .. P[level-1][sample-2] .. P[level-2][sample-2] .. P[level-3][sample-1] .. P[level-4][sample] .. x0),white+1.0pt);
+draw(((xk+0.01*n_hat){-t_bar} .. P[level-1][sample-2] ..
+	P[level-2][sample-7] .. x0),white+1.0pt);
 

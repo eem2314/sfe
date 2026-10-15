@@ -759,22 +759,6 @@ for (triple[] pts : raw_contours) {
 	// draw_funnel_ring(pn, (0,0,2), cam, 60);
 }
 
-// surface funnel_manifold = surface(P);
-
-// 1. Draw the underlying surface as flat opaque white (no shading/lighting)
-// draw(funnel_manifold, surfacepen=material(white, white, black), meshpen=nullpen);
-
-// 2. Draw your wireframe contour loops and ribs on top
-// for (int i = 0; i < N_levels; ++i) {
-//     draw(contour_path[i], black + 0.8pt);
-// }
-		
-
-// 4. Optional: reference axes
-// draw(O -- (1.0, 0, 0), black + 0.6pt, Arrow3(size=5pt), L=Label("x", EndPoint, align=S));
-// draw(O -- (0, 1.0, 0), black + 0.6pt, Arrow3(size=5pt), L=Label("y", EndPoint, align=E));
-// draw(O -- (0, 0, 0.5), black + 0.6pt, Arrow3(size=5pt), L=Label("z", EndPoint, align=N));
-
 // Returns the outward unit normal at grid point P[i][j]
 triple grid_normal(triple[][] P, int i, int j) {
     int N = P.length;
@@ -804,68 +788,43 @@ triple grid_normal(triple[][] P, int i, int j) {
     return n;
 }
 
-
-int level = 11;
-int sample = 20;
-triple x0 = P[level][sample];
-triple n_hat = grid_normal(P, level, sample);
-// XXX reverse n_hat to face inwards
-n_hat = -n_hat;
-// 1. Orthonormal basis (u_hat, v_hat) in the tangent plane
-int M = P[level].length - 1;
-triple u_hat = unit(P[level][(sample + 1) % M] - P[level][(sample - 1 + M) % M]);
-triple v_hat = unit(cross(n_hat, u_hat));
-
-// 2. Draw the square tangent plane facet
-real h = 0.45; // Half-width of tangent patch
-triple c1 = x0 - h * u_hat - h * v_hat;
-triple c2 = x0 + h * u_hat - h * v_hat;
-triple c3 = x0 + h * u_hat + h * v_hat;
-triple c4 = x0 - h * u_hat + h * v_hat;
-
-// draw(surface(c1 -- c2 -- c3 -- c4 -- cycle), 
-//     surfacepen=material(rgb(0.98, 0.94, 0.82) + opacity(0.55)));
-// draw(c1 -- c2 -- c3 -- c4 -- cycle, rgb(0.65, 0.55, 0.25) + 0.6pt + linetype("4 4"));
-
-// 3. Construct w, t_bar, and drop line
-real tilt = radians(40);
-real az   = radians(-50.0);
-real w_len = 0.70;
-
-triple dir_in_plane = cos(az) * u_hat + sin(az) * v_hat;
-triple w_vec = w_len * (cos(tilt) * n_hat + sin(tilt) * dir_in_plane);
-triple t_bar = w_len * sin(tilt) * dir_in_plane + 0.10*n_hat;
-
-// Optional: normal
-// draw((x0) -- (x0 + n_hat), green + 1.6pt);
-
-// Optional: u, v axes
-// draw((x0) -- (x0 + u_hat), orange + 1.0pt);
-// draw((x0) -- (x0 + v_hat), yellow + 1.0pt);
-
-// zero sample line
-// draw((P[0][0] -- P[1][0] -- P[2][0] -- P[3][0] -- P[4][0] -- P[5][0] -- P[6][0] -- P[7][0] -- P[8][0] -- P[9][0] -- P[10][0] -- P[11][0] -- P[12][0] -- P[13][0]),red+1.0pt);
+int x0level = 7;
+int x0sample = 4;
+triple x0 = P[x0level][x0sample];
+dot(x0, red + 4pt, L=Label("$\mathbf{x}_0$", align=SE));
 
 // optimization curve
-// draw((P[level+2][sample+2] .. P[level+1][sample+2] .. (x0+0.01*n_hat){-t_bar} .. P[level-1][sample-2] .. P[level-2][sample-2] .. P[level-3][sample-1] ..  P[level-4][sample] .. P[level-5][sample] .. P[level-6][sample] .. P[level-7][sample] .. P[level-8][sample] .. P[level-9][sample] .. P[level-10][sample] .. P[level-11][sample]),red+1.0pt);
-draw((P[level+2][sample+2] .. P[level+1][sample+2] .. P[level][sample] ..
-  P[level-1][sample-2] .. P[level-2][sample-2] .. P[level-3][sample-1] ..
-  P[level-4][sample] .. P[level-5][sample] .. P[level-6][sample] ..
-  P[level-7][sample] .. P[level-8][sample] .. P[level-9][sample] ..
-  P[level-10][sample] .. P[level-11][sample]),red+1.0pt);
+triple p1 = P[x0level+1][x0sample+2];
+triple p2 = P[x0level+2][x0sample+4];
+triple p3 = P[x0level+3][x0sample+6];
+triple p4 = P[x0level+4][x0sample+10];
+triple p5 = P[x0level+5][x0sample+14];
+triple ptop = P[13][20];
+triple m1 = P[x0level-1][x0sample-1];
+triple m2 = P[x0level-2][x0sample-1];
+triple m3 = P[x0level-3][x0sample-2];
+triple m4 = P[x0level-4][x0sample-3];
+triple m5 = P[x0level-5][x0sample-4];
+triple mbot = P[0][x0sample-4];
+draw((x0 .. p1 .. p2 .. p3 .. p4 .. p5 .. ptop), red + 1.0pt);
+draw((x0{x0-p1} .. m1 .. m2 .. m3 .. m4 .. m5 .. mbot), blue + 1.0pt);
 
 // dots at the intersections
-dot(P[level+2][sample+2], black+4pt);
-dot(P[level+1][sample+2], black+4pt);
-dot(P[level][sample], black+4pt);
-dot(P[level-1][sample-2], black+4pt);
-dot(P[level-2][sample-2], black+4pt);
-dot(P[level-3][sample-1], black+4pt);
-dot( P[level-4][sample], black+4pt);
-dot(P[level-5][sample], black+4pt);
-dot(P[level-6][sample], black+4pt);
-dot(P[level-7][sample], black+4pt);
-dot(P[level-8][sample], black+4pt);
-dot(P[level-9][sample], black+4pt);
-dot(P[level-10][sample], black+4pt);
-dot(P[level-11][sample],black+4pt);
+dot(p1, black+4pt);
+dot(p2, black+4pt);
+dot(p3, black+4pt);
+dot(p4, black+4pt);
+dot(p5, black+4pt);
+dot(ptop, black+4pt);
+dot(m1, black+4pt);
+dot(m2, black+4pt);
+dot(m3, black+4pt);
+dot(m4, black+4pt);
+dot(m5, black+4pt);
+dot(mbot, black+4pt);
+
+// Coordinate system
+xaxis3(Label("$x_1$", align=S), black+0.7pt, xmin=0);
+// Arrow3(size=5pt));
+yaxis3(Label("$x_2$", align=S), black+0.7pt, ymin=0);
+zaxis3(Label("$x_3$", align=N), black+0.7pt, zmin=0);
