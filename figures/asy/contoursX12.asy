@@ -806,7 +806,6 @@ triple[] intersects(triple[][] P, real val, int fix) {
 			}
 		}
 	}
-
 	return rval;
 }
 

@@ -753,11 +753,11 @@ for (triple[] pts : raw_contours) {
    // append the first point to close the loop
    row.push(row[0]);
    P.push(row);
-   // Optional: Draw the actual continuous contour ring on the figure
+   // Contour ring (red) and all others (gray)
 	if (i == level)
 		draw(pn, red + 1.0pt);
 	else
-		draw(pn, gray + 0.5pt);
+		draw(pn, rgb(0.85,0.85,0.85) + 0.3pt);
 	++i;
 }
 
@@ -797,14 +797,12 @@ light Headlamp=light(gray(0.8),specular=gray(0.7),
 int fix = 3;		// 1-based!
 // real p0 = 0.114;
 real p0 = P[level][0].z;
-// triple[] C = cutplane(0.11538461538461538, 3);
- triple[] C = cutplane(p0, 3);
-// triple[] C = cutplane(0.5, 3);
+
+// The contour plane
+triple[] C = cutplane(p0, 3);
 draw(surface(C[0] -- C[1] -- C[2] -- C[3] -- cycle), 
      surfacepen=rgb(1.0, 1.0, 1.0) + opacity(0.9));
      // surfacepen=rgb(0.98, 0.94, 0.82) + opacity(0.9));
-
-// draw(C[0] -- C[3] -- C[2] -- C[1] -- cycle, rgb(0.65, 0.55, 0.25) + 0.6pt + linetype("4 4"));
 
 // draw(surface(c1 -- c2 -- c3 -- c4 -- cycle), 
   //    surfacepen=material(rgb(0.98, 0.94, 0.82) + opacity(0.7)));
@@ -846,6 +844,6 @@ draw(x0{(-1,1,0)} .. x1, green+0.6pt);
 dot(x1, black+4pt);
 
 // Coordinate system
-xaxis3(Label("$x_1$", align=S), red+0.7pt, xmin=0);
-yaxis3(Label("$x_2$", align=S), red+0.7pt, ymin=0);
-zaxis3(Label("$x_3$", align=N), red+0.7pt, zmin=0);
+xaxis3(Label("$x_1$", rgb(0.8,0.8,0.8), align=S), gray+0.1pt, xmin=0);
+yaxis3(Label("$x_2$", rgb(0.8,0.8,0.8), align=S), gray+0.1pt, ymin=0);
+zaxis3(Label("$x_3$", rgb(0.8,0.8,0.8), align=N), gray+0.1pt, zmin=0);

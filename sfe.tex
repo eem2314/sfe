@@ -623,8 +623,8 @@ $()^T$ & & transpose \\
 \section{Background}\label{sect:background}
 Continuation methods have been developed by mathematicians since the
 mid-20th century as a means for solving nonlinear equations,
-and simultaneously by engineers where they are known as \emph{incremental methods}
-\cite{oden2006finite}.
+and simultaneously by engineers where they are known as
+\emph{incremental methods} \cite{oden2006finite}.
 The recognition that incremental methods belong to the class of methods
 known as continuation methods put them on a more solid theoretical footing
 \cite{rheinboldt1981numerical}.
@@ -938,6 +938,44 @@ f_{n+1} & = p - \hat{p} = 0  \nonumber \\
 If the parameter $p$ is a component of $\Vector{x}$, $\Vector{c}$ is all zeros
 but a $1$ in the element corresponding to the parameter, i.e. a row of the identity matrix.
 
+\section{Contours}\label{sect:contours}\index{contours}
+Contouring has a long history as a means of visualizing 3D objects in
+2D: computer screens or pages of a book. Early uses were for mapping
+explicit functions $z = f(x,y)$, such as the depth of the ocean or
+height of land.
+More recently it has been use to visualize 3 variables at a time,
+solutions of $n$ implicit functions of $m$ variables, with $m = n+2$.
+% \footnote{$\Vector{f}$ may be a vector function of $n$ equations in $m$
+% variables but we can only visualize 3 at a time.}
+
+Contouring explicit equations is just a matter of determining equal
+values of (e.g. depth or height) in sets of data. In contrast, contouring
+an implicit equation requires solving the equation but is a very
+efficient way of minimizing the number of solutions required to
+visualize the solution surface.
+
+To illustrate the process, and without loss of generality, consider
+the smallest such example, 1 equation in 3 unknowns, $f(x_1,x_2,x_3) = 0$.
+Because $n=1$ and $m=n+2$
+the solution set is a surface \Eqn{eqn:fx}, shown in \Figref{COexample}.
+By holding one of the variables constant we can trace a contour of that
+variable using numerical continuation. All that is necessary is a start
+point for the continuation process.
+
+\begin{figure}[ht]
+		\includegraphics[height=9cm,width=12cm]{asy/contoursX3.pdf}
+	\centering
+	\caption{Solution surface for $f(x_1,x_2,x_3) = 0$ with a homotopy (green)
+		to a start point for the contour (red)
+	\label{fig:COexample}
+\end{figure}
+
+Holding one of the unknowns
+constant allows for solving the system for a contour with numerical
+continuation, but first it is necessary to find a solution to the
+equations that serves as a starting point for the contour.
+For example, suppose the solution surface is shown in \Figref{fig:COexample}.
+To compute a contour in $x_3$
 
 \section{Continuation-Optimization}\label{sect:optim}\index{numerical continuation!optimization}
 Normally, to track curves with numerical continuation the number of unknowns

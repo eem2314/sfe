@@ -754,7 +754,7 @@ for (triple[] pts : raw_contours) {
 	// draw(pn, white + 4.0pt);
 	// draw(pn, white + 1.0pt);
 	// draw(pn, black + 0.8pt);
-	draw(pn, red + 1.0pt);
+	// draw(pn, red + 1.0pt);
 	//
 	// draw_funnel_ring(pn, (0,0,2), cam, 60);
 }
@@ -768,9 +768,13 @@ triple[] cutplane(real x, int fix) {
 	if (fix == 1) {
 		xk = (x, 0, 0);
 		u_hat = (0.0, 1.0, 0.0);
-	} else {
+	} else if (fix == 2) {
 		xk = (0, x, 0);
 		u_hat = (1.0, 0.0, 0.0);
+	} else if (fix == 3) {
+		xk = (0, 0, x);
+		u_hat = (1.0, 0.0, 0.0);
+		v_hat = (0.0, 1.0, 0.0);
 	}
 	rval.push(xk - width * u_hat - width * v_hat);
 	rval.push(xk + width * u_hat - width * v_hat);
@@ -778,29 +782,40 @@ triple[] cutplane(real x, int fix) {
 	rval.push(xk - width * u_hat + width * v_hat);
 	return rval;
 }
-triple[] C = cutplane(0.5, 2);
+
+// Surface
+surface funnel_manifold = surface(P);
+draw(funnel_manifold,
+   surfacepen=material(rgb(0.88, 0.92, 0.98) + opacity(0.20)),
+		meshpen=rgb(0.70, 0.75, 0.88) + 0.1pt);
+
+// Cutting plane at level 'level'
+int level = 10;
+real p0 = P[level][0].z;
+triple[] C = cutplane(p0, 3);
 draw(surface(C[0] -- C[1] -- C[2] -- C[3] -- cycle), 
      surfacepen=material(rgb(0.98, 0.94, 0.82) + opacity(0.7)));
-draw(C[0] -- C[3] -- C[2] -- C[1] -- cycle, rgb(0.65, 0.55, 0.25) + 0.6pt + linetype("4 4"));
 
-// x2-x3 plane at x1=?
-real x1 = 1.0;
-real width = 2.0;
-triple xk = (x1, 0, 0);
-triple u_hat = (0.0, 1.0, 0.0);
-triple v_hat = (0.0, 0.0, 1.0);
-triple c1 = xk - width * u_hat - width * v_hat;
-triple c2 = xk + width * u_hat - width * v_hat;
-triple c3 = xk + width * u_hat + width * v_hat;
-triple c4 = xk - width * u_hat + width * v_hat;
+// reverse winding number
+// draw(C[0] -- C[3] -- C[2] -- C[1] -- cycle,
+//		rgb(0.65, 0.55, 0.25) + 0.6pt + linetype("4 4"));
 
-// draw(surface(c1 -- c2 -- c3 -- c4 -- cycle), 
-  //    surfacepen=material(rgb(0.98, 0.94, 0.82) + opacity(0.7)));
-// draw(c1 -- c2 -- c3 -- c4 -- cycle, rgb(0.65, 0.55, 0.25) + 0.6pt + linetype("4 4"));
+// Homotopy
+triple h1 = (0, 0, p0);
+triple h2 = h1 + (0.1, 0.1, 0);
+draw(h1 .. h2 .. P[level][0], green+0.6pt);
+dot(h1, green+4pt);
+dot(P[level][0], green+4pt);
 
-
+// PV trace: Contour
+guide3 pvguide;
+for (triple p : P[level])
+	pvguide = pvguide .. p;
+pvguide = pvguide .. cycle;
+path3 pv = pvguide;   // eval cubic Bezier in isotropic space
+draw(pv, white+0.8pt);
 
 // Coordinate system
-xaxis3(Label("$x_1$", align=S), red+0.7pt, xmin=0);
-yaxis3(Label("$x_2$", align=S), red+0.7pt, ymin=0);
-zaxis3(Label("$x_3$", align=N), red+0.7pt, zmin=0);
+xaxis3(Label("$x_1$", align=S), gray+0.7pt, xmin=0);
+yaxis3(Label("$x_2$", align=S), gray+0.7pt, ymin=0);
+zaxis3(Label("$x_3$", align=N), gray+0.7pt, zmin=0);
