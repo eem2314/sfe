@@ -13,6 +13,10 @@ SUFFIXES = .asy .pdf
 ASY = \
 COexample.asy \
 contour.dpress.asy \
+contourpv.asy \
+contour3pv.asy \
+contours.asy \
+contoursX3.asy \
 contours3D.asy
 
 %.pdf:	%.asy

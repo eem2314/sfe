@@ -754,7 +754,7 @@ for (triple[] pts : raw_contours) {
 	// draw(pn, white + 4.0pt);
 	// draw(pn, white + 1.0pt);
 	// draw(pn, black + 0.8pt);
-	draw(pn, red + 1.0pt);
+	// draw(pn, red + 1.0pt);
 	//
 	// draw_funnel_ring(pn, (0,0,2), cam, 60);
 }
@@ -809,25 +809,99 @@ triple[] intersects(triple[][] P, real val, int fix) {
 	return rval;
 }
 
+triple[] order_curve_bidirectional(triple[] raw_pts) {
+    int n = raw_pts.length;
+    if (n <= 2) return raw_pts;
+
+    triple[] chain;
+    bool[] visited = array(n, false);
+
+    // Seed the chain with an arbitrary point (e.g., index 0)
+    int seed = 0;
+    visited[seed] = true;
+    chain.push(raw_pts[seed]);
+
+    for (int step = 1; step < n; ++step) {
+        real min_d2 = infinity;
+        int best_idx = -1;
+        bool attach_front = false;
+
+        triple p_front = chain[0];
+        triple p_back  = chain[chain.length - 1];
+
+        // Find the unvisited point closest to either end of the chain
+        for (int i = 0; i < n; ++i) {
+            if (!visited[i]) {
+                real d2_back  = abs2(raw_pts[i] - p_back);
+                real d2_front = abs2(raw_pts[i] - p_front);
+
+                if (d2_back < min_d2) {
+                    min_d2 = d2_back;
+                    best_idx = i;
+                    attach_front = false;
+                }
+                if (d2_front < min_d2) {
+                    min_d2 = d2_front;
+                    best_idx = i;
+                    attach_front = true;
+                }
+            }
+        }
+
+        if (best_idx != -1) {
+            visited[best_idx] = true;
+            if (attach_front) {
+                chain.insert(0, raw_pts[best_idx]); // Prepend to front
+            } else {
+                chain.push(raw_pts[best_idx]);     // Append to back
+            }
+        }
+    }
+
+    return chain;
+}
+
 light Headlamp=light(gray(0.8),specular=gray(0.7),
 	specularfactor=3,dir(42,48), (5.0,5.0,5.2));
 // currentlight=Headlamp;
 
-int fix = 1;		// 1-based!
-real p0 = 0.14;
- triple[] C = cutplane(p0, fix);
-draw(surface(C[0] -- C[1] -- C[2] -- C[3] -- cycle), 
-     surfacepen=rgb(0.98, 0.94, 0.82) + opacity(0.7));
+// Funnel surface
+surface funnel_manifold = surface(P);
+draw(funnel_manifold,
+   surfacepen=material(rgb(0.88, 0.92, 0.98) + opacity(0.10)),
+   meshpen=rgb(0.70, 0.75, 0.88) + opacity(0.1) + 0.2pt);
 
+int fix = 1;		// 1-based!
+real p0 = 0.34;
+
+// Cutting plane at x_1 = p0
+triple[] C = cutplane(p0, fix);
+draw(surface(C[0] -- C[1] -- C[2] -- C[3] -- cycle), 
+     surfacepen=rgb(1.0, 1.0, 1.0) + opacity(0.7));
+     // surfacepen=rgb(0.98, 0.94, 0.82) + opacity(0.7));
+
+// Spots at the intersections with contours
 triple[] spots = intersects(P, p0, fix);
 for (triple p : spots)
-	dot(p, white+3pt);
+ 	dot(p, white+3pt);
 
-// draw(surface(c1 -- c2 -- c3 -- c4 -- cycle), 
-  //    surfacepen=material(rgb(0.98, 0.94, 0.82) + opacity(0.7)));
-// draw(c1 -- c2 -- c3 -- c4 -- cycle, rgb(0.65, 0.55, 0.25) + 0.6pt + linetype("4 4"));
+// Sort the spots
+triple[] sorted = order_curve_bidirectional(spots);
+
+// Contour curve at x_1 = p0
+guide3 pvguide;
+for (triple p : sorted)
+	pvguide = pvguide .. p;
+path3 pv = pvguide;   // eval cubic Bezier in isotropic space
+draw(pv, white + 0.8pt);
+
+// Homotopy
+triple h1 = (p0+0.01, 0, 0);
+triple h2 = h1 + (0, -0.1, 0.1);
+draw(h1 .. h2 .. sorted[11], green+0.6pt);
+dot((p0,0,0), green+2pt);
 
 // Coordinate system
-// xaxis3(Label("$x_1$", align=S), red+0.7pt, xmin=0);
-// yaxis3(Label("$x_2$", align=S), red+0.7pt, ymin=0);
-// zaxis3(Label("$x_3$", align=N), red+0.7pt, zmin=0);
+xaxis3(Label("$x_1$", rgb(0.9,0.9,0.9), align=S), rgb(0.9,0.9,0.9)+0.4pt, xmin=0);
+yaxis3(Label("$x_2$", rgb(0.9,0.9,0.9), align=S), rgb(0.9,0.9,0.9)+0.4pt, ymin=0);
+zaxis3(Label("$x_3$", rgb(0.9,0.9,0.9), align=N), rgb(0.9,0.9,0.9)+0.4pt, zmin=0);

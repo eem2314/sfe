@@ -798,15 +798,22 @@ int fix = 3;		// 1-based!
 // real p0 = 0.114;
 real p0 = P[level][0].z;
 
-// The contour plane
+// Contour cutting plane
 triple[] C = cutplane(p0, 3);
 draw(surface(C[0] -- C[1] -- C[2] -- C[3] -- cycle), 
      surfacepen=rgb(1.0, 1.0, 1.0) + opacity(0.9));
      // surfacepen=rgb(0.98, 0.94, 0.82) + opacity(0.9));
 
+// Dashed line around the contour
 // draw(surface(c1 -- c2 -- c3 -- c4 -- cycle), 
   //    surfacepen=material(rgb(0.98, 0.94, 0.82) + opacity(0.7)));
 // draw(c1 -- c2 -- c3 -- c4 -- cycle, rgb(0.65, 0.55, 0.25) + 0.6pt + linetype("4 4"));
+
+// Funnel surface
+surface funnel_manifold = surface(P);
+draw(funnel_manifold,
+   surfacepen=material(rgb(0.88, 0.92, 0.98) + opacity(0.10)),
+   meshpen=rgb(0.70, 0.75, 0.88) + opacity(0.9) + 0.2pt);
 
 triple closest(int level, triple[][] P, triple x0) {
 	int n = P.length;

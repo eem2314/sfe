@@ -8,7 +8,7 @@
 \usepackage[section]{placeins}	% force figures to show in their section
 \usepackage{color}     % for revision highlights
 \usepackage{graphicx}
-% \usepackage[draft]{graphicx}  % ADDED DRAFT OPTION to prevent compilation failure due to missing images
+% \usepackage[draft]{graphicx}  % add to prevent failure due to missing images
 \usepackage{ifthen}
 \usepackage{alltt}     % for pseudo-code including math
 \usepackage{imakeidx}
@@ -957,25 +957,44 @@ visualize the solution surface.
 To illustrate the process, and without loss of generality, consider
 the smallest such example, 1 equation in 3 unknowns, $f(x_1,x_2,x_3) = 0$.
 Because $n=1$ and $m=n+2$
-the solution set is a surface \Eqn{eqn:fx}, shown in \Figref{COexample}.
-By holding one of the variables constant we can trace a contour of that
-variable using numerical continuation. All that is necessary is a start
-point for the continuation process.
+the solution set is a surface (\Eqn{eqn:fx}), shown in \Figref{fig:contours}.
+\begin{figure}[ht]
+		\includegraphics[height=9cm,width=12cm]{asy/contours.pdf}
+	\centering
+	\caption{Solution surface for $f(x_1,x_2,x_3) = 0$}
+	\label{fig:contours}
+\end{figure}
+But for now assume we know nothing about the solution, and the first task
+is to find a solution, any solution; assuming we don't have one at hand,
+a homotopy starting from an arbitrary point should take us to a nearby
+solution. From that start point we take each variable in turn and trace
+the solution throughout the range of the other two variables, a process
+commonly known as \emph{parameter variations}.\index{parameter variations}
+The result is illutstrated in \Figref{fig:contourpv} with the homotopy in white,
+the $x_2$-$x_3$ curve red, $x_1$-$x_3$ green, and $x_1$-$x_2$ blue. 
 
 \begin{figure}[ht]
-		\includegraphics[height=9cm,width=12cm]{asy/contoursX3.pdf}
+		\includegraphics[height=9cm,width=12cm]{asy/contourpv.pdf}
 	\centering
-	\caption{Solution surface for $f(x_1,x_2,x_3) = 0$ with a homotopy (green)
-		to a start point for the contour (red)
-	\label{fig:COexample}
+	\caption{Contour planes with a homotopy (white)
+		and $x_1$, $x_2$ and $x_3$ constant in red, green, and blue.}
+	\label{fig:contourpv}
 \end{figure}
+Choosing several values of $x_3$ on either the red or blue parameter
+variations as start points, a continuation process varying $x_1$ and
+$x_2$ with $x_3$ fixed gives several contours, as shown in
+\Figref{fig:contour3pv}.
 
-Holding one of the unknowns
-constant allows for solving the system for a contour with numerical
-continuation, but first it is necessary to find a solution to the
-equations that serves as a starting point for the contour.
-For example, suppose the solution surface is shown in \Figref{fig:COexample}.
-To compute a contour in $x_3$
+\begin{figure}[ht]
+		\includegraphics[height=9cm,width=12cm]{asy/contour3pv.pdf}
+	\centering
+	\caption{$x_3$ contours starting from the $x_2$-$x_3$ (red) and
+	$x_1$-$x_3$ (blue) parameter variations}
+	\label{fig:contour3pv}
+\end{figure}
+Unfortunately neither of the 2 parameter variations captured the
+full range of $x_3$. Another method, more likely to capture the full
+range, is continuation-optimization, discussed next.
 
 \section{Continuation-Optimization}\label{sect:optim}\index{numerical continuation!optimization}
 Normally, to track curves with numerical continuation the number of unknowns
