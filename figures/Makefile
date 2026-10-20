@@ -72,8 +72,9 @@ whirl-vso.fig
 
 EPS = $(FIGS:.fig=.eps)
 
-all: $(EPS)
-	cd asy && make
+all:
+	make $(EPS)
+	cd asy && make all
 
 # list of stuff to include in dist tarfile XXX no eps?
 EXTRA_DIST = $(nosrc) $(figs) $(eps)

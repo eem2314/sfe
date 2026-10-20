@@ -3,7 +3,7 @@
 import graph3;
 import three;
 settings.outformat = "pdf";
-settings.render = 4;			// XXX ?
+// settings.render = 4;			// XXX ?
 size(12cm, 9cm, IgnoreAspect);
 currentprojection = orthographic(camera=(5.0, 5.0, 5.2), up=(0, 0, 1));
 // Load book typography

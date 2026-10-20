@@ -4,7 +4,7 @@ import graph;
 usepackage("amsmath");
 // Document settings
 settings.outformat = "pdf";
-settings.render = 4;			// XXX ?
+// settings.render = 4;			// XXX ?
 size(12cm, 8cm, IgnoreAspect);
 // Load book typography
 defaultpen(fontsize(10pt));

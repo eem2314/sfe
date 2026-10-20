@@ -19,7 +19,8 @@ SUBDIRS = figures
 
 docdir=${prefix}/doc
 
-all-am:
+all:
+	cd figures && make all
 	make sfe.pdf
 
 # We must ignore errors from pdflatex because it always

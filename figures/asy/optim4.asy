@@ -5,7 +5,7 @@ import three;
 usepackage("amsmath");
 
 settings.outformat = "pdf";
-settings.render = 4;
+// settings.render = 4;
 
 size(11cm, 0);
 

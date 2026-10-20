@@ -6,7 +6,7 @@ usepackage("amsmath");
 
 // Document settings
 settings.outformat = "pdf";
-settings.render = 4; 
+// settings.render = 4; 
 
 size(10cm, 0);
 

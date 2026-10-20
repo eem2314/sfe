@@ -994,9 +994,10 @@ $x_2$ with $x_3$ fixed gives several contours, as shown in
 \end{figure}
 Unfortunately neither of the 2 parameter variations captured the
 full range of $x_3$. Another method, more likely to capture the full
-range, is continuation-optimization, discussed next.
+range, is continuation-optimization, presented next.
 
-\section{Continuation-Optimization}\label{sect:optim}\index{numerical continuation!optimization}
+\section{Continuation-Optimization (CO)}\label{sect:optim}
+\index{numerical continuation!optimization}
 Normally, to track curves with numerical continuation the number of unknowns
 must be exactly one greater than the number of equations; two greater
 yields surfaces, three volumes, and so on. Likewise, the tangent is a
@@ -1008,37 +1009,25 @@ The idea is straightforward: with more independent variables ($m > n+1$)
 the nullspace of the Jacobian (the tangent space) is more than
 one-dimensional and we can choose a direction in it that take us
 toward a goal. The goal is specified by a vector $\Vector{w}$ which
-is projected onto the tangent space:
+points to the goal or at least in the general direction of the goal. 
+It is not a tangent that can be used in the predictor phase of the
+continuation process, but projecting it onto the tangent space, which
+we do know, yields a tangent pointing towards the goal:
 \begin{equation} \label{eqn:project}
 \bar{\Vector{t}} = \Matrix{Q}_2\Matrix{Q}_2^T\,\Vector{w} \quad \in \mathbb{R}^m
 \end{equation}
-giving a vector $\bar{\Vector{t}}$ which is closest to $\Vector{w}$, the
-direction of the goal.
+% giving a vector $\bar{\Vector{t}}$ which is closest to $\Vector{w}$, the
+% direction of the goal.
 This yields a constrained steepest-ascent (descent) path through the
 infinity of solutions make possible by the additional variables.
 \index{optimization}\index{numerical continuation!optimization}
 The tangent is just $\bar{\Vector{t}}$, normalized with
 $\Vector{t} = \bar{\Vector{t}}/\|\bar{\Vector{t}}\|_2$.
 
-%% Figure \ref{fig:optim} shows this process for a case
-%% where $m = n+2$, so the solution is a surface and at any
-%% point on the surface the possible tangents form a flat surface.
-%% 
-%% For example, continuation-optimization is used in
-%% \Sectref{ex:goland-contour} to obtain starting points for tracing
-%% contours of dynamic pressure as a function of aerodynamic center and
-%% center of gravity.
-%% if we want to increase a flutter speed by changing some
-%% parameter values we could include all the relevant parameters in the
-%% solution and choose the vector $\Vector{w}$ to be all zeros except
-%% a $1$ in the element corresponding to velocity. Computing the tangent
-%% with this $\Vector{w}$ then gives a path towards higher velocities
-%% with respect to all the parameters that were included.
-
-A small example illustrates the process.
-Suppose we have a function of three variables, $f(x_1,x_2,x_3) = 0$, so
+The example from the previous section can be used to illustrate the process.
+Recall we have a function of three variables, $f(x_1,x_2,x_3) = 0$, so
 $n = 1, m = 3$ and the solution is a surface over a range of $x_1, x_2, x_3$,
-\Figref{fig:COexample}.
+\Figref{fig:contours}.
 Suppose also that we know one solution of the equation, $\Vector{x}_0$,
 and we wish to find the minimum of $x_2$ on the surface.
 The continuation process of \Sectref{sect:pseudo} can be used to trace
@@ -1085,22 +1074,25 @@ step $\Vector{x}_{k+1}$.
 	\label{fig:optim}
 \end{figure}
 
-Another practical application of this technique is searching for
-start points for contours.  % \Sectref{sect:contour-app}.
-A quick, easy way to simulate a 3D plot of data is by showing fixed-value
-contours of one of three variables.
-Continuing with the example, the continuation-optimization procedure
-could be used to get start points for contours in $x_3$ by starting at
-$\Vector{x}_0$ as before, but this time using
+To use this technique to search for start points for contours in $x_3$ as
+in \Sectref{sect:contours}, we start from $\Vector{x}_0$ and trace towards
+the maximum in $x_3$, followed by tracing towards the minimum by changing
+the sign of $\Vector{w}$:
 \begin{equation*}
-	\Vector{w} = \left\{\begin{array}{c}
+	\Vector{w}_{\text{max}} = \left\{\begin{array}{c}
 			0 \\
 			0 \\
 			1
+		\end{array}\right\}, \;\;\;\;
+	\Vector{w}_{\text{min}} = \left\{\begin{array}{c}
+			0 \\
+			0 \\
+			-1
 		\end{array}\right\}
 \end{equation*}
-giving an optimization curve and the $x_3$ contours started from various
-points on the curve in \Figref{fig:contours3D}.
+
+The resulting optimization curve can be used to choose starting points
+for contours in $x_3$, as in \Figref{fig:contours3D}.
 
 \begin{figure}[ht]
 		\includegraphics[height=9cm,width=12cm]{asy/contours3D.pdf}
@@ -1109,10 +1101,16 @@ points on the curve in \Figref{fig:contours3D}.
 	\label{fig:contours3D}
 \end{figure}
 
-A major problem with computing contours, often solved with this
-technique, is finding with reasonable certainty all contour start points.
-In this example a search for start points using the traditional method
-of parameter variations 
+A few remarks regarding CO:
+\begin{itemize}
+	\item There is no limit on the number of variables ($m$) that can be used
+		in CO as long as $m \ge n+2$.
+	\item In the example the continuation-optimization technique was able to
+		capture the full range in $x_3$.
+	\item Although the full range in $x_3$ could be captured with multiple
+		parameter variation processes, CO captured it in one process.
+\end{itemize}
+
 
 \section{Issues}\label{sect:issues}\index{numerical continuation!issues}
 Several things can go wrong in a continuation procedure, including
