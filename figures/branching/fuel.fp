@@ -57,7 +57,8 @@
       id=CO, source=vso,
       indep{alt[-2000:18000], freq[6:10], fuel, vtas[100:400]},
       optimize=vtas,
-      start{constant{sigma=0}, vtas[65:300]}
+      start{constant{sigma=0}, vtas[65:300]},
+		cu2eu{vtas=50}
    }
 
    # vtas contours
