@@ -20,7 +20,9 @@ vso12.apf
 
 ASY = \
 branch3.asy \
-vsofuel.asy
+vsofuel.asy \
+fuelcontour.asy \
+contourCO.asy
 
 %.pdf:	%.asy
 	asy -f pdf $<

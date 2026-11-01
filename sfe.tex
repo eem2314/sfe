@@ -1914,13 +1914,18 @@ to start branches at various velocities with variables
 		\text{alt}
 	\end{array}\right\}_{V=\text{constant}, \sigma=0}
 \end{displaymath}
-giving a plot like \Figref{fig:contour1} showing the effects of altitude
+giving a plot like \Figref{fig:fuelcontour} showing the effects of altitude
 and fuel on flutter speed.
 
+%% \begin{figure}[ht] 	% complains if h
+%% 		\includegraphics[height=2.5in,width=4.0in]{contour1.eps}
+%% 	\centering
+%% 	\caption{Velocity contours branched from a fuel variation}\label{fig:contour1}
+%% \end{figure}
 \begin{figure}[ht] 	% complains if h
-		\includegraphics[height=2.5in,width=4.0in]{contour1.eps}
+		\includegraphics[height=5cm,width=14cm]{branching/fuelcontour.pdf}
 	\centering
-	\caption{Velocity contours branched from a fuel variation}\label{fig:contour1}
+ 	\caption{Velocity contours branched from a fuel variation}\label{fig:fuelcontour}
 \end{figure}
 Unfortunately this does not cover the entire altitude range because the
 curve used to branch from does not intersect all contours. Using fuel
@@ -1932,7 +1937,7 @@ more direct method is to branch from a continuation-optimization curve.
 \index{numerical continuation!optimization|textbf}
 can be a shortcut method for obtaining contour branches. The idea behind
 CO is to take the steepest ascent
-(or descent) on a surface. Considering the example again and \Figref{fig:contour1},
+(or descent) on a surface. Considering the example again and \Figref{fig:fuelcontour},
 a CO process would use
 \begin{displaymath}
 	\Vector{p} = \left\{ \begin{array}{c}
@@ -1943,15 +1948,20 @@ a CO process would use
 	\end{array}\right\}_{\sigma=0, \text{optimize } V}
 \end{displaymath}
 
+%% \begin{figure}[ht] 	% complains if h
+%% 		\includegraphics[height=2.5in,width=4in]{contour2.eps}
+%% 	\centering
+%% 	\caption{Velocity contours branched from a CO curve}\label{fig:contour2}
+%% \end{figure}
 \begin{figure}[ht] 	% complains if h
-		\includegraphics[height=2.5in,width=4in]{contour2.eps}
+		\includegraphics[height=5cm,width=7cm]{branching/contourCO.pdf}
 	\centering
-	\caption{Velocity contours branched from a CO curve}\label{fig:contour2}
+ 	\caption{Velocity contours branched from a CO curve}\label{fig:contourCO}
 \end{figure}
 As all curves computed in \Fina, this CO curve is traced in both directions
 from its origin until one of its parameter limits are reached.
-\Figref{fig:contour2} shows the CO curve and the contours that branched
-from it, a more complete set than in \Figref{fig:contour1}.
+\Figref{fig:contourCO} shows the CO curve and the contours that branched
+from it, a more complete set than in \Figref{fig:fuelcontour}.
 
 \section{Start Points}\label{sect:startpts}
 A key requirement of any continuation method is having a good start
