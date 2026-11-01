@@ -25,7 +25,7 @@ endif
 
 SUFFIXES = .fig .tex .eps .ps .pdf
 
-SUBDIRS = asy
+SUBDIRS = asy branching
 
 FORCE:
 
@@ -75,6 +75,7 @@ EPS = $(FIGS:.fig=.eps)
 all:
 	make $(EPS)
 	cd asy && make all
+	cd branching && make all
 
 # list of stuff to include in dist tarfile XXX no eps?
 EXTRA_DIST = $(nosrc) $(figs) $(eps)

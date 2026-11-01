@@ -19,7 +19,7 @@ APF = \
 vso12.apf
 
 ASY = \
-vso12.asy \
+branch3.asy \
 vsofuel.asy
 
 %.pdf:	%.asy

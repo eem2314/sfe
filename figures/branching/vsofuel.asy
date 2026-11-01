@@ -79,7 +79,7 @@ ylimits(pic1, -50, 10);
 xaxis(pic1, "Velocity TAS (m/s)", BottomTop,
 LeftTicks(Step=0,step=0,extend=true,pTick=gridpen,ptick=nullpen));
 yaxis(pic1, "Stability Factor", LeftRight,
-RightTicks(Step=0,step=0,extend=true,pTick=gridpen,ptick=nullpen));
+RightTicks(Step=0,step=0,extend=false,pTick=gridpen,ptick=nullpen));
 
 // zero sigma line + dot at flutter
 draw(pic1, (0,0) -- (250,0), p=black+1.2pt);
