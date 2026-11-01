@@ -58,7 +58,7 @@
       indep{alt[-2000:18000], freq[6:10], fuel, vtas[100:400]},
       optimize=vtas,
       start{constant{sigma=0}, vtas[65:300]},
-		cu2eu{vtas=50}
+		cu2eu{alt=6000}
    }
 
    # vtas contours
@@ -69,7 +69,7 @@
 		sigma=0,
 		print{alt,freq, fuel,vtas}
    }
-   viz{id{contour2,CO}, x=alt, y=fuel, nodal.uf}
+   viz{id{contour2,CO,fuel}, x=alt, y=fuel, nodal.uf}
 end
 
 freevib.m {{
