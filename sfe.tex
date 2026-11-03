@@ -72,7 +72,7 @@
 \newcommand{\Cmd}[1]{{\sf #1}}
 \newcommand{\Newterm}[1]{{\em #1}}
 \newcommand{\Code}[1]{{\small\tt #1}}
-\newcommand{\Fina}{{\normalfont\scshape Fina\:}}
+\newcommand{\Fina}{{\normalfont\scshape Flaps\:}}
 \newcommand{\Matlab}{{\footnotesize{MATLAB\textsuperscript{\textregistered}}\:}}
 \newcommand{\Simulink}{{\footnotesize{Simulink\textsuperscript{\textregistered}}\:}}
 \newcommand{\Octlab}{\Cmd{matlab}/\Cmd{octave}\:}
@@ -1832,7 +1832,7 @@ from $\hat{\Matrix{D}}\hat{\Vector{y}}$ with code like:
    }
 \end{lstlisting}
 
-\section{Parametric Curves}\label{sect:gpset}\index{parametric curves}
+\section{Branching}\label{sect:gpset}\index{branching}
 The \Newterm{parametric curves} computed by numerical continuation can be classified according to
 their origin. A \Newterm{core} curve is started from a free-vibration solution at
 low or zero dynamic pressure, while a \Newterm{branch} curve starts from another parametric
@@ -1956,7 +1956,7 @@ a CO process would use
 \begin{figure}[ht] 	% complains if h
 		\includegraphics[height=5cm,width=7cm]{branching/contourCO.pdf}
 	\centering
- 	\caption{Velocity contours branched from a CO curve}\label{fig:contourCO}
+ 	\caption{Additional velocity contours branched from a CO curve: red CO, blue fuel variation}\label{fig:contourCO}
 \end{figure}
 As all curves computed in \Fina, this CO curve is traced in both directions
 from its origin until one of its parameter limits are reached.
@@ -2037,11 +2037,11 @@ branch by interpolation. Because the eigenvector is interpolated
 along with the parameters, this is extremely reliable.
 
 More precise start points can be computed using \Newterm{targets}
-\Sectref{sect:targets}. For example studying the effect of a parameter
-on flutter speed is a common parameter variation where the start point is
-taken from a \OSV analysis by searching for 2 points bracketing $\sigma=0$.
-By including the \Code{target\{sigma=0\}} option in the \OSV analysis the
-start point will be computed precisely.
+\Sectref{sect:targets} to force the continuation process to converge
+exactly to a desired point.  For example studying the effect of a parameter
+on flutter speed is a common parameter variation where start points are
+taken from $\sigma=0$ point in a \OSV analysis; by using the procedure in
+\Sectref{sect:targets} the start points can be found precisely.
 
 
 \section{Units}\label{sect:units}
@@ -4856,7 +4856,7 @@ at \Code{flapsconsulting@gmail.com}. I'm sorry for the inconvenience.
 
 \section{Installation}\label{sect:installation}
 To install \Fina from a distribution tar file, e.g.
-fina-1.6.1.tar.gz
+sfea-2.2.5.tar.gz
 
 Assuming a Linux operating system
 \footnote{there are dozens of Linux distributions; the important thing here is
@@ -4867,9 +4867,9 @@ to work with pacman, which is used in distros based on Arch Linux.
 Likewise for the less-used package managers like portage, zypper, and xbps.}
 and starting in the directory containing the tar file:
 \begin{lstlisting}
->  tar zxf fina-XXX.tar.gz
+>  tar zxf sfea-XXX.tar.gz
 \end{lstlisting}
-will create a directory \Code{fina-XXX}, the \Fina root directory,
+will create a directory \Code{sfea-XXX}, the \Fina root directory,
 populated with the source files necessary to build \Fina.
 
 If this is the first time installing \Fina it may be necessary to
@@ -4885,7 +4885,7 @@ package management.
 Once you have the necessary packages installed all you should have
 to do is
 \begin{lstlisting}
->  cd fina-XXX
+>  cd sfea-XXX
 >  ./configure --prefix=directory-where-to-install
 >  make install
 \end{lstlisting}
