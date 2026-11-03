@@ -680,7 +680,8 @@ $\Vector{x}_3$,  ...  .
 At a converged solution $\Vector{x}_j$, the process for computing the
 next point is shown in \Figref{fig:pac}.
 \begin{figure}[ht] 	% complains if h
-		\includegraphics[height=8cm,width=10cm]{pac.eps}
+		%% \includegraphics[height=8cm,width=10cm]{pac.eps}
+		\includegraphics[height=8cm,width=10cm]{pac/pac.pdf}
 	\centering
 	\caption{Continuation from $\Vector{x}_j$ to $\Vector{x}_{j+1}$}\label{fig:pac}
 \end{figure}
@@ -832,7 +833,8 @@ at the beginning of the corrector step, then iterate using these factors
 in \Eqn{eqn:h}. If convergence is not achieved within a few iterations,
 re-evaluate the Jacobian and repeat the QR factorization.
 \begin{figure}[ht] 	% complains if h
-		\includegraphics[height=8cm,width=10cm]{pacmn.eps}
+		%% \includegraphics[height=8cm,width=10cm]{pacmn.eps}
+		\includegraphics[height=8cm,width=10cm]{pac/pac_compare.pdf}
 	\centering
 	\caption{3 methods for the corrector process }\label{fig:pacmn}
 \end{figure}

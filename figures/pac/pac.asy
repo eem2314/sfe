@@ -44,19 +44,41 @@ path normalized_spline(pair[] pts, bool closed=false) {
 pair p1 = (0.15,0);
 pair p2 = (0.5,0.55);
 pair p3 = (1,0.65);
-dot(pac, p1, red+4pt);
-dot(pac, p2, green+4pt);
-dot(pac, p3, blue+4pt);
+// dot(pac, p1, red+4pt);
+// dot(pac, p2, green+4pt);
+// dot(pac, p3, blue+4pt);
 draw(pac, p1 .. p2 .. p3, black+1pt);
 
-draw(pac, (0.2,0.2) -- (0.35,0.65), red+1pt);
+// tangent
+pair p4 = (0.2, 0.2);
+pair p5 = (0.45, 0.8);
+draw(pac, p4 -- p5, red+1pt, arrow=Arrow(HookHead,size=4pt));
+label(pac, "$\;\mathbf{x}_{j}$", p4, align=E);
+label(pac, "$\mathbf{x}_{j+1}^0$", p5, align=E);
+label(pac, "$\mathbf{t}_j$", (p5+p4)/2, red, align=W);
 
-// pair[] data0 = {(0,0), (0.5,0.5), (1,0.5)};
-// path smootheddata0 = normalized_spline(data0,false);
-// draw(pac, smootheddata0, p=rgb("000000")+1.2pt, legend="pac");
-xaxis(pac, "X", BottomTop,
-    LeftTicks(Step=0,step=0,extend=true,pTick=gridpen,ptick=nullpen));
-yaxis(pac, "Y", LeftRight,
-    RightTicks(Step=0,step=0,extend=true,pTick=gridpen,ptick=nullpen));
+// corrector
+pair p6 = (0.53,0.57);
+label(pac, "$\mathbf{x}_{j+1}$", p6, align=SE);
+draw(pac, p5 -- p6, green+1pt, arrow=Arrow(HookHead,size=4pt));
+dot(pac, p6, green+4pt);
+
+// orthogonal
+// pair p7 = (0.65, 0.62);
+// draw(pac, p5 -- p7, black+1pt, arrow=Arrow(HookHead,size=4pt));
+// dot(pac, p7, black+4pt);
+
+// constant par
+// pair p8 = (0.45, 0.52);
+// draw(pac, p5 -- p8, black+1pt, arrow=Arrow(HookHead,size=4pt));
+// dot(pac, p8, black+4pt);
+
+// frame around the picture
+draw(pac, (0,0) -- (1,0) -- (1,1) -- (0,1) -- (0,0), gray+0.3pt);
+
+// xaxis(pac, "X", BottomTop,
+//      LeftTicks(Step=0,step=0,extend=true,pTick=gridpen,ptick=nullpen));
+// yaxis(pac, "Y", LeftRight,
+//      RightTicks(Step=0,step=0,extend=true,pTick=gridpen,ptick=nullpen));
 frame f1 = pac.fit();
 add(f1);
