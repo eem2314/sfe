@@ -25,7 +25,9 @@ endif
 
 SUFFIXES = .fig .tex .eps .ps .pdf
 
-SUBDIRS = asy branching
+SUBDIRS = asy branching pac
+
+.PHONY:	all $(SUBDIRS)
 
 FORCE:
 
@@ -72,10 +74,12 @@ whirl-vso.fig
 
 EPS = $(FIGS:.fig=.eps)
 
-all:
-	make $(EPS)
-	cd asy && make all
-	cd branching && make all
+all:	$(SUBDIRS)
+
+all:	$(EPS)
+
+$(SUBDIRS):
+	$(MAKE) -C $@ all
 
 # list of stuff to include in dist tarfile XXX no eps?
 EXTRA_DIST = $(nosrc) $(figs) $(eps)

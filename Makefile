@@ -17,11 +17,16 @@ SUFFIXES = .fig .tex .eps .ps .pdf
 
 SUBDIRS = figures
 
+.PHONY: all $(SUBDIRS)
+
 docdir=${prefix}/doc
 
-all:
-	cd figures && make all
-	make sfe.pdf
+all:	$(SUBDIRS)
+
+all: sfe.pdf
+
+$(SUBDIRS):
+	$(MAKE) -C $@ all
 
 # We must ignore errors from pdflatex because it always
 # returns with an exit status of 1 - I believe this is
@@ -37,7 +42,6 @@ params-units.tex \
 preface.tex
 
 sfe.pdf:	$(SRC)
-	cd figures && make all
 	pdflatex sfe.tex
 	biber sfe
 	makeindex sfe.idx
