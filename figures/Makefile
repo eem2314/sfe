@@ -25,7 +25,7 @@ endif
 
 SUFFIXES = .fig .tex .eps .ps .pdf
 
-SUBDIRS = asy branching pac
+SUBDIRS = asy branching pac manual
 
 .PHONY:	all $(SUBDIRS)
 

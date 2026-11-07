@@ -68,7 +68,7 @@
 
 % --- CUSTOM COMMANDS (User-Provided Definitions) ---
 \def\Cpp{{C\nolinebreak[4]\hspace{-.05em}\raisebox{.4ex}{\tiny\bf ++}}\:}
-\newcommand{\Subst}[1]{{\sl\sf #1}}
+% \newcommand{\Subst}[1]{{\sl\sf #1}}
 \newcommand{\Cmd}[1]{{\sf #1}}
 \newcommand{\Newterm}[1]{{\em #1}}
 \newcommand{\Code}[1]{{\small\tt #1}}
@@ -121,6 +121,79 @@
 
 % Table mods
 \newcommand{\CCol}[1]{\multicolumn{1}{c|}{#1}}
+
+% ------------------------------------------------------------------
+% Appendix A - users' manual
+% ------------------------------------------------------------------
+\newcommand{\UserIn}[1]{{\small\sf\bf #1}}
+% \newcommand{\Newterm}[1]{{\em #1}\index{#1}}
+% \newcommand{\Newterm}[1]{{\em #1}}	% don't index Newterms
+% \newcommand{\Code}[1]{{\small\tt #1}}
+% Subst{ }: an item the user must substitute with something 
+% note the \/ adds a little space after the slanted font
+%% \newcommand{\Subst}[1]{{\tt\sl #1}}
+\newcommand{\Subst}[1]{{\small\sf #1}}
+% this doesn't work: \end{Codelist} never gets read?
+% \newenvironment{Codelist}{\begin{lstlisting}[fontsize=\small]}{\end{lstlisting}}
+
+% \newcommand{\verbatimfont}[1]{renewcommand{\verbatim@font}{\ttfamily#1}
+% ----------------------------------------------------
+
+% Various names
+\newcommand{\Flaps}{{\small\tt flaps\:}}
+% \newcommand{\Fina}{{\normalfont\scshape Sfea\:}}
+\newcommand{\Sfea}{{\normalfont\scshape Sfea\:}}
+% use \Cpp, not C++
+% \def\Cpp{{C\nolinebreak[4]\hspace{-.05em}\raisebox{.4ex}{\tiny\bf ++}}\:}
+% \newcommand{\Matlab}{{\footnotesize{MATLAB\textsuperscript{\textregistered}}\:}}
+% \newcommand{\Octlab}{\Cmd{matlab}/\Cmd{octave}\:}
+% \newcommand{\Nastran}{{\footnotesize{NASTRAN\:}}}
+% \newcommand{\Simulink}{{\footnotesize{Simulink\textsuperscript{\textregistered}}\:}}
+
+\newcommand{\Plugin}{{\normalfont plug-in\:}}
+
+\newcommand{\Tmatrix}{{\bf T}-matrix}
+
+% ---------------------------------------------------------
+% spec-handling stuff for the reference (man pages) section
+% Title of a man-page section: creates a label like ref:pz, and
+% an entry in the index
+\newcommand{\Manpg}[1]{
+	\hspace{-\parindent}\rule[-5mm]{\textwidth}{0.3mm}
+	\newpage
+	\section[\Cmd{#1}]{\sf\Large{#1}} \label{ref:#1} \index{#1@\Cmd{#1}!reference}
+	\rule[5mm]{\textwidth}{0.3mm}
+}
+% an Optlist environment is a set of specs with a title and description,
+% with a set of \Opt between \begin{Optlist} and \end{Optlist}
+\newenvironment{Optlist}[2]{\paragraph{#1}\par #2 \begin{description}}{\end{description}}
+% an Opt can only be inside an Optlist or description environment.
+% It  has 4 arguments: key, value, description, and default, the value
+% will be automatically enclosed in {}
+% Opt{key}{\{value\}}{description paragraph}{default}
+% Optnd{opt}{key}{\{value\}}{description paragraph}	(no default)
+% Optnv{opt}{key}{\{value\}}{description paragraph}	(no value or default)
+% Note: the index does not work if \small is included
+% \newcommand{\Opt}[4]{\item{\Spec{#1}}\index{#1@\Spec{#1}(option)} #2 \par #3\par default: #4}
+\newcommand{\Opt}[4]{\item[\Spec{#1}\{#2\}] \index{#1@{\ttfamily #1}} #3 default: #4}
+\newcommand{\Optnd}[3]{\item[\Spec{#1}\{#2\}] \index{#1@{\ttfamily #1}} #3}
+\newcommand{\Optnv}[2]{\item[\Spec{#1}] #2}
+% a \Spec simply gives the name the right font
+\newcommand{\Spec}[1]{{\small\ttfamily #1}}
+
+% various types of rhs:
+\newcommand{\String}{\Subst{string}}
+\newcommand{\Rhs}[1]{\Subst{#1}}
+\newcommand{\Stringlist}{\Rhs{string, string, ...}}
+\newcommand{\Int}{\Subst{integer}}
+\newcommand{\Intlist}{\Rhs{int or (int, int, ...) or (first:last) or (first:stride:last) }}
+\newcommand{\Float}{\Rhs{value}}
+\newcommand{\Floatlist}{\Rhs{float or (float, float, ...) }}
+\newcommand{\Floatorstring}{\Float\ or \String}
+\newcommand{\Coord}{\Rhs{x,y,z}}
+% ---------------------------------------------------------
+% end Appendix A preface
+% ---------------------------------------------------------
 
 % Begin the document
 \begin{document}
@@ -4851,7 +4924,9 @@ other becoming neutrally stable, as shown in \Figref{fig:bifurcation}.
 % ------------------------------------------------------------------
 % Appendices chapter
 % ------------------------------------------------------------------
-\chapter{Appendices}\label{chap:appendices}
+\chapter{Appendix A}\label{chap:appendixa}
+\include{manual.tex}
+\chapter{Appendix B}\label{chap:appendices}
 
 \section{Obtaining the source}\label{sect:obtaining}
 Currently the code for \Fina is only available by emailing me

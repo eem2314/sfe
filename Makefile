@@ -35,6 +35,7 @@ $(SUBDIRS):
 # which according to the man page is because we are using extensions.
 
 SRC = \
+manual.tex \
 sfe.tex \
 params-eqns.tex \
 params-names.tex \
