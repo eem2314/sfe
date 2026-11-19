@@ -3,7 +3,7 @@
 # Velocity contours wrt ac and cg
    # define new parameters ac and cg to parameterize the
    # gaf and mass matrices
-   parameters{fuel(% fuel)[0:100]=30, alt=2000}
+   parameters{fuel(Percent fuel)[0:100]=30, alt=2000}
 
    # Using the default units: meters, Kg
    # Specifying 3 values of ac forces fem to interpolate the aero wrt rf and ac

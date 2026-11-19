@@ -150,10 +150,10 @@ Ed Meyer
 flapsconsulting@gmail.com
 \end{lstlisting}
 
-
+\newpage
 \section{Input file}\label{sect:input-file}
 
-\subsection{Syntax}\label{syntax}
+\subsection{Options}\label{syntax}
 The syntax of a \Fina input file consists of hierarchy of
 \Spec{key\{value\}} pairs; the highest level is the input file,
 consisting of a set of \Fina functions and options:
@@ -275,7 +275,7 @@ and sequences \Sectref{sect:sequences}, for example
 \end{lstlisting}
 any of the items may be a sequence,
 \begin{lstlisting}
-1, (2:2:8), 9, 10
+1, 2:2:8, 9, 10
 \end{lstlisting}
 and lists are usually the value part of a key/value pair, so they
 are usually enclosed in braces:
@@ -300,20 +300,20 @@ name.ext {{
 \end{lstlisting}
 where the extension \Code{ext} determines the contents:
 \begin{description}
-\item[.cpp] \Cpp code for parameterizing a matrix \Sectref{ref:user-fcn}
-	or processing targets (\Sectref{ref:target-proc}).
+\item[.cpp] \Cpp code for parameterizing a matrix \Sectref{sect:functions}
+	or processing targets (\Sectref{sect:target-process}).
 	\item[.m] \Octlab script for input to \Code{octlab}
 		(\Sectref{ref:octlab}).
 	\item[.uf] a Universal file for visualizing flutter modes
 		\Sectref{sect:universal-file}, \Sectref{sect:animated-mode}.
 	\item[.dat] Data for a linear time-invariant control law
-		\Sectref{sect:LTI-file}
+		\Sectref{sect:lti}, \Sectref{sect:LTI-file}.
 \end{description}
 for example,
 \begin{lstlisting}
    import{myfile.op4}               # import a Nastran output4 file
    octlab{script=reduce.m, i=...}   # modify some matrices in Matlab/Octave
-   pz {i=M, code=Mfcn}              # associate Mfcn.cpp with M
+   pz {i=M, plugin=Mfcn}              # associate Mfcn.cpp with M
    pz { i=(gaf0, gaf(1:5)), o=A }   # interpolate with respect to rf
    flut{                            # pk flutter solution
       id=core
@@ -770,7 +770,7 @@ option or defaulted to \Subst{aid}\Code{.apf}. Other options include
 			values}
 		\Optnd{process}{\String}{the name of a \Cpp named-section
 			containing a function to process any targets found. See
-			example \Code{methods.fp}.}
+			example \Code{methods.fp}.}\label{sect:target-process}
 		\end{description}
 \par
 \end{Optlist}
@@ -832,8 +832,8 @@ the script}{error if a script is not given, all matrices if no names given}
 
 % parameter function --------------------------------------------------------
 \Manpg{parameters}
-Creates new parameters or modifies existing ones based on its string
-arguments, descriptions of the parameters, as detailed in \Chapref{chap:tailoring}.
+Creates new parameters or modifies existing ones.
+%based on its string arguments, descriptions of the parameters, as detailed in \Chapref{chap:tailoring}.
 An example taken from example problem reed.fp (\Sectref{ex:whirl}):
 \begin{lstlisting}
    parameters{spin(Spin rate (rpm))[0:5000]<radps2rpm> = 1}

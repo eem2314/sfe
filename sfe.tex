@@ -305,7 +305,8 @@ visualizing flutter data presents a significant challenge.
 \section{A Numerical Continuation Approach}
 Traditional flutter analysis methods formulate the problem as an eigenvalue
 problem
-\footnote{An excellent treatment of traditional methods is in \cite{demasi2024introduction}}.
+\footnote{An excellent treatment of traditional methods is in
+\cite{demasi2024introduction}}.
 While established, this approach presents several limitations:
 \begin{itemize}
 	\item {\bf Tedious Parameter Studies:} Parameter variations are cumbersome
@@ -525,7 +526,18 @@ Other, less common matrices include:
 \section{Parameters}
 Flutter equations are traditionally presented in terms of just a few
 parameters: $\sigma, \omega$, and $q$, with reduced frequency ($\bar\omega$)
-and Mach number ($M$) often included. These and other parameters are
+and Mach number ($M$) often included.
+Different parameters are often used when presenting results, and it
+is necessary to have equations relating the various parameters.
+For example, flutter speed is often plotted against growth factor
+($2\sigma/\omega$) instead of stability factor ($\sigma$)
+because of the observation that the speed at small values of
+growth factor is approximately the same as the flutter speed ($g=0$)
+obtained by adding that same value of structural damping.
+Regardless of whether the analysis is done in terms of growth factor
+or sigma, an equation is necessary relating the two.
+
+Some of the more commonly used parameters are
 listed in \Tableref{table:params-eqns} together with some possible equations.
 
 \input{params-eqns.tex}
@@ -1060,7 +1072,7 @@ the $x_2$-$x_3$ curve red, $x_1$-$x_3$ green, and $x_1$-$x_2$ blue.
 \end{figure}
 Choosing several values of $x_3$ on either the red or blue parameter
 variations as start points, a continuation process varying $x_1$ and
-$x_2$ with $x_3$ fixed gives several contours, as shown in
+$x_2$ with $x_3$ held constant gives several contours, as shown in
 \Figref{fig:contour3pv}.
 
 \begin{figure}[ht]
@@ -2245,7 +2257,7 @@ Describing functions, also known as \Newterm{quasi-linear} functions,
 take an oscillation amplitude and produce a factor that in some sense
 approximates the real behavior. Applying the factor to a matrix in
 the flutter equation means the amplitude is then a parameter in the
-solution and can be fixed or used in parameter variations like any
+solution and can be held constant or used in parameter variations like any
 other parameter. With multiple describing functions this is not possible
 since the relationship between degrees of freedom is an intrinsic
 property of the equations. The solution is to separate the intrinsic
@@ -2947,7 +2959,12 @@ allowing matrices to become functions of parameters, thereby tailoring them
 for specific analytical tasks.
 
 \section{Parameters}\label{sect:parameters}
-Many flutter analyses can be done using only the basic parameters
+Parameters play a central role in flutter analysis; indeed flutter
+analysis is the study of the stability behavior of structures 
+over a range of various parameters. A few parameters are in most
+flutter analyses, especially frequency and dynamic pressure.
+
+Many flutter analyses can be done using only the built-in parameters
 listed in \Tableref{table:params-eqns}. To refer to parameters in
 a computer program they need short, descriptive names. \Fina uses
 the names listed in \Tableref{table:params-names} and candidate equations
@@ -2957,12 +2974,12 @@ These, and a few more, can be referred to by name, for example
 when specifying which parameters are independent in \Cmd{flut}.
 Each of the standard parameters has one or more equations
 for calculating its value in terms of the other standard parameters
-when it is derived.
-\Tableref{table:params-names} lists the builtin parameter names with
+when it is evaluated.
+\Tableref{table:params-names} lists the built-in parameter names with
 the units used in computations, and
 \Tableref{table:params-eqns} the currently available equations; which equation is
-used depends on which parameters are independent or fixed. Normally the
-user specifies which parameters are independent or fixed and the program
+used depends on which parameters are independent or constant. Normally the
+user specifies which parameters are independent or constant and the program
 decides which equation to use.
 Fluid properties (pressure, density, temperature) have default equations taken
 from the U.S. Standard Atmosphere as described in \cite{united1976us}.
@@ -3030,11 +3047,11 @@ The components of a parameter are
 	\index{parameters!equation}
 	\index{equation!parameter}
 	The right-hand-side can be one or more values in output units, 
-	or an equation. Standard parameters have multiple builtin
+	or an equation. Standard parameters have multiple built-in
 	equations (\Tableref{table:params-eqns}) which are chosen by \Fina commands to give
 	a consistent set of equations.  User-defined equations (\Sectref{sect:pareqns})
-	may consist of matrix elements, parameter names, scalars, builtin constants
-	\index{builtin!constants}
+	may consist of matrix elements, parameter names, scalars, built-in constants
+	\index{built-in!constants}
 	(\Sectref{sect:scalars}), +-*/, square root (sqrt), exponential (exp)
 	and power (pow).
                 
@@ -3100,13 +3117,13 @@ Some examples of valid conversion factors:
 \par
 Standard \Fina constants (\Sectref{sect:scalars})
 may be used as conversion factors, with the added convenience
-\index{conversion factor!builtin}\index{builtin!conversion factors}
+\index{conversion factor!built-in}\index{built-in!conversion factors}
 that default units descriptions will be used. For example
 the default definition of frequency is
 \begin{lstlisting}
    freq(Frequency)[.01:50]<radps2Hz> = 0
 \end{lstlisting}
-which uses the builtin conversion \Code{radps2Hz}: Hz/(radian/second).
+which uses the built-in conversion \Code{radps2Hz}: Hz/(radian/second).
 
 \subparagraph{State.}\label{sect:parstate}
 \index{parameters!state}
@@ -3114,23 +3131,23 @@ which uses the builtin conversion \Code{radps2Hz}: Hz/(radian/second).
 in an analysis; for example, in a stability analysis velocity, frequency and
 sigma might be independent.
 \par
-Fixed parameters
-\index{parameters!fixed}\index{fixed parameters}
+Constant parameters
+\index{parameters!constant}\index{constant parameters}
 have a value assigned
 by the user, usually in the specs to the program. For example,
 including the spec \Code{mach=0.6} in a \Cmd{flut}
 run sets the Mach number to 0.6.
 \par
-All other parameters are derived
-\index{parameters!derived}
-from the independent and fixed parameters. The user is responsible for
-ensuring that the combination of fixed and independent parameters is
-such that there is an equation for each derived parameter.
+All other parameters are evaluated
+\index{parameters!evaluated}
+from the independent and constant parameters. The user is responsible for
+ensuring that the combination of constant and independent parameters is
+such that there is an equation for each evaluated parameter.
 For example, in a stability analysis if \Code{vtas},
 \Code{freq}, and \Code{sigma} are independent, then
-\Code{alt} must be fixed in order to use the equation
+\Code{alt} must be held constant in order to use the equation
 for \Code{mach} $M = V/a(z)$.
-Currently available builtin equations for the standard parameters
+Currently available built-in equations for the standard parameters
 are listed in \Tableref{table:params-eqns}.
 
 \subparagraph{Equations.}\label{sect:pareqns}
@@ -3139,7 +3156,7 @@ are listed in \Tableref{table:params-eqns}.
 To the right of the equals sign in an equation definition is
 the parameter equation.
 A parameter equation can be as simple as a value (which makes
-the parameter state fixed),
+the parameter state constant),
 multiple values separated
 by commas and enclosed in parentheses, for example
 \begin{lstlisting}
@@ -3149,11 +3166,11 @@ or equivalently
 \begin{lstlisting}
    gain = (0.5 : 0.5 : 3)
 \end{lstlisting}
-(which makes the parameter state \Newterm{multiple-valued fixed}),
+(which makes the parameter state \Newterm{multiple-valued constant}),
 \index{parameters!multiple-valued}
 or it can be a fairly arbitrary function of scalars, other parameters,
-builtin functions, and matrix elements,
-making the parameter state \Newterm{derived}.
+built-in functions, and matrix elements,
+making the parameter state \Newterm{evaluated}.
 \par
 
 \subparagraph{Examples.} \label{sect:par-examples}
@@ -3210,13 +3227,13 @@ parameters used in an analysis. Thus the equation units
 in the example above are the default equation units, \Code{m/s}.
 
 \section{Equations}\label{sect:equations}
-Equations are used in \Fina to evaluate builtin and user-defined parameters
+Equations are used in \Fina to evaluate built-in and user-defined parameters
 and to parametrize specific elements of matrices.
-All the builtin parameters have one or more candidate equations; the equation actually
-used depends on the independent and fixed parameters chosen for an analysis.
+All the built-in parameters have one or more candidate equations; the equation actually
+used depends on the independent and constant parameters chosen for an analysis.
 
 An equation in \Fina is a string which must be parsed to
-give a value at the current values of the builtin and user-defined
+give a value at the current values of the built-in and user-defined
 parameters. Like parameters, equations have only real values, not
 complex. Complex values must be treated in custom evaluation functions
 (\Sectref{sect:functions}) or with the \Fina \Cmd{octlab} command.
@@ -3225,8 +3242,8 @@ complex. Complex values must be treated in custom evaluation functions
 \item[{\bf Parameter equations}]\label{sect:parameter-eqns} are stored with
 the parameter so that they are available throughout \Fina. Multiple candidate
 equations are stored so that each command can choose the best
-equation with the given fixed and independent parameters.
-Candidate equations for the builtin parameters are
+equation with the given constant and independent parameters.
+Candidate equations for the built-in parameters are
 listed in \Tableref{table:params-eqns}.\index{equation!parameter}
 \item[{\bf Matrix equations}]\label{sect:matrix-eqns} modify individual elements
 of a matrix, are created and assigned in the \Cmd{pz} command, and stored
@@ -3242,13 +3259,13 @@ operators,
 other parameters,
 matrix elements,
 standard mathematical functions, and
-builtin specialized functions.
+built-in specialized functions.
 
 \subsection{Scalars}\label{sect:scalars}
 Scalars are simply real numbers, e.g. 2.0 or 4e-5; included in this
-are several builtin constants: \index{builtin!constants}
+are several built-in constants: \index{built-in!constants}
 
-\index{constants!builtin}
+\index{constants!built-in}
 
 \begin{description}
 \item[\Code{radps2Hz}] $2\pi$ $(\text{radian}/\text{sec})/\text{Hz}$
@@ -3266,7 +3283,7 @@ $2\pi/60$ $(\text{radian}/\text{sec})/\text{rpm}$
 \index{conversion factor!Pa2psf}\index{Pa2psf@\Code{Pa2psf}}
                 
 \item[\Code{pi}] $\pi = 3.1415926535897932384626433.... $
-\index{pi@\Code{pi} ($\pi$)(builtin constant)}
+\index{pi@\Code{pi} ($\pi$)(built-in constant)}
 \index{constants!$\pi$}
                 
 \end{description}
@@ -3286,7 +3303,7 @@ Parentheses are often useful for disambiguation:
 Parameters are included in the equation by giving the parameter
 name (\Tableref{table:params-names}). When the equation is evaluated the current values of
 any parameters are used, so they may in turn be functions
-of other parameters. All parameters, builtin and user-defined have
+of other parameters. All parameters, built-in and user-defined have
 real values in an automatic differentiation data type, meaning that
 a parameter's value and its derivatives with respect to the independent
 variables are computed simultaneously.\index{automatic differentiation!in \Fina equations}
@@ -3302,7 +3319,7 @@ and a few describing-functions which can be used to approximate
 nonlinearities.
 In the following table \Code{x} and \Code{y}
 are real scalar expressions, for example \Code{pi*freq/vtas}.
-\index{builtin!functions}
+\index{built-in!functions}
 
 \subsection{Standard functions}
 \begin{description}
@@ -3349,11 +3366,11 @@ where \Code{tabangle} has been created in \Cmd{pz} or with \Cmd{parameter}.
 \newpage
 \section{Functions}\label{sect:functions}
 Two types of functions are available in \Fina for creating or modifying
-matrices: builtin and custom. Custom functions are usually written by the
+matrices: built-in and custom. Custom functions are usually written by the
 user, for example, to create control-system equations or to modify matrices.
 
-\subsection{Builtin functions} \index{builtin!functions}\index{function!builtin}
-Currently there are only 2 builtin functions: \Code{freeplay} and \Code{bilinear},
+\subsection{Built-in functions} \index{built-in!functions}\index{function!built-in}
+Currently there are only 2 built-in functions: \Code{freeplay} and \Code{bilinear},
 which implement freeplay and bilinear describing functions. They may be called
 from within a custom function or included in parameter equations
 (\Sectref{sect:parameter-eqns}) or matrix equations (\Sectref{sect:matrix-eqns})
@@ -3464,7 +3481,7 @@ doubles and complex.
    Complex s{sigma,freq};
 \end{lstlisting}
 
-Other builtin functions\index{builtin!functions} that may be called
+Other built-in functions\index{built-in!functions} that may be called
 from custom functions depend on generalized-coordinate amplitudes,
 hence result in a nonlinear flutter analysis:
 \begin{description}
@@ -3530,9 +3547,9 @@ for example a stiffness matrix might be given the equation
 [3,3] *= freeplay(0.05, 3)
 \end{lstlisting}
 which multiplies the $(3,3)$ diagonal of the matrix by the value
-returned by builtin function \Code{freeplay} to give
+returned by built-in function \Code{freeplay} to give
 the equivalent stiffness according to the amplitude of dof 3.
-Equations may contain parameter names, constants, and builtin
+Equations may contain parameter names, constants, and built-in
 standard math functions like \Code{sin}, \Code{cos}, etc,
 the same as when defining new parameters (\Sectref{sect:newpar}).
 
@@ -3573,15 +3590,15 @@ int mystif(Pset& pset, Mset& mset, ComplexMatrix& ca) {
    return 0;
 }
 \end{lstlisting}
-where \Code{pset} is the current set of parameters, builtin and user-defined,
+where \Code{pset} is the current set of parameters, built-in and user-defined,
 \Code{mset} is the list of matrices available in \Cmd{flut},
 \Code{parval} is a function whos first argument is the name of a parameter,
 and returns the current value of the parameter in the second argument.
 In the example \Code{parval} returns the current value of the
 user-defined parameter \Code{gap}.
-\Code{df::freeplay} is a builtin function which returns a factor between
+\Code{df::freeplay} is a built-in function which returns a factor between
 zero and 1 that accounts for the current amplitude of dof 3.
-Note two differences between the use of builtin function \Code{freeplay}
+Note two differences between the use of built-in function \Code{freeplay}
 here and in equations (\Sectref{sect:eqn-df}): here \Code{freeplay} is
 in namespace \Code{df} so it must be prefixed with \Code{df::}, and
 it has an additional argument, the set of parameters \Code{pset}.
@@ -4633,11 +4650,14 @@ solver.
 			\label{fig:methodsvg}
 \end{figure}
 Figures \ref{fig:methodsgf} and \ref{fig:methodsvg}
-show this comparison. As expected,
-the 2 formulations with matched Mach number give the same flutter speed;
-with the exception of the RFA formulation, the other 4 flutter speeds are the
-same but different from the matched-Mach curves. RFA, being an approximation,
-not an interpolation, gives a slightly different flutter speed.
+show this comparison.\footnote{The V-g formulation determines stability
+by added structural damping which, for small values, is close to the
+growth factor used to compare with all other formulations.}
+As expected, the 2 formulations with matched Mach number give the same
+flutter speed; with the exception of the RFA formulation, the other 4
+flutter speeds are the same but different from the matched-Mach curves.
+RFA, being an approximation, not an interpolation, gives a slightly
+different flutter speed.
 Besides giving a different flutter speeds, the matched-Mach (and V-g) curves
 track differently: mode 1 is stable and mode 2 flutters, opposite from the other 4.
 
@@ -4663,7 +4683,7 @@ pmatched &   2 & 161.63	&	 60.2686	\\ \hline
 
 \section{Flight envelope search}\label{ex:envelope-search}
 A common task in flutter analysis is searching the flight envelope
-for flutter. Example problem \Code{envelope.fp} demonstrates a few
+for flutter. Example problem \Code{fuel.fp} demonstrates a few
 techniques for efficiently searching the envelope.
 
 The model used is the Goland wing with additional concentrated masses
@@ -4684,7 +4704,7 @@ or more altitudes:
 		velocities and start an altitude-fuel-$\omega$-$\sigma$-$V$\: process,
 		optimizing $\sigma$, searching for $\sigma=0$. With several altitudes
 		and several stable modes in the core analyses, this type of search
-		could involve track many curves but this could be a way to find
+		could involve tracking many curves but this could be a way to find
 		flutter points missed by other techniques.
 \end{itemize}
 
@@ -4734,7 +4754,7 @@ The 4 files implement the bilinear describing functions using 4
 different methods, with increasing levels of knowledge of \Cpp
 required, but also increasing flexibility:
 \begin{description}
-\item[nl1.fp] builtin functions are used in equations defined in
+\item[nl1.fp] built-in functions are used in equations defined in
 \Code{pz}, for example
 \begin{lstlisting}
    [1,1] *= bilinear(0.01, 0.5, 1)
@@ -4743,7 +4763,7 @@ multiplies the [1,1] term by the bilinear describing function with
 $\delta=0.01$, $r = 0.5$, and $|\hat{q}_1|$.
 
 \item[nl2.fp] a custom function which does the same multiplication
-calling builtin function \Code{df::freeplay}
+calling built-in function \Code{df::freeplay}
 
 \item[nl3.fp] uses custom functions to call local custom functions
 called \Code{freeplay} and \Code{bilinear}
@@ -4803,8 +4823,8 @@ Two ways of treating control systems in \Fina are shown in files
 \Code{lti.fp} and \Code{controls.fp}.
 
 \subsection{Linear-Time-Invariant}
-A simple state-space control law (\Sectref{sect:ABCD-file}) is used in
-\Code{lti.fp}\index{examples!lti.fp}
+A simple state-space control law (\Sectref{sect:lti},
+\Sectref{sect:LTI-file}) is used in \Code{lti.fp}\index{examples!lti.fp}
 to demonstrate the use of \Cmd{octlab} to extract from the modes matrix, \Cmd{lti}
 to read a description of the controls equations, and a flutter solution, gain
 variation, and phase variation.
@@ -4870,7 +4890,7 @@ of frequency:
 \begin{lstlisting}
    parameter{freq(Precessional frequency)[0:10]<radps2rpm>}
 \end{lstlisting}
-where the builtin constant \Code{radps2rpm} is used here to
+where the built-in constant \Code{radps2rpm} is used here to
 change the global definition to
 \Code{freq[0:10](Precessional frequency)<9.5493 rpm/(rad/s)>}
 
@@ -4921,12 +4941,14 @@ other becoming neutrally stable, as shown in \Figref{fig:bifurcation}.
 \end{figure}
 
 \newpage
+\chapter{Flaps Manual}\label{chap:appendixa}
+\include{manual.tex}
+
 % ------------------------------------------------------------------
 % Appendices chapter
 % ------------------------------------------------------------------
-\chapter{Appendix A}\label{chap:appendixa}
-\include{manual.tex}
-\chapter{Appendix B}\label{chap:appendices}
+\newpage
+\chapter{Appendix}\label{chap:appendices}
 
 \section{Obtaining the source}\label{sect:obtaining}
 Currently the code for \Fina is only available by emailing me
@@ -5276,7 +5298,8 @@ the formats used in \Fina (Datasets 15, 55, and 82) are included here
 for convenience. Only the relevant items are shown. Datasets are enclosed
 by lines containing only -1 beginning in column 5.
 \par
-\begin{verbatim}
+% \begin{verbatim}
+\begin{lstlisting}
 
 Universal Dataset Number 15
 Name:   Nodes
@@ -5452,9 +5475,10 @@ Additional Comments:  This dataset is written by I-DEAS Test.
                        identification line for a name.
                     6) Repeat Datasets for each Trace_Line
 
-\end{verbatim}
+\end{lstlisting}
+% \end{verbatim}
 
-\subsection{LTI File Format}\label{sect:ABCD-file}
+\subsection{LTI File Format}\label{sect:LTI-file}
 This section describes the format of ASCII file produced by SIMULINK
 to represent an LTI control system.
 Because they are ASCII files
