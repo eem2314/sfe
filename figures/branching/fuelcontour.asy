@@ -110,8 +110,19 @@ add(f2, pos2);
 // lines connecting fuel variation to contours
 transform t1 = fuel.calculateTransform();
 transform t2 = contour.calculateTransform();
+pen labelpen = red + fontsize(7pt);
+string[] labels = {"180", "200", "220", "240", "260", "280"};
 for (int i=0; i<6; ++i) {
 	pair p1 = t1*pt1[i];
 	pair p2 = t2*pt2[i] + pos2;
-	draw(p1 -- p2, p=green+0.5pt, arrow=Arrow(HookHead,size=4pt));
+	pair labelpos = t1*(320,pt1[i].y);
+	draw(p1 -- p2, p=green+0.5pt, arrow=Arrow);
+	label(labels[i], labelpos, p=labelpen);
 }
+
+// label each line with vtas
+// pen labelpen = red + 4pt;
+// pair labelpos = t1*(310,58.4);
+// label("100", labelpos, p=labelpen);
+// pair[] pt1 = {(181, 58.4), (201, 35.98), (221, 22.8), (241, 14.18),
+//    (261, 8), (281, 3.48)};

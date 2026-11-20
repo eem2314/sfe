@@ -67,20 +67,26 @@
 \usepackage{hyperref}
 
 % --- CUSTOM COMMANDS (User-Provided Definitions) ---
-\def\Cpp{{C\nolinebreak[4]\hspace{-.05em}\raisebox{.4ex}{\tiny\bf ++}}\:}
 % \newcommand{\Subst}[1]{{\sl\sf #1}}
 \newcommand{\Cmd}[1]{{\sf #1}}
 \newcommand{\Newterm}[1]{{\em #1}}
 \newcommand{\Code}[1]{{\small\tt #1}}
-\newcommand{\Fina}{{\normalfont\scshape Flaps\:}}
-\newcommand{\Matlab}{{\footnotesize{MATLAB\textsuperscript{\textregistered}}\:}}
-\newcommand{\Simulink}{{\footnotesize{Simulink\textsuperscript{\textregistered}}\:}}
-\newcommand{\Octlab}{\Cmd{matlab}/\Cmd{octave}\:}
-\newcommand{\Nastran}{{\footnotesize{NASTRAN\:}}}
 \newcommand{\calr}{\boldsymbol{\rho}}
 \newcommand{\Matrix}[1]{\boldsymbol{#1}}
 \newcommand{\Vector}[1]{\boldsymbol{#1}}
 \newcommand{\Gc}{GC} 
+
+% Various names
+\newcommand{\Flaps}{{\normalfont\scshape Flaps\:}}
+\newcommand{\flaps}{{\small\tt flaps\:}}
+\newcommand{\Sfea}{{\normalfont\scshape Sfea\:}}
+\newcommand{\Plugin}{{\normalfont plug-in\:}}
+\newcommand{\Tmatrix}{{\bf T}-matrix}
+\newcommand{\Matlab}{{\footnotesize{MATLAB\textsuperscript{\textregistered}}\:}}
+\newcommand{\Simulink}{{\footnotesize{Simulink\textsuperscript{\textregistered}}\:}}
+\newcommand{\Octlab}{\Cmd{matlab}/\Cmd{octave}\:}
+\newcommand{\Nastran}{{\footnotesize{NASTRAN\:}}}
+\def\Cpp{{C\nolinebreak[4]\hspace{-.05em}\raisebox{.4ex}{\tiny\bf ++}}\:}
 
 % Commands for references with "Chapter" or "Section"
 \newcommand{\Sectref}[1]{\S\ref{#1}}
@@ -139,20 +145,6 @@
 % \newcommand{\verbatimfont}[1]{renewcommand{\verbatim@font}{\ttfamily#1}
 % ----------------------------------------------------
 
-% Various names
-\newcommand{\Flaps}{{\small\tt flaps\:}}
-% \newcommand{\Fina}{{\normalfont\scshape Sfea\:}}
-\newcommand{\Sfea}{{\normalfont\scshape Sfea\:}}
-% use \Cpp, not C++
-% \def\Cpp{{C\nolinebreak[4]\hspace{-.05em}\raisebox{.4ex}{\tiny\bf ++}}\:}
-% \newcommand{\Matlab}{{\footnotesize{MATLAB\textsuperscript{\textregistered}}\:}}
-% \newcommand{\Octlab}{\Cmd{matlab}/\Cmd{octave}\:}
-% \newcommand{\Nastran}{{\footnotesize{NASTRAN\:}}}
-% \newcommand{\Simulink}{{\footnotesize{Simulink\textsuperscript{\textregistered}}\:}}
-
-\newcommand{\Plugin}{{\normalfont plug-in\:}}
-
-\newcommand{\Tmatrix}{{\bf T}-matrix}
 
 % ---------------------------------------------------------
 % spec-handling stuff for the reference (man pages) section
@@ -351,7 +343,7 @@ equations is quite simple; as with most algorithms the programming details
 are  what distinguish a computer program implementation from the basic
 ideas. The first few chapters cover the basics of numerical continuation
 and its application to flutter equations. Further chapters discuss
-many of the details that went in to \Fina.
+many of the details that went in to \Flaps.
 
 \begin{description}
 	\item[\ref{chap:flutter-equations} Flutter Equations]
@@ -360,7 +352,7 @@ many of the details that went in to \Fina.
 
 	\item[\ref{chap:continuation} Numerical Continuation]
 	Describes continuation methods in general and the particular type
-	of continuation used in \Fina.
+	of continuation used in \Flaps.
 
 	\item[\ref{chap:AD} Automatic Differentiation]
 	Describes a computer programming technique for computing exact derivatives
@@ -390,7 +382,7 @@ many of the details that went in to \Fina.
 	\item[\ref{chap:examples} Example Problems] describes a few demonstration problems
 
 	\item[\ref{chap:appendices} Appendices] gives various details
-		regarding \Fina: obtaining, installing, using
+		regarding \Flaps: obtaining, installing, using
                 
 \end{description}
 
@@ -469,7 +461,7 @@ $(\;)^*$ & & conjugate transpose \\
 The starting point for most flutter analyses is a set of mass,
 stiffness, and unsteady aerodynamics matrices, created by
 a large finite-element program such as Nastran, a tiny beam-modeling
-program such as in \Fina, or something in-between.
+program such as in \Flaps, or something in-between.
 They are usually predicated on two equivalent assumptions:
 \begin{itemize}
 	\item they are valid only for infinitesimal displacements,
@@ -518,7 +510,7 @@ Other, less common matrices include:
 		\index{damping!viscous}
 
 	\item[\bf control systems] are contained in a matrix $\Matrix{T}$,
-		which in \Fina can be created as a custom function written by the user,
+		which in \Flaps can be created as a custom function written by the user,
 		or a linear, time invariant (LTI) control system designed, for
 		example, in \Simulink. Chapter \ref{chap:controls} has more details.
 \end{description}
@@ -669,10 +661,10 @@ of the matrices within this framework can be quasi-linear functions of
 discrete generalized coordinates.
 
 Example problem \Code{methods.fp} \Sectref{ex:formulation-comp}
-compares these methods using \Fina,
+compares these methods using \Flaps,
 demonstrating the versatility of the approach. An interesting finding from
 this example is the importance of using correct Mach numbers at each solution
-point which is possible in \Fina by interpolating with respect to Mach in
+point which is possible in \Flaps by interpolating with respect to Mach in
 addition to reduced frequency.\index{Mach number!matched}
 
 % =================================================================
@@ -872,7 +864,7 @@ produced a continuation code using their algorithm, taking in to account
 the curvature and the rate and quality of corrector convergence.
 No attempt will be made to present the technique; a good summary is given
 in \cite{rheinboldt1986numerical}, with FORTRAN source code in \cite{pcon61},
-and translated into \Cpp in \Fina.
+and translated into \Cpp in \Flaps.
 \index{numerical continuation!stepsize}
 
 \subsection{The Corrector}\label{sect:corrector}
@@ -1249,7 +1241,7 @@ cheap enough that they should be done at each step in tracking curves.
 
 \subsection{Detecting Switching}
 The first test is to monitor the angle between tangents at subsequent
-solution points: $cos^{-1}\left(\Vector{t}_{j-1}^T\Vector{t}_j\right)$.
+solution points: $\cos^{-1}\left(\Vector{t}_{j-1}^T\Vector{t}_j\right)$.
 If the angle is greater than, say 40 degrees, repeat the step with a
 smaller stepsize.
 
@@ -1526,7 +1518,7 @@ While manually programming analytic expressions for derivatives is
 often the preferred technique for its precision, it is frequently
 impractical. Deriving analytic expressions can be laborious, error-prone,
 and unsustainable as problem complexity grows. A further complication
-arises in flexible frameworks like \Fina, where the user can provide
+arises in flexible frameworks like \Flaps, where the user can provide
 custom functions to modify the core flutter equations. If we wish to avoid
 the burdensome requirement that users provide derivative code alongside
 their custom functions, an automated differentiation method is essential.
@@ -2046,7 +2038,7 @@ a CO process would use
 	\centering
  	\caption{Additional velocity contours branched from a CO curve: red CO, blue fuel variation}\label{fig:contourCO}
 \end{figure}
-As all curves computed in \Fina, this CO curve is traced in both directions
+As all curves computed in \Flaps, this CO curve is traced in both directions
 from its origin until one of its parameter limits are reached.
 \Figref{fig:contourCO} shows the CO curve and the contours that branched
 from it, a more complete set than in \Figref{fig:fuelcontour}.
@@ -2223,13 +2215,13 @@ $\rule{0mm}{4mm}\Vector{q}$ & \multicolumn{3}{c|}{dimensionless}                
 
 \input{params-units.tex}
 
-The default system of units used in \Fina for solving the flutter
+The default system of units used in \Flaps for solving the flutter
 equations (\Newterm{equation units})\index{units!equation} is the International
 System of Units (SI),\index{units!SI} which assumes the matrices are all in SI units.
 If the matrices are all in the United States Customary System (USCS)
 \cite{handbook2002specifications}\index{units!USCS},
 the parameter units must be changed using the \Code{units=USCS}
-option in the \Fina \Cmd{import} command.
+option in the \Flaps \Cmd{import} command.
 
 Because the flutter equation is homogeneous with no right-hand-side, a set
 of matrices in USCS units can be converted to SI units by multiplying the unsteady
@@ -2524,7 +2516,7 @@ found, it may be possible to derive the analytical form using
 %------------------------------------------------------------------
 \chapter{Control Systems}\label{chap:controls}
 The theory of control systems is a vast topic, too large for
-this presentation. Here, and in \Fina it is assumed that a control
+this presentation. Here, and in \Flaps it is assumed that a control
 system with $n_s$ states will be represented by a matrix
 $\Matrix{T}$ with the form
 	\begin{equation}
@@ -2541,7 +2533,7 @@ is $(n_e,n_s)$, the output, and
 $\Matrix{T}_{22}$ is an $(n_s,n_s)$ matrix of controls equations,
 and $n_e$ is the size of the structural matrices.
 
-\Fina has 2 ways of providing matrix $\Matrix{T}$:
+\Flaps has 2 ways of providing matrix $\Matrix{T}$:
 \begin{itemize}
 	\item a custom \Cpp function written by the user \Sectref{sect:custom-functions},
 	\item a linear, time-invariant (LTI) control system designed, for
@@ -2961,41 +2953,54 @@ for specific analytical tasks.
 \section{Parameters}\label{sect:parameters}
 Parameters play a central role in flutter analysis; indeed flutter
 analysis is the study of the stability behavior of structures 
-over a range of various parameters. A few parameters are in most
-flutter analyses, especially frequency and dynamic pressure.
+over a range of various parameters.
+Parameters must satisfy certain criteria:
+\begin{itemize}
+	\item units must be compatible with other elements of the flutter
+		equation,
+	\item it must be possible to compute derivatives of each parameter
+		with respect to other parameters,
+	\item parameterized matrices must be differentiable with respect
+		to it's parameters.
+\end{itemize}
+\Flaps provides the more commonly used parameters
+(\Tableref{table:params-eqns}, \Tableref{table:params-units}
+and \Tableref{table:params-names}), but many analyses require others.
+A computer program such as \Flaps cannot provide all concievable parameters,
+so it must be possible to create new parameters.
 
-Many flutter analyses can be done using only the built-in parameters
-listed in \Tableref{table:params-eqns}. To refer to parameters in
-a computer program they need short, descriptive names. \Fina uses
-the names listed in \Tableref{table:params-names} and candidate equations
-in \Tableref{table:params-eqns}.
-
-These, and a few more, can be referred to by name, for example
-when specifying which parameters are independent in \Cmd{flut}.
-Each of the standard parameters has one or more equations
-for calculating its value in terms of the other standard parameters
-when it is evaluated.
-\Tableref{table:params-names} lists the built-in parameter names with
-the units used in computations, and
-\Tableref{table:params-eqns} the currently available equations; which equation is
-used depends on which parameters are independent or constant. Normally the
-user specifies which parameters are independent or constant and the program
-decides which equation to use.
-Fluid properties (pressure, density, temperature) have default equations taken
-from the U.S. Standard Atmosphere as described in \cite{united1976us}.
-\index{atmospheric properties}
-Calibrated airspeed and dynamic pressure are from
-``Measurement of Aircraft Speed and Altitude'' \cite{gracey1980measurement}.
+% .A few parameters are in most
+% .flutter analyses, especially frequency and dynamic pressure.
+% .Many flutter analyses can be done using only the built-in parameters
+% .listed in \Tableref{table:params-eqns}. To refer to parameters in
+% .a computer program they need short, descriptive names. \Fina uses
+% .the names listed in \Tableref{table:params-names} and candidate equations
+% .in \Tableref{table:params-eqns}.
+% .These, and a few more, can be referred to by name, for example
+% .when specifying which parameters are independent in \Cmd{flut}.
+% .Each of the standard parameters has one or more equations
+% .for calculating its value in terms of the other standard parameters
+% .when it is evaluated.
+% .\Tableref{table:params-names} lists the built-in parameter names with
+% .the units used in computations, and
+% .\Tableref{table:params-eqns} the currently available equations;
+% .which equation is used depends on which parameters are independent
+% .or constant. Normally the user specifies which parameters are independent
+% .or constant and the program decides which equation to use.
+% .Fluid properties (pressure, density, temperature) have default equations taken
+% .from the U.S. Standard Atmosphere as described in \cite{united1976us}.
+% .\index{atmospheric properties}
+% .Calibrated airspeed and dynamic pressure are from
+% .``Measurement of Aircraft Speed and Altitude'' \cite{gracey1980measurement}.
 
 \input{params-names.tex}
 
 \subsection{Defining New Parameters}\label{sect:newpar}
 \index{parameters!user-defined}
 \index{parameters!creating}
-In addition to the standard parameters available automatically,
-new parameters can be defined and used just like the standard parameters,
+New parameters can be defined and used just like the built-in parameters,
 and any parameter can be modified.
-New parameters are defined in the \Fina \Cmd{parameters} command, for example
+New parameters are defined in the \flaps \Cmd{parameters} command, for example
 \begin{lstlisting}
    parameters{rsbfreq(Right Nacelle SB Freq)[1:6]<radps2Hz> = 4}
 \end{lstlisting}
@@ -3010,7 +3015,7 @@ and user-defined parameters.
 
 \subparagraph{Format.}\label{sect:parformat}
 \index{parameters!format}
-All parameters in \Fina are defined (and displayed) using a
+All parameters in \Flaps are defined (and displayed) using a
 a common syntax referred to throughout this book as a \Newterm{parameter-defn}
 \vspace{1.5ex}
 \begin{center}
@@ -3039,7 +3044,7 @@ The components of a parameter are
                 
 	\item[$<$\Subst{conversion}$>$]
 	\index{parameters!conversion}
-	determines the units used within \Fina for computations (\emph{equation units},
+	determines the units used within \Flaps for computations (\emph{equation units},
 	the units used for input or output in printout or plotfiles (\emph{output units}),
 	and the conversion factor between the two.
                 
@@ -3048,7 +3053,7 @@ The components of a parameter are
 	\index{equation!parameter}
 	The right-hand-side can be one or more values in output units, 
 	or an equation. Standard parameters have multiple built-in
-	equations (\Tableref{table:params-eqns}) which are chosen by \Fina commands to give
+	equations (\Tableref{table:params-eqns}) which are chosen by \Flaps commands to give
 	a consistent set of equations.  User-defined equations (\Sectref{sect:pareqns})
 	may consist of matrix elements, parameter names, scalars, built-in constants
 	\index{built-in!constants}
@@ -3115,7 +3120,7 @@ Some examples of valid conversion factors:
    <m/s>
 \end{lstlisting}
 \par
-Standard \Fina constants (\Sectref{sect:scalars})
+Standard \Flaps constants (\Sectref{sect:scalars})
 may be used as conversion factors, with the added convenience
 \index{conversion factor!built-in}\index{built-in!conversion factors}
 that default units descriptions will be used. For example
@@ -3196,12 +3201,12 @@ on the rudder. This is an example of an \Newterm{output transformation}.
 This new parameter could then be included in the plot file
 output by \Cmd{flut}, where it will have the plot title "Pressure Ratio".
 \par
-Parameters in \Fina are \Newterm{persistent} in the
+Parameters in \Flaps are \Newterm{persistent} in the
 \index{parameters!persistence}
 sense that once defined they can be referenced by name in subsequent
 commands; the parameter's description, limits, conversion,
 and value are preserved until reset; that is, all parameters in
-\Fina are global.\index{parameters!global}
+\Flaps are global.\index{parameters!global}
 
 \subsection{Changing existing parameters}\label{sect:changing-par}
 The definition of existing parameters can be modified in the
@@ -3227,20 +3232,20 @@ parameters used in an analysis. Thus the equation units
 in the example above are the default equation units, \Code{m/s}.
 
 \section{Equations}\label{sect:equations}
-Equations are used in \Fina to evaluate built-in and user-defined parameters
+Equations are used in \Flaps to evaluate built-in and user-defined parameters
 and to parametrize specific elements of matrices.
 All the built-in parameters have one or more candidate equations; the equation actually
 used depends on the independent and constant parameters chosen for an analysis.
 
-An equation in \Fina is a string which must be parsed to
+An equation in \Flaps is a string which must be parsed to
 give a value at the current values of the built-in and user-defined
 parameters. Like parameters, equations have only real values, not
 complex. Complex values must be treated in custom evaluation functions
-(\Sectref{sect:functions}) or with the \Fina \Cmd{octlab} command.
+(\Sectref{sect:functions}) or with the \Flaps \Cmd{octlab} command.
 
 \begin{description}
 \item[{\bf Parameter equations}]\label{sect:parameter-eqns} are stored with
-the parameter so that they are available throughout \Fina. Multiple candidate
+the parameter so that they are available throughout \Flaps. Multiple candidate
 equations are stored so that each command can choose the best
 equation with the given constant and independent parameters.
 Candidate equations for the built-in parameters are
@@ -3253,7 +3258,7 @@ with a custom evaluation function.\index{equation!matrix}
 \index{function!custom}
 \end{description}
 
-\Fina equations are made up of scalars,
+\Flaps equations are made up of scalars,
 constants,
 operators,
 other parameters,
@@ -3306,7 +3311,7 @@ any parameters are used, so they may in turn be functions
 of other parameters. All parameters, built-in and user-defined have
 real values in an automatic differentiation data type, meaning that
 a parameter's value and its derivatives with respect to the independent
-variables are computed simultaneously.\index{automatic differentiation!in \Fina equations}
+variables are computed simultaneously.\index{automatic differentiation!in \Flaps equations}
 \par
 It is important to note that {\bfseries the value of a parameter used in
 an equation is always in equation units\/} (\Sectref{sect:units}).
@@ -3365,7 +3370,7 @@ where \Code{tabangle} has been created in \Cmd{pz} or with \Cmd{parameter}.
 % =================================================================
 \newpage
 \section{Functions}\label{sect:functions}
-Two types of functions are available in \Fina for creating or modifying
+Two types of functions are available in \Flaps for creating or modifying
 matrices: built-in and custom. Custom functions are usually written by the
 user, for example, to create control-system equations or to modify matrices.
 
@@ -3377,14 +3382,14 @@ from within a custom function or included in parameter equations
 \Sectref{sect:eqn-df}
 
 \subsection{Custom functions}\label{sect:custom-functions}\index{custom functions}
-The ability to add custom code to \Fina increases the types
+The ability to add custom code to \Flaps increases the types
 of problems that can be solved. Three types of code can be included
-in a \Fina input file: custom \Cpp code to create or modify a matrix;
+in a \Flaps input file: custom \Cpp code to create or modify a matrix;
 \Cpp code to create a describing function; and \Octlab
-scripts to manipulate \Fina matrices.
+scripts to manipulate \Flaps matrices.
 Any of these may be included in the input file as named-sections
 which are split from the input file, written to temporary files, and
-if containing \Cpp code, compiled and made available to all \Fina
+if containing \Cpp code, compiled and made available to all \Flaps
 commands.
 
 \subsubsection{Matrix functions}\label{sect:matrix-functions}
@@ -3499,7 +3504,7 @@ a bilinear distribution with respect to the amplitude of generalized-coordinate
 \index{targets!processing}\index{custom!target processing}
 The \Cmd{flut} command allows inclusion of a custom function for processing
 any targets found, for example flutter crossings. Like matrix functions code
-may be included in the \Fina script or a separate file. Unlike matrix
+may be included in the \Flaps script or a separate file. Unlike matrix
 functions, custom code for processing targets is only specified in the
 \Cmd{flut} command.
 Example problem \Code{methods.fp} \Sectref{ex:formulation-comp} shows the
@@ -3530,7 +3535,7 @@ accessed like this:
 The matrices in \Eqn{eqn:flut} may be functions of various parameters, directly
 or indirectly related to the parameters $\Vector{p}$ in \Eqn{eqn:realeqn} by
 matrix parametrizations.
-The \Fina \Cmd{pz} command provides several ways to
+The \Flaps \Cmd{pz} command provides several ways to
 parametrize matrices, including
 \begin{itemize}
 \item assigning an arbitrary equation to a matrix element
@@ -3628,7 +3633,7 @@ feedback to the structure from the control-system degrees of freedom.
 The extra control-system degrees of freedom must be accounted for when
 forming the dynamic matrix.
 \par
-The \Fina \Cmd{lti} command creates the $\Matrix{T}$ matrix
+The \Flaps \Cmd{lti} command creates the $\Matrix{T}$ matrix
 from a state-space linear time-invariant (LTI) control system from Simulink;
 details of the conversion from a state-space
 representation to the frequency-domain $\Matrix{T}$ matrix are in
@@ -3640,9 +3645,9 @@ representation to the frequency-domain $\Matrix{T}$ matrix are in
 \Matlab scripts may be included as sections in the input file or
 in read-accessible files; in either case the section name or file
 name must end in .m. These scripts are run in either \Matlab or
-Octave\index{octave} by executing the \Fina \Cmd{octlab} command
+Octave\index{octave} by executing the \Flaps \Cmd{octlab} command
 
-For example, a \Fina input file like this:
+For example, a \Flaps input file like this:
 \begin{lstlisting}
    import{lco.op4}
    octlab{script=reduce.m, i=mass}
@@ -3654,11 +3659,11 @@ mass = mass(ext,ext);
 }}
 \end{lstlisting}
 will read a \Nastran output4 file,
-then \Fina command \Cmd{octlab} will copy all the imported matrices
+then \Flaps command \Cmd{octlab} will copy all the imported matrices
 to \Matlab (or Octave, depending on which is available), execute
 reduce.m in \Matlab to extract rows and columns from matrix \Code{mass},
 and copy the matrices back
-to \Fina. Then the reduced mass matrix is displayed graphically.
+to \Flaps. Then the reduced mass matrix is displayed graphically.
 
 % ------------------------------------------------------------------
 % Substructuring chapter
@@ -4460,13 +4465,13 @@ accurately performed
 \chapter{Example Problems}\label{chap:examples}
 This chapter contains descriptions of the example problem files
 contained in \Subst{prefix}/examples where \Subst{prefix} \index{prefix@\Subst{prefix}}
-is the root directory of the \Fina installation.
+is the root directory of the \Flaps installation.
 They are meant to be copied, modified,
-and run by the user. The goal is to include as many \Fina capabilities
+and run by the user. The goal is to include as many \Flaps capabilities
 as possible.
 
 Most of these example problems are self-contained and do not import
-model data; models are built using the \Fina \Cmd{fem} command,
+model data; models are built using the \Flaps \Cmd{fem} command,
 so they are relatively rudimentary.
 
 \section{Goland wing}\label{ex:goland}
@@ -4486,7 +4491,7 @@ with the aerodynamic center (ac), elastic axis (ea), and center of gravity (cg).
 	\caption{Goland wing} \label{fig:goland-wing}
 \end{figure}
 
-The \Fina \Cmd{fem} command is used to model the
+The \Flaps \Cmd{fem} command is used to model the
 Goland wing for some of the example problems. This has several advantages:
 \begin{itemize}
 	\item flutter analyses can be done in nodal, modal, BMA,
@@ -4635,7 +4640,7 @@ As pointed out in \Sectref{sect:formulations},
 many different formulations of flutter equations have been proposed
 over the past 50 years;
 example problem \Code{methods.fp} compares the first 2 modes of the Goland
-wing using various formulations of the flutter equation, and the \Fina
+wing using various formulations of the flutter equation, and the \Flaps
 solver.
 \begin{figure}[ht]
 		\includegraphics[height=8cm,width=12cm]{methods-g-freq.png}
@@ -4733,7 +4738,7 @@ substructured models and the nodal model.
 \newpage
 \section{Nonlinear flutter}\label{ex:nl1234}
 \index{examples!nl[1234].fp}
-\Fina offers several ways of creating nonlinear flutter equations,
+\Flaps offers several ways of creating nonlinear flutter equations,
 that is, parametrizing matrices with generalized-coordinate amplitudes.
 The first set of problems illustrate these techniques. Next an example
 shows how latent LCO can be discovered using the continuation-optimization
@@ -4770,7 +4775,7 @@ called \Code{freeplay} and \Code{bilinear}
 
 \item[nl4.fp] a custom function which uses describing functions
 created automatically when 3 functions written in \Cpp are included as
-a section in the \Fina input file. The 3 functions must have these names and
+a section in the \Flaps input file. The 3 functions must have these names and
 calling arguments:
 	\begin{lstlisting}
 vector<double> df_qs(const vector<double>& params)
@@ -4819,7 +4824,7 @@ clicked on to bring up the animated mode.
 
 \newpage
 \section{Controls Equations}\label{ex:controls}
-Two ways of treating control systems in \Fina are shown in files
+Two ways of treating control systems in \Flaps are shown in files
 \Code{lti.fp} and \Code{controls.fp}.
 
 \subsection{Linear-Time-Invariant}
@@ -4872,7 +4877,7 @@ Capabilities demonstrated include
 \index{examples!whirl.fp}
 Three example problems illustrate whirl flutter:
 \Code{reed.fp} demonstrates whirl flutter on a simple rigid propeller
-to validate the \Fina implementation of \cite{reed1961analytical},
+to validate the \Flaps implementation of \cite{reed1961analytical},
 \Code{whirl.fp} is the Goland wing with 2
 propellers attached, and \Code{whirlnl.fp} is the same but with freeplay
 on the propeller mounts. For these a gyro matrix is created with the \Cmd{gyro}
@@ -4941,7 +4946,7 @@ other becoming neutrally stable, as shown in \Figref{fig:bifurcation}.
 \end{figure}
 
 \newpage
-\chapter{Flaps Manual}\label{chap:appendixa}
+\chapter{\Flaps Manual}\label{chap:appendixa}
 \include{manual.tex}
 
 % ------------------------------------------------------------------
@@ -4951,11 +4956,11 @@ other becoming neutrally stable, as shown in \Figref{fig:bifurcation}.
 \chapter{Appendix}\label{chap:appendices}
 
 \section{Obtaining the source}\label{sect:obtaining}
-Currently the code for \Fina is only available by emailing me
+Currently the code for \Flaps is only available by emailing me
 at \Code{flapsconsulting@gmail.com}. I'm sorry for the inconvenience.
 
 \section{Installation}\label{sect:installation}
-To install \Fina from a distribution tar file, e.g.
+To install \Flaps from a distribution tar file, e.g.
 sfea-2.2.5.tar.gz
 
 Assuming a Linux operating system
@@ -4969,11 +4974,11 @@ and starting in the directory containing the tar file:
 \begin{lstlisting}
 >  tar zxf sfea-XXX.tar.gz
 \end{lstlisting}
-will create a directory \Code{sfea-XXX}, the \Fina root directory,
-populated with the source files necessary to build \Fina.
+will create a directory \Code{sfea-XXX}, the \Flaps root directory,
+populated with the source files necessary to build \Flaps.
 
-If this is the first time installing \Fina it may be necessary to
-install certain packages; the PACKAGES file in the \Fina root directory
+If this is the first time installing \Flaps it may be necessary to
+install certain packages; the PACKAGES file in the \Flaps root directory
 can be run as a script like this:
 \begin{lstlisting}
 > yes | sudo PACKAGES
@@ -5231,7 +5236,7 @@ provided the ratio of the smallest to largest $\epsilon_i$ is not too small.
 
 
 \section{File Formats}
-This section documents a few of the file formats used in \Fina; they
+This section documents a few of the file formats used in \Flaps; they
 are ASCII file so you may edit, modify or create them.
 
 \subsection{ASCII plot file (.apf) format}\label{sect:apf-file}
@@ -5294,7 +5299,7 @@ flutter modes.
 The ASCII file formats described here are considered obsolete by the
 developers, the University of Cincinnati Structural Dynamics Research Lab,
 but they are still documented at \cite{UniversalFile}. Documentation for
-the formats used in \Fina (Datasets 15, 55, and 82) are included here
+the formats used in \Flaps (Datasets 15, 55, and 82) are included here
 for convenience. Only the relevant items are shown. Datasets are enclosed
 by lines containing only -1 beginning in column 5.
 \par

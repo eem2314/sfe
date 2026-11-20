@@ -6,27 +6,16 @@ which demonstrates their use. \Sfea can be used in two ways:
 		adds flutter solution capability,
 	\item as a program for performing a variety of flutter analyses.
 \end{itemize}
-The flutter solution program, named \Flaps, is a compact program
-linked with the \Fina libraries, useful for doing flutter analyses or
-as a guide to integrating \Fina into another program.
-
-%% \Fina does not have a graphical user interface; it's graphics capabilities
-%% are limited to visualizing flutter results, animated modes, and matrices.
-%% A typical scenario looks something like this:
-%% \begin{itemize}
-%% 	\item Edit a file of \Fina commands to import and customize data,
-%% 			run flutter analyses, and process results.
-%% 	\item Process the file with \Cmd{flaps} on the command line:
-%% 		\verb!> flaps file!
-%% 	\item Interact with any visualization commands in the file.
-%% \end{itemize}
+The flutter solution program, named \flaps, is a compact program
+linked with the \Flaps libraries, useful for doing flutter analyses or
+as a guide to integrating \Flaps into another program.
 
 \section{Capabilities}
-\Fina consists of a few libraries with functions that
+\Flaps consists of a few libraries with functions that
 fall into the following general categories:
 
 \subparagraph{Model building.}
-\Fina model building capabilities are intended for education
+\Flaps model building capabilities are intended for education
 and research, lacking many of the features of more sophisticated
 tools like \Nastran.
 The \Cmd{fem} function allows for simple beam modeling,
@@ -48,9 +37,9 @@ The \Cmd{pz} function creates parameterized matrices using several
 techniques.
         
 \subparagraph{Matrix Manipulation.}
-The \Fina \Cmd{octlab} function (\Sectref{ref:octlab}) provides means
+The \Flaps \Cmd{octlab} function (\Sectref{ref:octlab}) provides means
 to perform a variety of matrix manipulations and computations with
-\Fina matrices using either \Matlab\ (www.mathworks.com)
+\Flaps matrices using either \Matlab\ (www.mathworks.com)
 \index{matlab@\Matlab}
 or the open-source alternative Octave (octave.org), hence
 the name \Cmd{octlab}.
@@ -72,22 +61,22 @@ parameterized matrices and interactive display of matrices.
 These are treated in the \Cmd{viz} function \Sectref{ref:viz}.
         
 \section{System requirements}
-\Fina is written in standard \Cpp and should run on any platform
+\Flaps is written in standard \Cpp and should run on any platform
 that has a \Cpp compiler which conforms to \Cpp-20. A few external libraries
 are required which are available for Windows and MacOs.
 Two of them, wxWidgets and tcl/tk are only for the graphics capabilities.
 
-\Fina has been developed on the Linux operating system and I
+\Flaps has been developed on the Linux operating system and I
 have not attempted to build it on either Windows or Mac.
 
 Example problems (\Chapref{chap:examples}),
 some of which are of ``real-world'' size, run well on even moderately
-powerful PCs.  \Fina will use the multiple cores available
+powerful PCs.  \flaps will use the multiple cores available
 in most modern cpus to speed up the execution, with each aeroelastic
 mode tracked in a separate thread.
 
 \section{Installation}\label{sect:installation}
-To install \Fina from a distribution tar file, e.g.
+To install \Flaps from a distribution tar file, e.g.
 sfea-2.2.5.tar.gz, onto a Linux operating system,
 \footnote{there are dozens of Linux distributions; the important thing here is
 the package manager used. The 3 main package managers used in Linux
@@ -99,11 +88,11 @@ and starting in the directory containing the tar file:
 \begin{lstlisting}
 >  tar zxf sfea-XXX.tar.gz
 \end{lstlisting}
-will create a directory \Code{sfea-XXX}, the \Fina root directory,
-populated with the source files necessary to build \Fina.
+will create a directory \Code{sfea-XXX}, the \Flaps root directory,
+populated with the source files necessary to build \Flaps.
 
-If this is the first time installing \Fina it may be necessary to
-install certain packages; the PACKAGES file in the \Fina root directory
+If this is the first time installing \Flaps it may be necessary to
+install certain packages; the PACKAGES file in the \Flaps root directory
 can be run as a script like this:
 \begin{lstlisting}
 > yes | sudo PACKAGES
@@ -154,9 +143,9 @@ flapsconsulting@gmail.com
 \section{Input file}\label{sect:input-file}
 
 \subsection{Options}\label{syntax}
-The syntax of a \Fina input file consists of hierarchy of
+The syntax of a \flaps input file consists of hierarchy of
 \Spec{key\{value\}} pairs; the highest level is the input file,
-consisting of a set of \Fina functions and options:
+consisting of a set of \flaps functions and options:
 \begin{lstlisting}
    fcn{options}
    fcn{options}
@@ -196,10 +185,10 @@ A few things to note about this example:
 \subsection{Wildcards}\label{sect:wildcards}\index{wildcards}
 Wildcards are familiar to anyone who has used Unix or Linux 
 to shorten file names, as in \verb@ ls *.cpp@.
-In \Fina the notion of wildcards has been extended with
+In \Flaps the notion of wildcards has been extended with
 \Newterm{sequences}: 2 or 3 strings separated by colons (:) and
 enclosed in parentheses.
-Wildcards and sequences are used extensively in \Fina to simplify
+Wildcards and sequences are used extensively in \Flaps to simplify
 input files and in \Cmd{viz} to simplify choosing curves.
 
 Wildcard characters used for filename expansion in Linux include
@@ -290,7 +279,7 @@ viz{cid{opt.1,*.b:2:h}, ...}
 to plot the optimization curve (1) and every-other contour.
 
 \subsection{Named-sections}
-Following the \Fina functions in the input file are
+Following the \flaps functions in the input file are
 optional \Newterm{named-sections} \index{named-section}\index{sections!named}
 with the syntax
 \begin{lstlisting}
@@ -364,28 +353,28 @@ tracking 4 modes at each value of \Spec{cg}.
 % \end{lstlisting}
 
 \subsection{Output}
-Output from \Fina is, like all Linux commands, split into standard output
+Output from \flaps is, like all Linux commands, split into standard output
 (stdout)
 and standard error (stderr).
-\Fina writes minimal output to stderr, usually just the process id and
+\flaps writes minimal output to stderr, usually just the process id and
 execution times for each command. By default both go to the terminal if
 running from the command line; they can be redirected to files:
 \begin{lstlisting}
 > flaps input-file >out 2>err
 \end{lstlisting}
 
-One of the goals in \Fina is to minimize the amount of printed
+One of the goals in \flaps is to minimize the amount of printed
 output. One way to do this is to present matrices graphically
 instead of printed.
 
 \subsubsection{Matrix Visualization}\label{ref:matrix-display}
 Matrices are notoriously difficult to present in printed
-output. The approach taken in \Fina is to present all
+output. The approach taken in \flaps is to present all
 but the smallest matrices graphically. The \Cmd{viz}
 function (\Sectref{ref:viz})
 will display a matrix in a separate window with colors indicating
 the size of individual elements, and a file with a .mm extension
-will be written to the current directory. Other \Fina programs write
+will be written to the current directory. Other \Flaps commands write
 matrices to files with .mm extensions (\cite{matrixmarket})
 which can be displayed by \Cmd{viz} on the command line.
 Figure \ref{fig:matview} is an example of a matrix
@@ -405,45 +394,15 @@ Note that it is not necessary to include the extension.
 
 Installation instructions are in \Sectref{sect:installation}.
 
-\section{Conventions}
-Some typographic conventions that are used:
-
-% XXX check that these fonts are what are actually used, e.g. for Cmd
-\begin{description}
-	\item[\Newterm{italic}]
-		is used to highlight new terms and concepts
-		when they are first used
-                
-	\item[\Code{typewriter}]
-	is used for computer output or listing of computer files
-                
-	\item[\Subst{small sans serif}]
-		indicates an item that must be substituted; for example
-			\Cmd{viz}\{ x=\Subst{par\/}
-     means that the user is to substitute a parameter name for
-	\Subst{par\/}
-                
-	\item[\Cmd{Sans Serif}]
-	is a \Fina function, e.g. \Cmd{viz}.
-                
-	\item[$\Matrix{M}$,$\Vector{v}$] 
-	Matrices and vectors are printed in bold, with matrices in upper
-	case and vectors in lower case.
-                
-\end{description}
-
 \chapter{Functions}
-These functions form the core capability of \Fina.
-% although in reality they are calls to functions in the \Fina libraries.
-% Here they are documented in \Fina syntax; when used in a \Cpp (\Code{.cpp})
-% input file the options must be in a single string \Sectref{sect:input-file}.
+These functions form the core capability of \flaps.
 
 % catalog function --------------------------------------------------------
 \Manpg{catalog}
-Prints a catalog of \Fina matrices matching specified
+Prints a catalog of matrices matching specified
 conditions.
 By default, \Cmd{catalog} prints a catalog
-of all \Fina matrices;
+of all matrices;
 the list may be limited by specifying a list of matrix names,
 or wildcards (see \Sectref{sect:input-file} and \Sectref{sect:lists}).
 
@@ -463,7 +422,7 @@ note the name is in quotes to protect the comma.
 
 % export function --------------------------------------------------------
 \Manpg{export}
-Creates a file of \Fina matrices in one of several formats determined
+Creates a file of matrices in one of several formats determined
 by the extension of the output file:
 \begin{description}
 \item[\Code{.mat}] \Octlab format; in \Matlab\index{matlab@\Matlab}
@@ -472,7 +431,7 @@ or Octave\index{octave} the \Cmd{load} command will read the file.
 \item[\Code{.mm}] Matrix Market format;
    An ASCII format widely used in the numerical analysis community
    for distributing test matrices. Used for displaying
-   matrices in \Fina and viewing with \Cmd{viz} or the command-line
+   matrices with \Cmd{viz} or the command-line
 	program \Cmd{matview}.
    (\Sectref{ref:matrix-display}) \cite{matrixmarket}.\index{matrix!market}
 \end{description}
@@ -620,7 +579,7 @@ matrices are to be computed} { 0 }
 
 % flaps function --------------------------------------------------------
 \Manpg{flaps}
-Reads a file consisting of one or more \Fina functions and calls them.
+Reads a file consisting of one or more \Flaps functions and calls them.
 \subparagraph{Syntax:}
 \Cmd{flaps} [ \Subst{-h | -k} ] \Subst{filename}
 
@@ -794,7 +753,7 @@ Reads files in various formats and creates matrices from the contents.
 		\item[\Code{matrix market}]
 			An ASCII format widely used in the numerical analysis community
 			for distributing test matrices. Used for printing
-			large matrices in \Fina and viewing with \Cmd{viz}
+			large matrices and viewing with \Cmd{viz}
 			(\Sectref{ref:flaps}) \cite{matrixmarket}.\index{matrix!market}
 			Default extension: \Code{.mm}.
 		\item[\Code{universal}]
@@ -817,16 +776,18 @@ Reads files in various formats and creates matrices from the contents.
 % octlab function --------------------------------------------------------
 \Manpg{octlab}
 Run \Matlab\index{matlab@\Matlab} (or the open-source alternative Octave)
-\index{octave} with a script to manipulate \Fina matrices, or provide any
+\index{octave} with a script to manipulate matrices, or provide any
 of its extensive capabilities. Which is used (\Matlab or Octave) depends
 on the current PATH; the first one found will be used.
 
 \begin{Optlist}{}{There are only 2 specs: input to \Octlab, and
 the names of matrices to be brought back}
 
-\Opt{i(nput)?}{\Stringlist}{name of the section in the \Fina script or the path of a file containing \Octlab commands, and a list of matrices to be sent with
-the script}{error if a script is not given, all matrices if no names given}
-\Opt{o(utput)?}{\Stringlist}{names of the matrices to be returned to \Fina}{all matrices}
+\Opt{i(nput)?}{\Stringlist}{name of the section in the \flaps script or
+	the path of a file containing \Octlab commands, and a list of matrices
+	to be sent with the script}{error if a script is not given, all matrices
+	if no names given}
+\Opt{o(utput)?}{\Stringlist}{names of the matrices to be returned}{all matrices}
 
 \end{Optlist}
 
@@ -1003,7 +964,7 @@ in the plugin function.}
 \index{parameterization!custom function}
 
 \Optnd{code|plugin}{\Subst{file}}{Name of a file (or a named-section
-	in the \Fina input file) containing a set of \Cpp functions which
+	in the \flaps input file) containing a set of \Cpp functions which
 	modifies the input matrix. One of these, referred to as the
 	\Newterm{entry point}, must have the same name as the file or section.}
 \end{Optlist}
@@ -1016,40 +977,6 @@ in the plugin function.}
 		names and one or more constant values; each combination creates a curve.}
 \end{Optlist}
 
-%% \subsubsection{Examples}
-%% The following \Fina function examples are taken from sample
-%% problem \Cmd{contour.fp}.  The first function creates a interpolation matrix
-%% named 'Mass' that has the parameter 'cg'. Four finite-element mass
-%% matrices were created in \Nastran with centers of gravity varying
-%% from -4 to 24, then reduced to generalized mass matrices with
-%% free-vibration modes at cg=8. The first use of the new parameter gives
-%% it the description ``Center of Gravity'':
-%% \begin{lstlisting}
-%%    pz {i=(gm1{cg(Center of Gravity)=-4.0}, gm2{cg=8.0},
-%%        gm3{cg=16.0}, gm4{cg=24.0}), o=Mass}
-%% \end{lstlisting}
-%% 
-%% \par
-%% The next example creates a parameterized stiffness matrix
-%% by giving the $(2,2)$ diagonal an equation based on another
-%% new parameter, \Code{freq2}, defined before \Cmd{pz}
-%% with the function (\Sectref{ref:parameters})
-%% \begin{lstlisting}
-%%    parameters{freq2(Second mode freq)[0:10]<0.1591549 Hz rad/s> = 2}
-%% \end{lstlisting}
-%% which gives the parameter a description, limits, and a conversion
-%% factor so that plot values are in Hz but internally the values are
-%% in radian/sec. Then the following \Cmd{pz} function creates a new
-%% matrix with an equation for the $(2,2)$ diagonal:
-%% \begin{lstlisting}
-%%    pz { i = stif, o = Stif, [2,2] = "Mass[2,2]*(freq2^2)"}
-%% \end{lstlisting}
-%% The output matrices from these parameterizations are used in
-%% \Cmd{contour.fp} for parameter variations.
-%% \par
-%% Example plugin-function \index{function!plugin}
-%% parameterizations are in example files
-%% nacpv.fp, nl2.fp, nl3.fp, whirl.fp, and whirlnl.fp.
 
 % viz function --------------------------------------------------------
 \Manpg{viz}
@@ -1062,11 +989,10 @@ A system for various types of visualization:
 % creating 2D plots and optionally viewing animations of aeroelastic modes selected
 % interactively from points on the plots.
 
-When \Cmd{viz} is run in a \Fina script the \Code{aid} option
+When \Cmd{viz} is run in a \flaps script the \Code{aid} option
 is used to specify one or more previous executions of \Cmd{flut},
-and the \Code{pf} option is used to include data in one or more
+and the \Code{apf} option is used to include data in one or more
 plotfiles in ASCII format (with \Code{.apf} extensions).
-\index{pf plot files!in \Cmd{viz}}
 \index{apf plot files!in \Cmd{viz}}
 \Sectref{sect:apf-file} gives the format of \Code{.apf} files.
 \Cmd{viz} may also be run from the command line (\Sectref{ref:viz-cmdline}).
@@ -1186,11 +1112,11 @@ When a point is picked with a right-click the closest solution point
 is found, the \Gc\ at that point are multiplied
 by the transformation matrix, then the resulting vector along with the
 node numbers, coordinates, and connectivity are passed to
-the \Fina animated mode visualizer \Cmd{amviz}.
+the animated mode visualizer \Cmd{amviz}.
 \index{animated modes!amviz}\index{amviz!running from viz}
 
 \paragraph{Matrix Visualization.}\index{matrix!visualization}\index{visualizing!matrices}
-Matrices can be visualized in a \Fina job by listing only the matrix
+Matrices can be visualized in a \flaps job by listing only the matrix
 names in the options to \Cmd{viz}, for example:
 \begin{lstlisting}
    viz{gaf(1:4)}
@@ -1263,7 +1189,7 @@ The function
 \begin{lstlisting}
    viz { id=core, x=vtas, y=sigma, c{4:10} }
 \end{lstlisting}
-in an \Fina script will produce a plot from a previous
+in a \flaps script will produce a plot from a previous
 \Cmd{flut} run; clicking on the curves will produce
 animated modes provided the required data is available
 (\Sectref{sect:universal-file}), as illustrated in \Figref{fig:viz-amviz}.
@@ -1279,12 +1205,12 @@ animated modes provided the required data is available
 % \end{lstlisting}
 
 \paragraph{See Also}
-\Fina function \Cmd{flut} (\ref{ref:flut})
+\Cmd{flut} (\ref{ref:flut})
         
 % utility commands --------------------------------------------------------
 % \section{Utility Commands}\label{sect:utility}
 \Manpg{Utilities}
-Several utility programs are included to aid in running \Fina;
+Several utility programs are included to aid in running \flaps;
 these are run from the command line. Some are simply enhancements
 to standard Unix commands, e.g. \Cmd{dtree}, \Cmd{tgrep},
 and \Cmd{lspath}.
@@ -1322,7 +1248,7 @@ lists the directories in your current PATH, one per line
 \begin{quote}
 Visualize a matrix in a file with a \Cmd{.mm} extension
 (Matrix Market file \cite{matrixmarket}).
-These files are produced by \Fina
+These files are produced by \flaps
 functions when matrices are too large to include in the printed output.
 \Cmd{matview} has a number of features which
 make examining the structure and values of a matrix very easy,
@@ -1339,7 +1265,7 @@ that do not take arguments (e.g. -e).
 
 \Spec{viz [ \Subst{options} ] }
 \begin{quote}
-Run a simple 2D plotter (the \Fina \Code{viz} command).
+Run a simple 2D plotter (the \Code{viz} command).
 See the \Code{viz} reference (\Sectref{ref:viz-cmdline})
 for details on usage.
 \end{quote}
