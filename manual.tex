@@ -590,392 +590,377 @@ Reads a file consisting of one or more \Flaps functions and calls them.
 \Spec{\Subst{filename}}	path to the file containing the input
 
 % flut -------------------------------------------------------
-\Manpg{flut}
-Solves the flutter equation as a set of parameterized nonlinear
-equations over a given range of parameters using a continuation method.
+% \Manpg{flut}
+% Solves the flutter equation as a set of parameterized nonlinear
+% equations over a given range of parameters using a continuation method.
+% 
+% % Section \ref{sect:predef} lists builtin parameters
+% % and explains how to define new parameters; \Chapref{chap:flutter-equations}
+% % discusses the flutter equation (\Eqn{eqn:flut}).
+% 
+% \begin{Optlist}{Analysis identifiers}{are used to form the default plot
+% file name, and to identify the source of subsequent analyses}
+% \index{analysis identifier}
+% \index{identifier!analysis}
+% 
+% \Opt{aid}{\String}{may be arbitrarily long but should not contain spaces.}{combination of the independent-parameter names, e.g. vtas-sigma-freq}
+% 
+% \Opt{source}{\String}{analysis id of a previous flutter solution used
+% as start points}{start points will be from an eigensolution and
+% possibly a homotopy}
+% \end{Optlist}
+% 
+% \begin{Optlist}{Choosing independent and constant parameters}
+% {Three parameters must be chosen as independent
+% and enough constant parameters to enable the code to assign
+% equations to the remainder. Parameters are declared constant by 
+% giving it's value anywhere in the list of options, either as
+% \Subst{parameter-name{value}} or \Subst{parameter-name=value}.
+% Multiple values may be assigned to constant parameters with
+% \Subst{parameter-name{list}}.}
+% 
+% \Opt{indep}{\Stringlist}{A list of 3 parameter names
+% declared to be independent in the solution.}{error}
+% 
+% \Optnd{optimize}{\String}{The name of a parameter to be optimized using
+% the continuation-optimization technique.
+% When this spec is included the number of independent parameters
+% can be any number greater than or equal to three.}
+% \index{continuation!optimization}
+% 
+% \end{Optlist}
+% 
+% \begin{Optlist}{Choosing matrices.}{The matrices used
+% in the flutter equation are specified with options like
+% \Spec{role\{\String\}} or \Spec{role=\String}:}
+% %% where the recognized \Spec{role}s are: \Spec{mass, stif, gyro, vdamp, aero, gaf,
+% %% T, controls}. Note that \Spec{aero} and \Spec{gaf} are equivalent,
+% %% as are \Spec{T} and \Spec{controls}.}
+% 
+% \Optnd{\Subst{role}}{\String}{The name of a matrix to be used
+% 	as \Subst{role}: \Spec{mass, stif, gyro, vdamp, aero, gaf,
+% 	T, controls}. Note that \Spec{aero} and \Spec{gaf} are equivalent,
+% 	as are \Spec{T} and \Spec{controls}.}
+% 
+% \end{Optlist}
+% 
+% \begin{Optlist}{Choosing which modes to track: the \Code{start} spec}
+% {provides a few ways of specifying which modes
+% to track, by specifying points on curves from a previous analysis if
+% the \Code{source} spec is included, or by specifying how to perform
+% a free-vibration solution and which modes to take from it if the
+% \Code{source} spec is not included:}
+%  \index{mode!aeroelastic}
+% 	\Optnd{start}{options}{a set of options for how to get start points:}
+%  	\begin{description}
+% 	\Optnd{parameter-name}{\Stringlist}{sets a parameter value or
+% 		values where the start points are to be found}
+%   		\Optnv{parameter-name[\Subst{min}:\Subst{max}]}{sets limits for a
+%   			parameter where to search for start points.}
+% 		\Optnd{mode}{\Stringlist}{ids of curves from the \Code{source}
+% 			analysis or the ordinal numbers of the free-vibration modes
+% 			ordered by increasing frequency}
+% 		\Optnd{branch}{\Stringlist}{the name of a parameter and one or more
+% 			values to branch from the source curves; this parameter
+% 			will be held constant unless it has also been declared
+% 			independent.}
+% 	\end{description}
+% \end{Optlist}
+% 
+% Some examples will clarify these options.
+% \begin{lstlisting}
+% flut {aid=core, indep{vtas,freq,sigma}
+%     start{vtas=10,freq[0:10]}, modes{1:5} }
+% \end{lstlisting}
+% With no \Code{source} spec this \Code{start} spec says to do
+% a free-vibration eigensolution with a small amount of aerodynamics
+% added to the stiffness matrix and use only modes 1 to 5
+% as start points, provided their frequency is between 0 and 10 Hz.
+% The \Code{start} spec \Code{vtas=10} only determines the
+% amount of aerodynamics added to the eigensolution;
+% it is independent for the curve tracing, as is \Code{freq}.
+% \begin{lstlisting}
+% flut {aid=pv, source=core, indep{vtas,freq,p1}
+%       start{branch{sigma=0}, vtas[20:300], ordinal=1}, ...}
+% \end{lstlisting}
+% This example takes start points from the previous run for a
+% parameter variation. The \Spec{start} option says to start at
+% curves from the \Spec{aid=core} where \Code{sigma=0} and trace
+% curves varying \Code{vtas, freq} and \Code{p1}, keeping \Code{sigma}
+% constant \Code{0}. The \Code{vtas[20:300]} option prevents starting
+% where \Code{sigma=0} at low speed.
+% \begin{lstlisting}
+% flut {aid=contour, source=pv, indep{freq,p1,p2},
+%      start{branch{vtas{50 : 50 : 200}}}
+% \end{lstlisting}
+% Creates \Code{p1-p2} \Code{vtas} contours of flutter speed
+% (\Code{sigma=0}).
+% 
+% \begin{Optlist}{Output}{The primary output from \Cmd{flut} is an
+% ASCII plot file \Sectref{sect:apf-file}, set with the \Spec{plot\{file\}}
+% option or defaulted to \Subst{aid}\Code{.apf}. Other options include
+% \Code{target} and \Code{print}.}
+% 
+% 	\Optnd{plot}{options}{a set of options for plotting:}
+% 	\begin{description}
+% 		\Opt{par(ameters)?}{\Stringlist}{a list of parameters to be included
+% 			in the plot file.}{all builtin and user-defined parameters
+% 				are included}
+% 		\Opt{file}{\String}{name of the file to receive the plot data.}
+% 			{\Subst{aid}.apf where \Subst{aid} is specified with the
+% 				\Code{aid} spec.}
+% 			\index{apf plot files!in \Cmd{flut}}
+% 		\Optnv{stepdata}{add data regarding performance of the
+% 			continuation method in a file called \Code{stepdata.apf}.}
+% 		\Optnv{refine}{plot the homotopy used to refine the start
+% 			point in a file called \Code{refine.apf}.}
+% 	\end{description}
+% 
+% 	\Opt{print}{\Stringlist}{a list of parameter names to be included
+% 		in the printed output.}{all independent parameters and a summary
+% 		of the eigenvector}
+% 
+% 	\Optnd{target}{options}{options for specifying spots on each curve
+% 		that will be computed exactly and added to the printed output:}
+% 		\begin{description}
+% 		\Optnv{\Subst{parameter-name}[\Subst{min}:\Subst{max}]}
+% 			{a window for searching for targets}
+% 		\Optnd{\Subst{parameter-name}}{\Stringlist}{one or more parameter
+% 			values}
+% 		\Optnd{process}{\String}{the name of a \Cpp named-section
+% 			containing a function to process any targets found. See
+% 			example \Code{methods.fp}.}\label{sect:target-process}
+% 		\end{description}
+% \par
+% \end{Optlist}
 
-% Section \ref{sect:predef} lists builtin parameters
-% and explains how to define new parameters; \Chapref{chap:flutter-equations}
-% discusses the flutter equation (\Eqn{eqn:flut}).
+\begin{cmdref}{flut}{options}
+Solves the flutter equation over a range of parameters determined by
+the limits in all parameters.
+Options are in one of these categories:
+\begin{description}
+	\item[Analysis identifiers] are used to identify the source of
+		subsequent analyses, and to form the default plotfile name.
+	\item[Choosing independent and constant parameters] Three parameters
+		must be chosen with the \Cmd{indep} option as independent.
+		Constant parameters are assigned with the \Cmd{parameters}
+		command or by the \Cmd{constant} option.
+	\item[Choosing matrices] The matrices used
+	\item[Choosing which modes to track] the \Cmd{start} spec
+	\item[Output] The primary output from \Cmd{flut} is an
+\end{description}
 
-\begin{Optlist}{Analysis identifiers}{are used to form the default plot
-file name, and to identify the source of subsequent analyses}
-\index{analysis identifier}
-\index{identifier!analysis}
-
-\Opt{aid}{\String}{may be arbitrarily long but should not contain spaces.}{combination of the independent-parameter names, e.g. vtas-sigma-freq}
-
-\Opt{source}{\String}{analysis id of a previous flutter solution used
-as start points}{start points will be from an eigensolution and
-possibly a homotopy}
-\end{Optlist}
-
-\begin{Optlist}{Choosing independent and constant parameters}
-{Three parameters must be chosen as independent
-and enough constant parameters to enable the code to assign
-equations to the remainder. Parameters are declared constant by 
-giving it's value anywhere in the list of options, either as
-\Subst{parameter-name{value}} or \Subst{parameter-name=value}.
-Multiple values may be assigned to constant parameters with
-\Subst{parameter-name{list}}.}
-
-\Opt{indep}{\Stringlist}{A list of 3 parameter names
-declared to be independent in the solution.}{error}
-
-\Optnd{optimize}{\String}{The name of a parameter to be optimized using
-the continuation-optimization technique.
-When this spec is included the number of independent parameters
-can be any number greater than or equal to three.}
-\index{continuation!optimization}
-
-\end{Optlist}
-
-\begin{Optlist}{Choosing matrices.}{The matrices used
-in the flutter equation are specified with options like
-\Spec{role\{\String\}} or \Spec{role=\String}:}
-%% where the recognized \Spec{role}s are: \Spec{mass, stif, gyro, vdamp, aero, gaf,
-%% T, controls}. Note that \Spec{aero} and \Spec{gaf} are equivalent,
-%% as are \Spec{T} and \Spec{controls}.}
-
-\Optnd{\Subst{role}}{\String}{The name of a matrix to be used
-	as \Subst{role}: \Spec{mass, stif, gyro, vdamp, aero, gaf,
-	T, controls}. Note that \Spec{aero} and \Spec{gaf} are equivalent,
-	as are \Spec{T} and \Spec{controls}.}
-
-\end{Optlist}
-
-\begin{Optlist}{Choosing which modes to track: the \Code{start} spec}
-{provides a few ways of specifying which modes
-to track, by specifying points on curves from a previous analysis if
-the \Code{source} spec is included, or by specifying how to perform
-a free-vibration solution and which modes to take from it if the
-\Code{source} spec is not included:}
- \index{mode!aeroelastic}
-	\Optnd{start}{options}{a set of options for how to get start points:}
- 	\begin{description}
-	\Optnd{parameter-name}{\Stringlist}{sets a parameter value or
-		values where the start points are to be found}
-  		\Optnv{parameter-name[\Subst{min}:\Subst{max}]}{sets limits for a
-  			parameter where to search for start points.}
-		\Optnd{mode}{\Stringlist}{ids of curves from the \Code{source}
-			analysis or the ordinal numbers of the free-vibration modes
-			ordered by increasing frequency}
-		\Optnd{branch}{\Stringlist}{the name of a parameter and one or more
-			values to branch from the source curves; this parameter
-			will be held constant unless it has also been declared
+\begin{subopts}
+	\subopt{aid}{\tStr}{identifier for the current \Cmd{flut}}
+	\subopt{source}{\tStr}{identifier of a previous \Cmd{flut}, the results
+		of which are used as start points for this \Cmd{flut}}
+	\subopt{indep}{\tStrList}{3 (or more if the \Cmd{optimize} option
+		is included) parameter names.}
+	\subopt{constant}{\kv{name}{values},...}{names and one or more values of
+		the parameters which are to be held constant.}
+	\subopt{optimize}{\tStr}{the name of a parameter to be optimized using
+		the continuation-optimization technique of \Sectref{sect:CO}.}
+	\subopt{role}{\tStr}{the name of a matrix to be used as \Cmd{role}:
+		\val{mass}, \val{stif}, \val{gyro}, \val{vdamp}, \val{aero}, \val{gaf},
+		\val{controls}, or \val{T}. \val{aero} and \val{gaf} are equivalent,
+		as are \val{controls} and \val{T}.}
+	\subopt{start}{options}{a set of options for finding start points:}
+	\begin{subopts}
+		\subopt{name}{\tFloatList}{search for start points where the value
+			of parameter 'name' has each value in turn.}
+		\subopt{name[min:max]}{sets limits on the value of parameter 'name'
+			where start points are taken}
+		\subopt{mode}{\tStrList}{ids of curves from the \Cmd{source} analysis
+			or the free-vibration modes ordered by increasing frequency}
+		\subopt{branch}{\kv{name}{values}}{the name of a parameter and values 
+			to branch from the source curves; this parameter will be held
+			constant throughout the tracking unless it has been declared
 			independent.}
-	\end{description}
-\end{Optlist}
+	\end{subopts}
+\end{subopts}
 
-Some examples will clarify these options.
-\begin{lstlisting}
-flut {aid=core, indep{vtas,freq,sigma}
-    start{vtas=10,freq[0:10]}, modes{1:5} }
-\end{lstlisting}
-With no \Code{source} spec this \Code{start} spec says to do
-a free-vibration eigensolution with a small amount of aerodynamics
-added to the stiffness matrix and use only modes 1 to 5
-as start points, provided their frequency is between 0 and 10 Hz.
-The \Code{start} spec \Code{vtas=10} only determines the
-amount of aerodynamics added to the eigensolution;
-it is independent for the curve tracing, as is \Code{freq}.
-\begin{lstlisting}
-flut {aid=pv, source=core, indep{vtas,freq,p1}
-      start{branch{sigma=0}, vtas[20:300], ordinal=1}, ...}
-\end{lstlisting}
-This example takes start points from the previous run for a
-parameter variation. The \Spec{start} option says to start at
-curves from the \Spec{aid=core} where \Code{sigma=0} and trace
-curves varying \Code{vtas, freq} and \Code{p1}, keeping \Code{sigma}
-constant \Code{0}. The \Code{vtas[20:300]} option prevents starting
-where \Code{sigma=0} at low speed.
-\begin{lstlisting}
-flut {aid=contour, source=pv, indep{freq,p1,p2},
-     start{branch{vtas{50 : 50 : 200}}}
-\end{lstlisting}
-Creates \Code{p1-p2} \Code{vtas} contours of flutter speed
-(\Code{sigma=0}).
+Examples:
+\begin{flapsinput}
+# import a Nastran output4 file in USCS units
+import{../ha145b.op4, units=USCS}
+# import a Matlab binary file
+import{i=A.mm}
+# import a Matrix Market file
+import{i=Jacobian.mm}
+# import a Universal file
+import{model.uf}
+\end{flapsinput}
 
-\begin{Optlist}{Output}{The primary output from \Cmd{flut} is an
-ASCII plot file \Sectref{sect:apf-file}, set with the \Spec{plot\{file\}}
-option or defaulted to \Subst{aid}\Code{.apf}. Other options include
-\Code{target} and \Code{print}.}
-
-	\Optnd{plot}{options}{a set of options for plotting:}
-	\begin{description}
-		\Opt{par(ameters)?}{\Stringlist}{a list of parameters to be included
-			in the plot file.}{all builtin and user-defined parameters
-				are included}
-		\Opt{file}{\String}{name of the file to receive the plot data.}
-			{\Subst{aid}.apf where \Subst{aid} is specified with the
-				\Code{aid} spec.}
-			\index{apf plot files!in \Cmd{flut}}
-		\Optnv{stepdata}{add data regarding performance of the
-			continuation method in a file called \Code{stepdata.apf}.}
-		\Optnv{refine}{plot the homotopy used to refine the start
-			point in a file called \Code{refine.apf}.}
-	\end{description}
-
-	\Opt{print}{\Stringlist}{a list of parameter names to be included
-		in the printed output.}{all independent parameters and a summary
-		of the eigenvector}
-
-	\Optnd{target}{options}{options for specifying spots on each curve
-		that will be computed exactly and added to the printed output:}
-		\begin{description}
-		\Optnv{\Subst{parameter-name}[\Subst{min}:\Subst{max}]}
-			{a window for searching for targets}
-		\Optnd{\Subst{parameter-name}}{\Stringlist}{one or more parameter
-			values}
-		\Optnd{process}{\String}{the name of a \Cpp named-section
-			containing a function to process any targets found. See
-			example \Code{methods.fp}.}\label{sect:target-process}
-		\end{description}
-\par
-\end{Optlist}
+\end{cmdref}
 
 % import function --------------------------------------------------------
-\Manpg{import}
+
+\begin{cmdref}{import}{options}
 Reads files in various formats and creates matrices from the contents.
+The format is determined from the file extension:
+\begin{description}
+	\item[\val{.op4}] \Nastran OUTPUT4-formatted ASCII file.
+	\item[\val{.mat}] \Octlab MAT-file formatted binary file (uncompressed).
+	\item[\val{.mm}]
+		An ASCII format widely used in the numerical analysis community
+		for distributing test matrices. Used for printing
+		large matrices and viewing with \Cmd{viz}
+		(\Sectref{ref:flaps}) \cite{matrixmarket}.\index{matrix!market}
+	\item[\val{.uf}]
+		An ASCII format originally from SDRC, widely used to
+		transfer data to laboratory test software.
+		Only formats 15 (nodal), 55 (modes) and 82 (connectivity)
+		are allowed (format 164 (units) is ignored). The formats are
+		documented at \cite{UniversalFile} and in
+		\Sectref{sect:universal-file}.\index{universal-file!importing}
+		The data in a universal-file is used to create animated
+		aeroelastic modes with \Cmd{amviz} by right-clicking on a
+		curve produced by the \Cmd{viz} function.
+		\index{amviz!input data}\index{animated modes!requirements}
+\end{description}
 
-\begin{Optlist}{Specs}{}
-\Opt{i(nput)?}{\String}{The path of the file to be imported.}{error}
+\begin{subopts}
+	\subopt{i(nput)?}{\tStrList}{names (or paths) of files to be imported;
+		the left-hand-side is optional}
+\end{subopts}
 
-\Opt{format}{\String}{The format of the data in the file.
-   It is normally not necessary to specify the format---it can be
-	determined from the file extension if the default extension is used,
-   or by examining the data. Valid formats are:
-	\begin{description}
-		\item[\Spec{output4}] \Nastran OUTPUT4-formatted ASCII
-			file. Default extension: \Code{.op4}.
-		\item[\Spec{matlab}] \Octlab MAT-file formatted binary file
-			(uncompressed).  Default extension: \Code{.mat}.
-		\item[\Code{matrix market}]
-			An ASCII format widely used in the numerical analysis community
-			for distributing test matrices. Used for printing
-			large matrices and viewing with \Cmd{viz}
-			(\Sectref{ref:flaps}) \cite{matrixmarket}.\index{matrix!market}
-			Default extension: \Code{.mm}.
-		\item[\Code{universal}]
-			An ASCII format originally from SDRC, widely used to
-			transfer data to laboratory test software.
-			Only formats 15 (nodal), 55 (modes) and 82 (connectivity)
-			are allowed (format 164 (units) is ignored). The formats are
-			documented at \cite{UniversalFile} and in
-			\Sectref{sect:universal-file}.\index{universal-file!importing}
-			The data in a universal-file is used to create animated
-			aeroelastic modes with \Cmd{amviz} by right-clicking on a
-			curve produced by the \Cmd{viz} function.
-			\index{amviz!input data}\index{animated modes!requirements}
-			Default extension: \Code{.uf}.
-	\end{description}
-}{determined from the file extension}
-\end{Optlist}
+Examples:
+\begin{flapsinput}
+# import a Nastran output4 file in USCS units
+import{../ha145b.op4, units=USCS}
+# import a Matlab binary file
+import{i=A.mm}
+# import a Matrix Market file
+import{i=Jacobian.mm}
+# import a Universal file
+import{model.uf}
+\end{flapsinput}
 
-
-% octlab function --------------------------------------------------------
-\Manpg{octlab}
-Run \Matlab\index{matlab@\Matlab} (or the open-source alternative Octave)
-\index{octave} with a script to manipulate matrices, or provide any
-of its extensive capabilities. Which is used (\Matlab or Octave) depends
-on the current PATH; the first one found will be used.
-
-\begin{Optlist}{}{There are only 2 specs: input to \Octlab, and
-the names of matrices to be brought back}
-
-\Opt{i(nput)?}{\Stringlist}{name of the section in the \flaps script or
-	the path of a file containing \Octlab commands, and a list of matrices
-	to be sent with the script}{error if a script is not given, all matrices
-	if no names given}
-\Opt{o(utput)?}{\Stringlist}{names of the matrices to be returned}{all matrices}
-
-\end{Optlist}
-
-% parameter function --------------------------------------------------------
-\Manpg{parameters}
-Creates new parameters or modifies existing ones.
-%based on its string arguments, descriptions of the parameters, as detailed in \Chapref{chap:tailoring}.
-An example taken from example problem reed.fp (\Sectref{ex:whirl}):
-\begin{lstlisting}
-   parameters{spin(Spin rate (rpm))[0:5000]<radps2rpm> = 1}
-\end{lstlisting}
-When the name of one of the builtin scalars
-(\Sectref{sect:scalars}) like \Code{radps2rpm} are used in
-the conversion factor, the resulting parameter definition
-is expanded to
-\begin{lstlisting}
-   spin(Spin rate (rpm))[0:5000]<9.5493 rpm/(rad/s) = 1>
-\end{lstlisting}
+\end{cmdref}
 
 % mpz function --------------------------------------------------------
-\Manpg{mpz}
+% \Manpg{mpz}
+
+\begin{cmdref}{mpz}{options}
 Convert existing matrices to parameterized matrices (functions of
 arbitrary parameters), or create new parameterized matrices.
 The available parameterizations are
 \begin{description}
-	\item[matrix element] assign an equation to a matrix element
+	\item[matrix element] assign an expression to a matrix element
 	\item[interpolation] cubic spline interpolation in 1 to 3 variables
-	\index{aerodynamics!interpolation}
+		\index{aerodynamics!interpolation}
 	\item[rational function approximation (RFA)] fit a rational function
 		of complex reducted frequency to a set of aerodynamic matrices.
 		(\Sectref{sect:rfa-theory})\index{aerodynamics!approximation}
 	\item[plugin function] to modify an existing matrix or create a
 		new matrix.
-	\item[describing-function creation] creates a describing
-		function which can be used to approximate nonlinear behavior.
 \end{description}
 
-% Multiple parameterizations can sometimes be associated with
-% a matrix. For example, problem \Code{whirl.fp} \Sectref{ex:whirl}
-% creates an unsteady aerodynamics matrix with the \Cmd{fem} function
-% consisting of doublet-lattice aerodynamics for the wing and Reed
-% (\cite{reed1961analytical})
-% aerodynamics for the propellers; the doublet-lattice aerodynamics
-% are parameterized by interpolation with respect to reduced-frequency,
-% followed by a custom-function parameterization for the propellers.
-% 	\index{aerodynamics!interpolation}
-% Not all combinations make sense; interpolation and RFA cannot
-% be used on the same matrix. Custom evaluation functions
-% are the most general type of parameterization, and
-% can be used with virtually any matrix and any other parameterization.
+\begin{subopts}
+	\subopt{i(nput)?}{\kv{name}{\tSubOpts}, \kv{name}{\tSubOpts}...}
+		{the names of one or more input matrices, optionally followed by
+		a set of parameter value used for interpolation or approximation}
+	\subopt{o(utput)?}{\tStr}{name of the output matrix, default taken from
+		the input matrices}
+	\subopt{[row,col]}{\tStr}{Assigns an expression to the
+		\val{row,col} element of the matrix}
+			\index{parameterization!matrix element}
+	\subopt{beta}{\tFloatList}{Values of $\beta$ used in the
+		rational-function approximation. These should be in the same range
+		as the reduced frequencies but not very small or very
+		large\cite{demasi2024introduction}} \index{approximation}
+		\index{s-plane approximation} \index{RFA}
+	\subopt{code|plugin}{\tStr}{Name of a file (or a named-section
+		in the \flaps input file) containing a set of \Cpp functions which
+		modifies the input matrix. One of these, referred to as the
+		\Newterm{entry point}, must have the same name as the file or section,
+		and must have a specific set of arguments:
+			\cmd{Pset& pset, Mset& mset, ComplexMatrix& ca)} }
+\end{subopts}
 
-% Specs are categorized as
-% \begin{itemize}
-% \item General specs
-% \item Matrix element
-% \item Interpolation
-% \item Rational function approximation
-% \item Custom evaluation functions
-% \item Describing functions
-% \end{itemize}
+Examples:
+\begin{flapsinput}
+# assign an expression to the 2,2 term
+mpz{i=Stif, [2,2]{Mass[2,2]*(freq2^2)}}
+# interpolate a set of mass matrices with respect to cg
+mpz{i{gm1{cg=-4}, gm2{cg=8}, gm3{cg=16}, gm4{cg=24}}, o=Mass}
+# approximate a set of unsteady aero matrices with RFA
+mpz{i=Q(26:3:35)modal, o=rfagaf, beta=(0.1,0.3)}
+# assign an evaluation function to a stiffness matrix
+mpz{i=Kbma,plugin=stiffcn}
+\end{flapsinput}
 
-%%Input matrices are specified with the \Spec{input} (or just \Spec{i})
-%%spec either as a list enclosed in parentheses, or individually, for example
-%%\begin{lstlisting}
-%%   pz { input{m1, m2, m3, m4}, o=fuel }
-%%\end{lstlisting}
-%%is the same as
-%%\begin{lstlisting}
-%%   pz { i=m1, i=m2, i=m3, i=m4, o=fuel }
-%%\end{lstlisting}
-%%Sequences (\Sectref{sect:sequences}) can shorten the input list, for example
-%%\begin{lstlisting}
-%%   pz { i{m{1:4}}, o=fuel }
-%%\end{lstlisting}
-%%
-%%Parameters may be associated with matrices by following the
-%%name with one or more comma-separated parameter names
-%%enclosed in curly braces; for example
-%%\begin{lstlisting}
-%%   pz { i{gaf0{rf=0, rsf=0, mach=0},
-%%           gaf08{rf=0.08, rsf=-1, mach=0.4}, gaf0015{rf=0.0015}
-%%           gaf10{rf=0.10, rsf=1, mach=0.8}}
-%%   }
-%%\end{lstlisting}
-%%will interpolate the matrices with respect to the 3 parameters \Code{rf},
-%%\Code{rsf}, and \Code{mach} which are builtin parameters (\Sectref{sect:predef}).
-
-%% A new parameter\index{parameters!creating}
-%% may be associated with a matrix by following the
-%% name with a new parameter definition (\Sectref{sect:parformat}).
-%% For example
-%% \begin{lstlisting}
-%%    pz { i = (gm1{fuel(Percent Fuel)[0:100]=0},gm2{fuel=25},
-%%         gm3{fuel=50},gm4{fuel=75},gm5{fuel=100}), o = Mass }
-%% \end{lstlisting}
-%% interpolates 5 mass matrices with respect to a new parameter called \Code{fuel},
-%% creating a new matrix called \Code{Mass}. Continuing with this example,
-%% if the matrix is already a function of the parameter in curly braces
-%% it will be evaluated at the parameter value. So, for example the statement
-%% \begin{lstlisting}
-%%    pz { i = Mass{fuel=0}, i = Mass{fuel=100} o = LMass }
-%% \end{lstlisting}
-%% will create a new matrix \Code{LMass} which is a linear
-%% interpolation between \Code{gm1} and \Code{gm5}.
-
-% \begin{Optlist}{General specs}{}
-\begin{description}
-	\Optnd{i(nput)?}{\Stringlist}{The names of one or more input matrices}
-	\Optnd{o(utput)?}{\String}{The name given to the output matrix.}
-		{Name of the input matrix if there is only one, error otherwise.}
-% \Optnd{datatype}{\Code{real} or \Code{complex}}{The data type to be given to the output matrix.}{The output matrix usually has the same datatype as the
-% 	input matrix unless the parameterization requires casting the matrix
-% 	to a different datatype; for example applying a structural damping
-% 	parameterization to a (real) stiffness matrix requires the output
-% 	matrix be complex.}
-\end{description}
+\end{cmdref}
 
 
-\paragraph{Assigning equations to Matrix elements.}
-\begin{description}
-% \begin{Optlist}{Parameterizing Matrix Elements}{Individual elements of the output
-% matrix may be given equations by specifying the row and column numbers
-% in square brackets on the left and the equation on the right side of
-% the equal sign.}\label{opt:matrix-element}
-	\Optnd{[\Subst{row,col}]}{\String}{Assigns an equation to the
-		\Subst{row,col} element of the matrix}
-% equation which will replace the element in the output matrix (\Sectref{sect:pareqns})}
-\end{description}
-\index{parameterization!matrix element}
-
-For example \Code{contour.fp} modifies a stiffness matrix with
-\begin{lstlisting}
-[2,2]{Mass[2,2]*(freq2^2)}
-\end{lstlisting}
-which sets the (2,2) term to the stiffness that would result in the
-uncoupled frequency of mode 2 to be \Code{freq2}.
-
-\paragraph{Interpolation} fits a cubic spline in 1 to 3 variables
-to a set of matrices. Interpolation is triggered if there are more
-than 1 input matrices and the \Code{beta} option is not included.
-% \begin{description}
-% \begin{Optlist}{Interpolation}{If there is more than one input matrix, the
-% \Spec{beta} spec is not included, and the matrices are functions of the same
-% 1 to 3 parameters, the matrices are fitted with a
-% \Newterm{cubic spline}.}
-\index{spline}
-\index{interpolation}
+% octlab function --------------------------------------------------------
+% \Manpg{octlab}
+% Run \Matlab\index{matlab@\Matlab} (or the open-source alternative Octave)
+% \index{octave} with a script to manipulate matrices, or provide any
+% of its extensive capabilities. Which is used (\Matlab or Octave) depends
+% on the current PATH; the first one found will be used.
+% 
+% \begin{Optlist}{}{There are only 2 specs: input to \Octlab, and
+% the names of matrices to be brought back}
+% 
+% \Opt{i(nput)?}{\Stringlist}{name of the section in the \flaps script or
+% 	the path of a file containing \Octlab commands, and a list of matrices
+% 	to be sent with the script}{error if a script is not given, all matrices
+% 	if no names given}
+% \Opt{o(utput)?}{\Stringlist}{names of the matrices to be returned}{all matrices}
 % \end{Optlist}
-% \end{description}
 
-\paragraph{Approximation} fits a rational function to a set of complex
-unsteady aerodynamic matrices that are functions of reduced frequency.
-\begin{description}
-% \begin{Optlist}{Approximation}{Approximation of a set of unsteady aerodynamic
-% matrices by a rational-function approximation (RFA) (\Sectref{sect:rfa-theory})
-% is triggered by including the \Spec{beta} spec.
-% The input matrices must be functions of \Spec{rf}, and possibly
-% \Spec{rsf} (\Tableref{table:gpset-params}).}
-\Optnd{beta}{\Floatlist}{Values of $\beta$ used in the
-rational-function approximation. These should be in the same range as the
- reduced frequencies but not very small or very large\cite{demasi2024introduction}}
-\end{description}
-\index{approximation}
-\index{s-plane approximation}
-\index{RFA}
+\begin{cmdref}{octlab}{options}
+Run \Matlab\index{matlab@\Matlab} (or the open-source alternative Octave)
+\index{octave} with a script to exercise any of the many matrix algorithms.
+Which is used (\Matlab or Octave) depends
+on the current PATH; the first one found will be used.
+\begin{subopts}
+	\subopt{i(nput)?}{\tStrList}{name of the matrices to be sent, and a script
+		(.m) to manipulate matrices}
+	\subopt{o(utput)?}{\tStrList}{names of the matrices to return}
+\end{subopts}
+Examples:
+\begin{flapsinput}
+   # Do a free-vibration eigensolution
+   octlab{i{Mass, Stif}, output{eigenvalues}}
+\end{flapsinput}
+\end{cmdref}
 
-\begin{Optlist}{Plugin functions}{are user-written \Cpp functions
-that perform arbitrary modifications to a matrix. Example problems
-nacpv.fp, nl2.fp, nl3.fp, whirl.fp and whirlnl.fp use plugin functions.
-Without an input matrix a new matrix is created which will be evaluated
-in the plugin function.}
-\index{custom function!matrix parameterization}
-\index{function!custom}
-\index{parameterization!custom function}
 
-\Optnd{code|plugin}{\Subst{file}}{Name of a file (or a named-section
-	in the \flaps input file) containing a set of \Cpp functions which
-	modifies the input matrix. One of these, referred to as the
-	\Newterm{entry point}, must have the same name as the file or section.}
-\end{Optlist}
-
-\begin{Optlist}{plot\{options\}}{Create a plot file varying one of the
-	parameters the output matrix depends on, and the rest set to
-	constant values}
-	\Opt{vary}{\String}{name of the parameter to be varied.}{error}
-	\Optnd{fix}{\Subst{p1\{value\},p2\{value\},...}}{a list of parameter
-		names and one or more constant values; each combination creates a curve.}
-\end{Optlist}
+% parameter function --------------------------------------------------------
+% \Manpg{parameters}
+% Creates new parameters or modifies existing ones.
+% \begin{Optlist}{parameters\{name\{options\}, ...\}}{Create a new parameter or
+% 	modify an existing parameter with the name \Subst{name}, and options:}
+% 	\Optnd{desc}{\String}{arbitrarily long description}
+% 	\Optnd{limits}{\Float\; : \Float}{minimum and maximum values}
+% 	\Optnd{units}{\String, \String, \String}{3 strings: 1) an expression giving
+% 		the value of the conversion from equation units to output units,
+% 		2) output units, and 3) equation units. ounits = value*eunits}
+% 	\Optnd{value}{\String}{an expression or one or more numbers giving
+% 		the parameter value. An arithmetic expression will be evaluated each
+% 		time the parameter value is needed; numbers mean the parameter is
+% 		constant}
+% \end{Optlist}
+\begin{cmdref}{parameters}{\kv{name}{\tSubOpts}, \kv{name}{\tSubOpts}, ...}
+Creates new parameters or modifies existing ones.
+\begin{subopts}
+	\subopt{desc}{\tStr}{arbitrarily long description}
+	\subopt{limits}{\tFloat, \tFloat}{min, max for tracking in \cmd{flut}}
+	\subopt{units}{\tFloat, \tStr, \tStr}{factor, ounits, eunits: ounits=factor*eunits}
+\end{subopts}
+Examples:
+\begin{flapsinput}
+   # define a new parameter for whirl flutter
+   parameters{amom1{desc{Prop angular momentum}, limits{0:5000}, value = 2000}}
+	# set some values and limits
+	parameters{alt{value=300}, vtas{limits{0,250}}}
+	# change the description and output units of frequency
+   parameters{freq{desc{Precession rate}, limits{0:1000},
+	   units{60/(2*pi) rpm rad/s}}}
+\end{flapsinput}
+\end{cmdref}
 
 
 % viz function --------------------------------------------------------

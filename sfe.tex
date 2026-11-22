@@ -129,8 +129,10 @@
 \newcommand{\CCol}[1]{\multicolumn{1}{c|}{#1}}
 
 % ------------------------------------------------------------------
-% Appendix A - users' manual
+% Flaps manual
 % ------------------------------------------------------------------
+\usepackage{flapsman}
+
 \newcommand{\UserIn}[1]{{\small\sf\bf #1}}
 % \newcommand{\Newterm}[1]{{\em #1}\index{#1}}
 % \newcommand{\Newterm}[1]{{\em #1}}	% don't index Newterms
@@ -2969,269 +2971,75 @@ and \Tableref{table:params-names}), but many analyses require others.
 A computer program such as \Flaps cannot provide all concievable parameters,
 so it must be possible to create new parameters.
 
-% .A few parameters are in most
-% .flutter analyses, especially frequency and dynamic pressure.
-% .Many flutter analyses can be done using only the built-in parameters
-% .listed in \Tableref{table:params-eqns}. To refer to parameters in
-% .a computer program they need short, descriptive names. \Fina uses
-% .the names listed in \Tableref{table:params-names} and candidate equations
-% .in \Tableref{table:params-eqns}.
-% .These, and a few more, can be referred to by name, for example
-% .when specifying which parameters are independent in \Cmd{flut}.
-% .Each of the standard parameters has one or more equations
-% .for calculating its value in terms of the other standard parameters
-% .when it is evaluated.
-% .\Tableref{table:params-names} lists the built-in parameter names with
-% .the units used in computations, and
-% .\Tableref{table:params-eqns} the currently available equations;
-% .which equation is used depends on which parameters are independent
-% .or constant. Normally the user specifies which parameters are independent
-% .or constant and the program decides which equation to use.
-% .Fluid properties (pressure, density, temperature) have default equations taken
-% .from the U.S. Standard Atmosphere as described in \cite{united1976us}.
-% .\index{atmospheric properties}
-% .Calibrated airspeed and dynamic pressure are from
-% .``Measurement of Aircraft Speed and Altitude'' \cite{gracey1980measurement}.
+% \input{params-names.tex}
 
-\input{params-names.tex}
-
-\subsection{Defining New Parameters}\label{sect:newpar}
+\subsection{New Parameters}\label{sect:newpar}
 \index{parameters!user-defined}
 \index{parameters!creating}
 New parameters can be defined and used just like the built-in parameters,
 and any parameter can be modified.
-New parameters are defined in the \flaps \Cmd{parameters} command, for example
+New parameters are defined in the \flaps \Cmd{parameters} command
+\Sectref{ref:parameters}, for example
 \begin{lstlisting}
-   parameters{rsbfreq(Right Nacelle SB Freq)[1:6]<radps2Hz> = 4}
+   parameters{rsbfreq{desc{Right Nacelle SB Freq}, limits{1:6}, units{1/(2*pi) Hz rad/sec} value= 4}
 \end{lstlisting}
 defines a new parameter to be used in nacelle side-bending frequency
 variations.
 
-\par
-The syntax used to define new parameters is the same
-as that used for standard parameters.  These user-defined parameters can
-be defined with arbitrary equations in terms of existing standard
-and user-defined parameters.
-
-\subparagraph{Format.}\label{sect:parformat}
-\index{parameters!format}
-All parameters in \Flaps are defined (and displayed) using a
-a common syntax referred to throughout this book as a \Newterm{parameter-defn}
-\vspace{1.5ex}
-\begin{center}
-\fbox{ \Subst{name}(\Subst{description})[\Subst{min:max}]$<$\Subst{conversion}$>$ = \Subst{equation}}
-\end{center}
-\vspace{1.5ex}
-
 The components of a parameter are
 \begin{description}
 	\item[\Subst{name}] Parameters are always referred to by name. There is
-		no limit on the length of the name, but it may contain only letters
-		(a-z and A-Z) or numbers (0-9).
+		no limit on the length of the name, but it may not contain
+		any of these five characters: \verb*+#,{} +.
 	\index{parameters!name}
                 
 	\item[\Subst{description}] arbitrarily long description of the parameter,
-			 enclosed in parentheses. The description is never used to identify
-			 the parameter, only in printed output and plot files.
+			 only used in printed output and plot files.
 	\index{parameters!description}
                 
-	\item[\Subst{min:max}]
+	\item[\Subst{min, max}]
 	Minimum and maximum acceptable values for the parameter in output units.
-	Two floating-point numbers separated by a colon and enclosed in square
-	brackets. If either number is missing the default is assumed.
 	\index{parameters!limits}
 	\index{=bracket@[l:h] (parameter limits)}
                 
-	\item[$<$\Subst{conversion}$>$]
-	\index{parameters!conversion}
-	determines the units used within \Flaps for computations (\emph{equation units},
-	the units used for input or output in printout or plotfiles (\emph{output units}),
-	and the conversion factor between the two.
+	\item[\Subst{units}]
+	\index{parameters!units}
+	three items make up parameter units: \emph{equation units}, which
+	must be consistent with the flutter equation,
+	arbitrary \emph{output units}, and a number which when multiplied
+	by a value in equation units converts the value to output units.
+	\Sectref{sect:units}.
                 
-	\item[\Subst{equation}]
-	\index{parameters!equation}
-	\index{equation!parameter}
-	The right-hand-side can be one or more values in output units, 
-	or an equation. Standard parameters have multiple built-in
-	equations (\Tableref{table:params-eqns}) which are chosen by \Flaps commands to give
-	a consistent set of equations.  User-defined equations (\Sectref{sect:pareqns})
+	\item[\Subst{expression}]
+	\index{parameters!expression}
+	\index{expression!parameter}
+	the value is taken from evaluating an expression which may consist of
+	a number, a series of numbers or an arithmetic expression like
+	\verb+60/(2*pi)+ in output units.
+%	Built-in parameters have multiple equations (\Tableref{table:params-eqns})
+%	which are chosen by the code to give a consistent set of equations.
+	Arithmetic expressions (\Sectref{sect:pareqns})
 	may consist of matrix elements, parameter names, scalars, built-in constants
 	\index{built-in!constants}
 	(\Sectref{sect:scalars}), +-*/, square root (sqrt), exponential (exp)
 	and power (pow).
                 
 \end{description}
-\par
-All the items except \Subst{name} are optional; however some
-contexts may require more than just a name. For example, it may
-be necessary to include a value or equation on the right-hand-side.
-\par
-The parameter name is case sensitive: \Code{vtas}, \Code{Vtas}, and \Code{VTAS}
-are all different parameters.
-\index{case sensitivity!parameter names}
-This implies that any parameter names in the right-hand-side equation
-are also case sensitive.
-The description and conversion units are only used for output
-purposes and are not case sensitive.
 
-\subparagraph{Conversion.}\label{sect:parunits}
-Parameter units are determined by the optional
-$<$\Subst{conversion}$>$\/ portion of a parameter
-definition, which in general consists of a \Newterm{conversion factor},
-\index{units!parameter}
-\index{factor!conversion}
-a string describing the output units.
-\index{units!output}
-followed by a slash (/),
-followed by a string describing the equation units.
-\index{units!equation}
-\index{=anglebracket@$<$$>$ (conversion factor)}
-The factor is a floating-point number which when multiplied by a number
-in equation units yields a number in output units for
-printed output and plot files; the units are
-only used for output---no dimensional analysis is done.
-The general format of a conversion is
-\vspace{1.5ex}
-\begin{center}
-\fbox{$<$ \Subst{factor}\ (\Subst{output units})/(\Subst{equation units})$>$}
-\end{center}
-\vspace{1.5ex}
-\par
-The strings describing the equation and output units should be enclosed
-in parentheses if the string contains a slash.
-These units descriptions are used in printout and plot files
-for information only; no magic here.
-\par
-All computations are done in equation (SI or USCS) units, and parameter
-values are converted to output units by  multiplying by the
-conversion factor for printed output and plotfiles.
-\index{units!conversion factors}
-\index{conversion factor!units}
-\par
-All but a set of units may be left off, in which case the factor is 1.0
-and both set of units are the same; for example \Code{<degrees>} and
-\Code{<1.0 degrees/degrees>} are equivalent.
-
-Some examples of valid conversion factors:
+All the items except \Subst{name} are optional, and all the optional
+parts may be changed. For example in \Code{reed.fp} the built-in parameter
+\Code{freq} is changed from
 \begin{lstlisting}
-   <0.062429767 (lbf/ft^3)/(kg/m^3)>
-   <0.159154943 Hz/(rad/sec)>
-   <6012.885 (furlong/fortnight)/(m/s)>
-   <m/s>
+   freq(Frequency)[0.01:60]<0.159155 Hz rad/s> = 0 Hz
 \end{lstlisting}
-\par
-Standard \Flaps constants (\Sectref{sect:scalars})
-may be used as conversion factors, with the added convenience
-\index{conversion factor!built-in}\index{built-in!conversion factors}
-that default units descriptions will be used. For example
-the default definition of frequency is
+to
 \begin{lstlisting}
-   freq(Frequency)[.01:50]<radps2Hz> = 0
+   freq(Precession rate)[0:6e+04]<9.549297 rpm rad/s> = 0 rpm
 \end{lstlisting}
-which uses the built-in conversion \Code{radps2Hz}: Hz/(radian/second).
+so that the output frequency represents precession of the propeller
+in \Code{rpm} instead of \Code{Hz}.
 
-\subparagraph{State.}\label{sect:parstate}
-\index{parameters!state}
-\index{parameters!independent}Independent parameters are the independent variables
-in an analysis; for example, in a stability analysis velocity, frequency and
-sigma might be independent.
-\par
-Constant parameters
-\index{parameters!constant}\index{constant parameters}
-have a value assigned
-by the user, usually in the specs to the program. For example,
-including the spec \Code{mach=0.6} in a \Cmd{flut}
-run sets the Mach number to 0.6.
-\par
-All other parameters are evaluated
-\index{parameters!evaluated}
-from the independent and constant parameters. The user is responsible for
-ensuring that the combination of constant and independent parameters is
-such that there is an equation for each evaluated parameter.
-For example, in a stability analysis if \Code{vtas},
-\Code{freq}, and \Code{sigma} are independent, then
-\Code{alt} must be held constant in order to use the equation
-for \Code{mach} $M = V/a(z)$.
-Currently available built-in equations for the standard parameters
-are listed in \Tableref{table:params-eqns}.
-
-\subparagraph{Equations.}\label{sect:pareqns}
-\index{parameters!equation}
-\index{equation!parameter}
-To the right of the equals sign in an equation definition is
-the parameter equation.
-A parameter equation can be as simple as a value (which makes
-the parameter state constant),
-multiple values separated
-by commas and enclosed in parentheses, for example
-\begin{lstlisting}
-   gain = (0.5, 1, 1.5, 2, 2.5, 3)
-\end{lstlisting}
-or equivalently
-\begin{lstlisting}
-   gain = (0.5 : 0.5 : 3)
-\end{lstlisting}
-(which makes the parameter state \Newterm{multiple-valued constant}),
-\index{parameters!multiple-valued}
-or it can be a fairly arbitrary function of scalars, other parameters,
-built-in functions, and matrix elements,
-making the parameter state \Newterm{evaluated}.
-\par
-
-\subparagraph{Examples.} \label{sect:par-examples}
-New parameters are created with the
-\Cmd{parameter} command,\index{parameters!creating} for example
-\begin{lstlisting}
-   parameter{pratio(Pressure ratio) = "pow(1 + 0.2*mach\^2, 3.5)" }
-\end{lstlisting}
-creates a new parameter called \Code{pratio} and gives it an equation
-(enclosed in quotes to protect the comma), which will be included by
-default in plot files produced by \Cmd{flut}.
-
-Another example,
-\begin{lstlisting}
-   parameter{rudder(Rudder amplitude) = rudrow*gc}
-\end{lstlisting}
-will create a new parameter called \Code{rudder} and
-define it as the product of a row vector (\Code{rudrow}) times
-the current vector of \Gc\ (\Code{gc}), giving the
-amplitude of the oscillation of the rudder. The row vector \Code{rudrow}
-might be the row of a modes matrix corresponding to a physical point
-on the rudder. This is an example of an \Newterm{output transformation}.
-This new parameter could then be included in the plot file
-output by \Cmd{flut}, where it will have the plot title "Pressure Ratio".
-\par
-Parameters in \Flaps are \Newterm{persistent} in the
-\index{parameters!persistence}
-sense that once defined they can be referenced by name in subsequent
-commands; the parameter's description, limits, conversion,
-and value are preserved until reset; that is, all parameters in
-\Flaps are global.\index{parameters!global}
-
-\subsection{Changing existing parameters}\label{sect:changing-par}
-The definition of existing parameters can be modified in the
-same way with one important difference: using \Cmd{parameter}
-to change an existing parameter will replace the existing
-definition with the new definition exactly as it is given;
-changing parts of a definition in \Cmd{flut} or \Cmd{pz}
-will only affect those parts that change. For example
-\begin{lstlisting}
-   parameter{vtas[0:500]<6012.885 (furlong/fortnight)/(m/s)>}
-\end{lstlisting}
-will change the global definition of \Code{vtas} to display
-values in \Code{furlong/fortnight} with no description.
-The same definition in \Cmd{flut} or \Cmd{pz} would only
-modify the limits and conversion factor; the description
-would stay the same.
-In either case the modification will propagate to all subsequent
-uses of the parameter.
-
-The output units can be changed to anything, but the
-equation units must remain compatible with the other
-parameters used in an analysis. Thus the equation units
-in the example above are the default equation units, \Code{m/s}.
-
-\section{Equations}\label{sect:equations}
+\section{Expressions}\label{sect:expressions}
 Equations are used in \Flaps to evaluate built-in and user-defined parameters
 and to parametrize specific elements of matrices.
 All the built-in parameters have one or more candidate equations; the equation actually
@@ -3544,10 +3352,10 @@ parametrize matrices, including
       with a custom function (\Sectref{sect:functions})
 \end{itemize}
 
-\subparagraph{Matrix element equations} are the simplest way
-to parametrize a matrix. The \Cmd{pz} command allows assigning
-an equation (\Sectref{sect:equations}) to a matrix element,
-for example a stiffness matrix might be given the equation
+\subparagraph{Matrix element expressions} are the simplest way
+to parametrize a matrix. The \Cmd{mpz} command allows assigning
+an arithmetic expression (\Sectref{sect:expressions}) to a matrix element,
+for example a stiffness matrix might be given the expression
 \begin{lstlisting}
 [3,3] *= freeplay(0.05, 3)
 \end{lstlisting}

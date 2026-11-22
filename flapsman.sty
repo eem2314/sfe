@@ -1,0 +1,146 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{flapsman}[2026/11/20 Flaps Reference Manual Style]
+
+% ==============================================================================
+% Required Packages
+% ==============================================================================
+\RequirePackage{xcolor}
+\RequirePackage{listings}
+\RequirePackage{tabularx}
+\RequirePackage{booktabs}
+\RequirePackage{enumitem}
+\RequirePackage{needspace}
+
+% ==============================================================================
+% Color Palette
+% ==============================================================================
+\definecolor{flapsBlue}{RGB}{15, 76, 129}      % Primary command / keyword accent
+\definecolor{flapsSlate}{RGB}{65, 75, 86}      % Type signatures and metavariables
+\definecolor{flapsComment}{RGB}{100, 110, 120} % Input listing comments
+\definecolor{flapsRule}{RGB}{180, 198, 214}    % Subtle divider / border rule
+\definecolor{flapsBg}{RGB}{248, 250, 252}      % Light background for input blocks
+
+% ==============================================================================
+% Inline Command, Option, and Type Macros
+% ==============================================================================
+% Verbatim-like argument ('v') automatically balances nested braces such as
+% \opt{par{name{veas}, range{100.0, 500.0}}} without needing \{ or \} escaping.
+
+% \cmd{name} : Command or block keyword name
+\NewDocumentCommand{\cmd}{m}{%
+  \texttt{\textbf{\textcolor{flapsBlue}{\detokenize{#1}}}}%
+}
+
+% \kv{key}{value} : Formats key{value} with literal braces while expanding macros inside
+% Supports arbitrary nesting: \kv{par}{\kv{name}{\tStr}, \kv{range}{\tFloatList}}
+\NewDocumentCommand{\kv}{m m}{%
+  \texttt{\textcolor{flapsBlue}{\detokenize{#1}\{}#2\textcolor{flapsBlue}{\}}}%
+}
+
+% \opt{key{value}} : Full option expression with balanced literal braces
+\NewDocumentCommand{\opt}{m}{%
+  \texttt{\textcolor{flapsBlue}{#1}}%
+}
+
+% \val{literal} : Literal value (number, string, or list)
+\NewDocumentCommand{\val}{m}{%
+  \texttt{\detokenize{#1}}%
+}
+
+% \meta{type} : Italicized angle-bracket type placeholder, e.g., \meta{float list}
+\NewDocumentCommand{\meta}{m}{%
+  \texttt{\textit{\textcolor{flapsSlate}{$\langle$#1$\rangle$}}}%
+}
+
+% Standard Type Signature Shorthands
+\newcommand{\tInt}{\meta{int}}
+\newcommand{\tFloat}{\meta{float}}
+\newcommand{\tStr}{\meta{string}}
+\newcommand{\tIntList}{\meta{int list}}
+\newcommand{\tFloatList}{\meta{float list}}
+\newcommand{\tStrList}{\meta{string list}}
+\newcommand{\tSubOpts}{\meta{options}}
+
+% ==============================================================================
+% Command Reference Block Environment
+% ==============================================================================
+% Usage:
+%   \begin{cmdref}{command_name}{value_type_signature}
+%     Description of the command...
+%   \end{cmdref}
+\newenvironment{cmdref}[2]{%
+  \newpage
+  \par\addvspace{1.0\baselineskip}%
+  \needspace{5\baselineskip}% Prevent orphan command headers at page bottoms
+  \phantomsection% Anchors hyperlinks
+  \addcontentsline{toc}{section}{\texttt{\detokenize{#1}}}%
+  \noindent\begin{tabularx}{\textwidth}{@{}l X@{}}
+  \toprule
+  \texttt{\textbf{\large\textcolor{flapsBlue}{\detokenize{#1}}}} & \hfill {\small #2} \\
+  \midrule
+  \multicolumn{2}{@{}p{\textwidth}@{}}{%
+}{%
+  } \\
+  \bottomrule
+  \end{tabularx}%
+  \par\addvspace{0.6\baselineskip}%
+}
+
+% ==============================================================================
+% Nested Sub-Options Environment (for key{subkey{value}} commands)
+% ==============================================================================
+% Usage inside cmdref:
+%   \begin{subopts}
+%     \subopt{subkey{type}}{Description...}
+%   \end{subopts}
+\newenvironment{subopts}{%
+  \par\smallskip\noindent{\small\textbf{\textcolor{flapsSlate}{Options:}}}%
+  \begin{description}[
+    leftmargin=1.5em,
+    style=nextline,
+    itemsep=3pt,
+    parsep=1pt,
+    topsep=3pt
+  ]%
+}{%
+  \end{description}%
+}
+
+% Updated \subopt:
+% Option A (2 arguments, using \kv inside): \subopt{\kv{modes}{\tIntList}}{Description}
+% Option B (3 arguments, automatic braces): \subopt{modes}{\tIntList}{Description}
+\NewDocumentCommand{\subopt}{m m m}{%
+  \item[\texttt{\textcolor{flapsBlue}{\detokenize{#1}\{}#2\textcolor{flapsBlue}{\}}}] #3%
+}
+
+% ==============================================================================
+% Input Deck Listing Environment
+% ==============================================================================
+\lstdefinestyle{flapsdeck}{
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{flapsBlue}\bfseries,
+  commentstyle=\color{flapsComment}\itshape,
+  morecomment=[l]{\#},
+  morecomment=[l]{//},
+  showstringspaces=false,
+  breaklines=true,
+  columns=flexible,
+  keepspaces=true,
+  backgroundcolor=\color{flapsBg},
+  frame=leftline,
+  framerule=2pt,
+  rulecolor=\color{flapsBlue},
+  xleftmargin=1.0em,
+  framexleftmargin=0.6em,
+  aboveskip=0.8\baselineskip,
+  belowskip=0.8\baselineskip,
+  literate={\{}{{\textbf{\textcolor{flapsBlue}{\{}}}}1
+           {\}}{{\textbf{\textcolor{flapsBlue}{\}}}}}1
+}
+
+\lstnewenvironment{flapsinput}[1][]{%
+  \lstset{style=flapsdeck, #1}%
+}{}
+
+\endinput
+
