@@ -723,7 +723,7 @@ number of solutions.
 Depending on the difference $m-n$, the solution space consists of
 curves ($m-n = 1$), surfaces ($m-n = 2$), volumes ($m-n = 3$), and so on
 \footnote{throughout this book, only curves are considered; with the
-exception of \Sectref{sect:optim}, $m = n+1$}.
+exception of \Sectref{sect:CO}, $m = n+1$}.
 
 Most continuation methods use a predictor-corrector approach,
 reminiscent of ordinary differential equation solvers.
@@ -824,7 +824,7 @@ Moreover, the tangent has unit length, since
 
 Computing the tangent relies on the fact that the tangent is the null
 vector of the Jacobian\footnote{although the focus here is on Jacobians with a single
-null vector, multiple null vectors will be treated in \Sectref{sect:optim}.},
+null vector, multiple null vectors will be treated in \Sectref{sect:CO}.},
 seen by differentiating \Eqn{eqn:fx} with respect to $\tau$:
 \begin{equation}\label{eqn:Jt}
 	\frac{d\Vector{f}}{d\tau} = \frac{\partial\Vector{f}}{\partial\Vector{x}}\frac{d\Vector{x}}{d\tau}
@@ -1080,7 +1080,7 @@ Unfortunately neither of the 2 parameter variations captured the
 full range of $x_3$. Another method, more likely to capture the full
 range, is continuation-optimization, presented next.
 
-\section{Continuation-Optimization (CO)}\label{sect:optim}
+\section{Continuation-Optimization (CO)}\label{sect:CO}
 \index{numerical continuation!optimization}
 Normally, to track curves with numerical continuation the number of unknowns
 must be exactly one greater than the number of equations; two greater
@@ -2015,7 +2015,7 @@ variations at multiple altitudes would capture more contours, but a
 more direct method is to branch from a continuation-optimization curve.
 
 
-\subparagraph{Continuation-Optimization (CO)\Sectref{sect:optim}}
+\subparagraph{Continuation-Optimization (CO)\Sectref{sect:CO}}
 \index{numerical continuation!optimization|textbf}
 can be a shortcut method for obtaining contour branches. The idea behind
 CO is to take the steepest ascent
@@ -4550,7 +4550,7 @@ substructured models and the nodal model.
 that is, parametrizing matrices with generalized-coordinate amplitudes.
 The first set of problems illustrate these techniques. Next an example
 shows how latent LCO can be discovered using the continuation-optimization
-technique discussed in \Sectref{sect:optim}.
+technique discussed in \Sectref{sect:CO}.
 
 \subsection{Creating nonlinear equations}
 Four small problems demonstrate 4 different ways of including the

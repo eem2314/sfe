@@ -577,162 +577,134 @@ matrices are to be computed} { 0 }
 
 \end{Optlist}
 
+\begin{cmdref}{fem}{options}
+A beam-modelling function with branch-mode and component-mode substructures,
+concentrated masses, gyroscopics,
+doublet-lattice unsteady aerodynamics and rigid propeller unsteady
+aerodynamics.
+
+\begin{subopts}
+	\subopt{nodes}{\kv{number}{coordinates}, ...}{a list of node numbers and
+		their coordinates in the global coordinate system. Each node has
+		an integer \opt{number} and \opt{x,y,z} coodinates.
+		Sequences are allowed, see Examples.}
+	\subopt{material}{options}{description of beam material}
+		\begin{subopts}
+			\subopt{x}{x,y,z}{global coordinates of a point on the local x axis.}
+			\subopt{EIx}{\tFloat}{coefficient for bending stiffness in the
+				local x-y plane.}
+			\subopt{EIz}{\tFloat}{coefficient for bending stiffness of the
+					beam in the local y-z plane.}
+			\subopt{EA}{\tFloat}{coefficient for local y-axis deformations.}
+			\subopt{GJ}{\tFloat}{coefficient for torsion along the local y-axis.}
+		\end{subopts}
+	\subopt{beam}{\kv{n}{1:6}, ...}{description of a beam with the most recently
+		defined material properties. The beam is defined by a sequence of
+		previously defined nodes and degrees of freedom. Each node number
+		can have one it's dof as the value or take the most recent dof as the
+		default. Matlab-type sequences can be used for the node numbers and dof.}
+	\subopt{conmass}{options}{a list of identical concentrated masses
+		with the nodes they act on, mass, moment of inertia, orientation
+		and center of gravity.}
+		\begin{subopts}
+			\subopt{nodes}{\tIntList}{node numbers the masses act on}
+			\subopt{mass}{\tFloat}{mass of each concentrated mass}
+			\subopt{moi}{$I_x$, $I_y$, $I_z$}{moments of inertia about the global
+				x, y, and z axes.}
+			\subopt{orient}{x, y, z}{the orientation vector: a point on the
+				line between the node and the center of gravity.}
+			\subopt{cg}{\tFloat}{the distance from the node to the center of
+				gravity along the orientation vector.}
+			\subopt{cg}{\tStr}{the name of a parameter who's value is the
+				distance from the node to the center of
+				gravity along the orientation vector.}
+		\end{subopts}
+	\subopt{gyro}{\kv{n}{options}, ...}{gyroscopics for a spinning part acting
+		on node \val{n}.}
+		\begin{subopts}
+			\subopt{orient}{x, y, z}{global coordinates of a point on the
+				spin axis relative to the node; a vector from the mount node
+				to this point determines the direction of rotation according
+				to the right-hand rule.}
+			\subopt{amom}{\tFloat}{angular momentum of the spinning part.}
+			\subopt{amom}{\tStr}{name of a parameter with angular momentum
+				as it's value.}
+		\end{subopts}
+	\subopt{pgaf}{\kv{n}{options}, ...{unsteady aerodynamics for a rigid
+		propeller attached to node \val{n}.}
+		\begin{subopts}
+			\subopt{radius}{\tFloat}{propeller radius}
+			\subopt{beta}{\tFloat}{angle of attach of the propeller blades
+				relative to the freestream, in the range 34 to 58 degrees.}
+			\subopt{lbar}{\tFloat}{distance from the node to the propeller hub,
+				divided by the radius.}
+			\subopt{orient}{x, y, z}{global coordinates of a point on the
+				spin axis relative to the node.}
+		\end{subopts}
+	\subopt{dlm}{options}{doublet lattice unsteady aerodynamics}
+		\begin{subopts}
+			\subopt{\tInt}{x,y,z}{global coordinates of node number \cmd{n}}
+		\end{subopts}
+\end{subopts}
+
+Examples:
+\begin{flapsinput}
+   # Build the Goland wing with 2 propellers attached with Branch Modes
+   fem{nodes{1{0,0,0} : 25{0,6,0}, 109{-0.5,2,0}, 119{-0.5,4.5,0}},
+      ss{id=wing,
+         material{x=(1,0,0), gj=9.88e+5, eiz=3.0e+7,
+            eix=9.77e+6, ea=8.0e+7},
+         beam{1{0}, 2{1:6}, (3:25)},
+         conmass{mass=9.07,moi=(1,2.2,1),cg=0.183,orient=x,node{2:25}} 
+      },
+      ss{id=prop1,
+         material{x=(0,1,0), eiz=8e+4, eix=8e+4,
+            gj=1.0e+7, ea=8.0e+7},
+         beam{9{(1:6)},109},
+         conmass{mass=10, moi=(5,5,5), cg=0, orient=y, node=109},
+         conmass{mass=9.07,moi=(1,2.2,1),cg=0.183,orient=x,node=9},
+         project=(2,3) },
+      ss{id=prop2,
+         material{x=(0,1,0), eiz=8e+4, eix=8e+4,
+            gj=1.0e+7, ea=8.0e+7},
+         beam{19{(1:6)},119},
+         conmass{mass=10, moi=(5,5,5), cg=0, orient=y, node=119},
+         conmass{mass=9.07,moi=(1,2.2,1),cg=0.183,orient=x,node=19},
+         project=(2,3) },
+      bma{root=wing{20}, branches{prop1{2}, prop2{2}}},
+      gyro{109{orient{-1,0,0}, amom=amom1},
+           119{orient{-1,0,0}, amom=amom2} },
+      pgaf{109{beta=45, radius=0.5, lbar=0.5, orient{-1,0,0}},
+           119{beta=45, radius=0.5, lbar=0.5, orient{-1,0,0}} },
+      dlm{nodes=(1:25), panels=4, chord=1.83,
+          rf=(0.2,0.7,2.0,5.0,7.0), mach=0.5, ac=-0.152 }
+   }
+\end{flapsinput}
+
+\end{cmdref}
+
 % flaps function --------------------------------------------------------
-\Manpg{flaps}
+
+\begin{cmdref}{flaps}{options}
+A small program to demonstrate the \Flaps libraries.
 Reads a file consisting of one or more \Flaps functions and calls them.
-\subparagraph{Syntax:}
-\Cmd{flaps} [ \Subst{-h | -k} ] \Subst{filename}
 
-\Spec{-h} show a list of available functions
+\begin{subopts}
+	\subopt{-h}{""}{shows a list of available functions}
+	\subopt{-k}{""}{keep the temporary directory when finished}
+	\subopt{filename}{""}{path to the file containing the input}
+\end{subopts}
 
-\Spec{-k} keep the temporary directory when finished
+Examples:
+\begin{flapsinput}
+# run flaps with example file contour.fp (note the extension is not necessary,
+# send the output to 'out', and standard error to 'err'
+flaps contour >out 2>err
+\end{flapsinput}
 
-\Spec{\Subst{filename}}	path to the file containing the input
+\end{cmdref}
 
 % flut -------------------------------------------------------
-% \Manpg{flut}
-% Solves the flutter equation as a set of parameterized nonlinear
-% equations over a given range of parameters using a continuation method.
-% 
-% % Section \ref{sect:predef} lists builtin parameters
-% % and explains how to define new parameters; \Chapref{chap:flutter-equations}
-% % discusses the flutter equation (\Eqn{eqn:flut}).
-% 
-% \begin{Optlist}{Analysis identifiers}{are used to form the default plot
-% file name, and to identify the source of subsequent analyses}
-% \index{analysis identifier}
-% \index{identifier!analysis}
-% 
-% \Opt{aid}{\String}{may be arbitrarily long but should not contain spaces.}{combination of the independent-parameter names, e.g. vtas-sigma-freq}
-% 
-% \Opt{source}{\String}{analysis id of a previous flutter solution used
-% as start points}{start points will be from an eigensolution and
-% possibly a homotopy}
-% \end{Optlist}
-% 
-% \begin{Optlist}{Choosing independent and constant parameters}
-% {Three parameters must be chosen as independent
-% and enough constant parameters to enable the code to assign
-% equations to the remainder. Parameters are declared constant by 
-% giving it's value anywhere in the list of options, either as
-% \Subst{parameter-name{value}} or \Subst{parameter-name=value}.
-% Multiple values may be assigned to constant parameters with
-% \Subst{parameter-name{list}}.}
-% 
-% \Opt{indep}{\Stringlist}{A list of 3 parameter names
-% declared to be independent in the solution.}{error}
-% 
-% \Optnd{optimize}{\String}{The name of a parameter to be optimized using
-% the continuation-optimization technique.
-% When this spec is included the number of independent parameters
-% can be any number greater than or equal to three.}
-% \index{continuation!optimization}
-% 
-% \end{Optlist}
-% 
-% \begin{Optlist}{Choosing matrices.}{The matrices used
-% in the flutter equation are specified with options like
-% \Spec{role\{\String\}} or \Spec{role=\String}:}
-% %% where the recognized \Spec{role}s are: \Spec{mass, stif, gyro, vdamp, aero, gaf,
-% %% T, controls}. Note that \Spec{aero} and \Spec{gaf} are equivalent,
-% %% as are \Spec{T} and \Spec{controls}.}
-% 
-% \Optnd{\Subst{role}}{\String}{The name of a matrix to be used
-% 	as \Subst{role}: \Spec{mass, stif, gyro, vdamp, aero, gaf,
-% 	T, controls}. Note that \Spec{aero} and \Spec{gaf} are equivalent,
-% 	as are \Spec{T} and \Spec{controls}.}
-% 
-% \end{Optlist}
-% 
-% \begin{Optlist}{Choosing which modes to track: the \Code{start} spec}
-% {provides a few ways of specifying which modes
-% to track, by specifying points on curves from a previous analysis if
-% the \Code{source} spec is included, or by specifying how to perform
-% a free-vibration solution and which modes to take from it if the
-% \Code{source} spec is not included:}
-%  \index{mode!aeroelastic}
-% 	\Optnd{start}{options}{a set of options for how to get start points:}
-%  	\begin{description}
-% 	\Optnd{parameter-name}{\Stringlist}{sets a parameter value or
-% 		values where the start points are to be found}
-%   		\Optnv{parameter-name[\Subst{min}:\Subst{max}]}{sets limits for a
-%   			parameter where to search for start points.}
-% 		\Optnd{mode}{\Stringlist}{ids of curves from the \Code{source}
-% 			analysis or the ordinal numbers of the free-vibration modes
-% 			ordered by increasing frequency}
-% 		\Optnd{branch}{\Stringlist}{the name of a parameter and one or more
-% 			values to branch from the source curves; this parameter
-% 			will be held constant unless it has also been declared
-% 			independent.}
-% 	\end{description}
-% \end{Optlist}
-% 
-% Some examples will clarify these options.
-% \begin{lstlisting}
-% flut {aid=core, indep{vtas,freq,sigma}
-%     start{vtas=10,freq[0:10]}, modes{1:5} }
-% \end{lstlisting}
-% With no \Code{source} spec this \Code{start} spec says to do
-% a free-vibration eigensolution with a small amount of aerodynamics
-% added to the stiffness matrix and use only modes 1 to 5
-% as start points, provided their frequency is between 0 and 10 Hz.
-% The \Code{start} spec \Code{vtas=10} only determines the
-% amount of aerodynamics added to the eigensolution;
-% it is independent for the curve tracing, as is \Code{freq}.
-% \begin{lstlisting}
-% flut {aid=pv, source=core, indep{vtas,freq,p1}
-%       start{branch{sigma=0}, vtas[20:300], ordinal=1}, ...}
-% \end{lstlisting}
-% This example takes start points from the previous run for a
-% parameter variation. The \Spec{start} option says to start at
-% curves from the \Spec{aid=core} where \Code{sigma=0} and trace
-% curves varying \Code{vtas, freq} and \Code{p1}, keeping \Code{sigma}
-% constant \Code{0}. The \Code{vtas[20:300]} option prevents starting
-% where \Code{sigma=0} at low speed.
-% \begin{lstlisting}
-% flut {aid=contour, source=pv, indep{freq,p1,p2},
-%      start{branch{vtas{50 : 50 : 200}}}
-% \end{lstlisting}
-% Creates \Code{p1-p2} \Code{vtas} contours of flutter speed
-% (\Code{sigma=0}).
-% 
-% \begin{Optlist}{Output}{The primary output from \Cmd{flut} is an
-% ASCII plot file \Sectref{sect:apf-file}, set with the \Spec{plot\{file\}}
-% option or defaulted to \Subst{aid}\Code{.apf}. Other options include
-% \Code{target} and \Code{print}.}
-% 
-% 	\Optnd{plot}{options}{a set of options for plotting:}
-% 	\begin{description}
-% 		\Opt{par(ameters)?}{\Stringlist}{a list of parameters to be included
-% 			in the plot file.}{all builtin and user-defined parameters
-% 				are included}
-% 		\Opt{file}{\String}{name of the file to receive the plot data.}
-% 			{\Subst{aid}.apf where \Subst{aid} is specified with the
-% 				\Code{aid} spec.}
-% 			\index{apf plot files!in \Cmd{flut}}
-% 		\Optnv{stepdata}{add data regarding performance of the
-% 			continuation method in a file called \Code{stepdata.apf}.}
-% 		\Optnv{refine}{plot the homotopy used to refine the start
-% 			point in a file called \Code{refine.apf}.}
-% 	\end{description}
-% 
-% 	\Opt{print}{\Stringlist}{a list of parameter names to be included
-% 		in the printed output.}{all independent parameters and a summary
-% 		of the eigenvector}
-% 
-% 	\Optnd{target}{options}{options for specifying spots on each curve
-% 		that will be computed exactly and added to the printed output:}
-% 		\begin{description}
-% 		\Optnv{\Subst{parameter-name}[\Subst{min}:\Subst{max}]}
-% 			{a window for searching for targets}
-% 		\Optnd{\Subst{parameter-name}}{\Stringlist}{one or more parameter
-% 			values}
-% 		\Optnd{process}{\String}{the name of a \Cpp named-section
-% 			containing a function to process any targets found. See
-% 			example \Code{methods.fp}.}\label{sect:target-process}
-% 		\end{description}
-% \par
-% \end{Optlist}
 
 \begin{cmdref}{flut}{options}
 Solves the flutter equation over a range of parameters determined by
@@ -781,14 +753,18 @@ Options are in one of these categories:
 
 Examples:
 \begin{flapsinput}
-# import a Nastran output4 file in USCS units
-import{../ha145b.op4, units=USCS}
-# import a Matlab binary file
-import{i=A.mm}
-# import a Matrix Market file
-import{i=Jacobian.mm}
-# import a Universal file
-import{model.uf}
+# Core flutter analysis
+flut{id=core, indep{vtas,sigma,freq},
+   mass=M, stif=K, gaf=Q, start{modes{1:4}}}
+# Branch from flutter crossing for a fuel variation
+flut{id=fuel, source=core, indep{fuel,freq,vtas},
+   start{branch{sigma=0}}}
+# Use CO to get start points for fuel-alt contours
+flut{id=CO, source=core, indep{fuel,alt,freq,vtas},
+     optimize=vtas, start{branch{sigma=0}}}
+# Fuel-altitude vtas contours
+flut{id=contour,source=CO, indep{fuel,alt,freq},
+     start{vtas{100:20:240}}}
 \end{flapsinput}
 
 \end{cmdref}
@@ -859,7 +835,7 @@ The available parameterizations are
 \begin{subopts}
 	\subopt{i(nput)?}{\kv{name}{\tSubOpts}, \kv{name}{\tSubOpts}...}
 		{the names of one or more input matrices, optionally followed by
-		a set of parameter value used for interpolation or approximation}
+		a set of parameter values used for interpolation or approximation}
 	\subopt{o(utput)?}{\tStr}{name of the output matrix, default taken from
 		the input matrices}
 	\subopt{[row,col]}{\tStr}{Assigns an expression to the
