@@ -70,13 +70,15 @@
 %   \end{cmdref}
 \newenvironment{cmdref}[2]{%
   \newpage
+  \index{#1}\label{ref:#1}
   \par\addvspace{1.0\baselineskip}%
   \needspace{5\baselineskip}% Prevent orphan command headers at page bottoms
   \phantomsection% Anchors hyperlinks
-  \addcontentsline{toc}{section}{\texttt{\detokenize{#1}}}%
+  \addcontentsline{toc}{subsection}{\texttt{\detokenize{#1}}}%
   \noindent\begin{tabularx}{\textwidth}{@{}l X@{}}
   \toprule
-  \texttt{\textbf{\large\textcolor{flapsBlue}{\detokenize{#1}}}} & \hfill {\small #2} \\
+  % \texttt{\textbf{\large\textcolor{flapsBlue}{\detokenize{#1}}}} & \hfill {\small #2} \\
+  \texttt{\textbf{\large\textcolor{flapsBlue}{\detokenize{#1}}}} & \{{\small #2}\} \\
   \midrule
   \multicolumn{2}{@{}p{\textwidth}@{}}{%
 }{%
@@ -138,7 +140,7 @@
            {\}}{{\textbf{\textcolor{flapsBlue}{\}}}}}1
 }
 
-\lstnewenvironment{flapsinput}[1][]{%
+\lstnewenvironment{example}[1][]{%
   \lstset{style=flapsdeck, #1}%
 }{}
 

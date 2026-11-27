@@ -1551,7 +1551,7 @@ with derivative
 		(3x^2 - 2x)(1 + \sin x)}{(x^3 - x^2)^2}
 \end{displaymath}
 would traditionally be evaluated at $x = 3$ with code like
-\begin{lstlisting}
+\begin{example}
    double f, x
    x = 3
    double x3mx2 = x*x*x - x*x
@@ -1559,18 +1559,18 @@ would traditionally be evaluated at $x = 3$ with code like
    dfdx = (x3mx2*cos(x) - (3*x*x - 2*x)*(1 + sin(x)))/(x3mx2*x3mx2)
    print "f(3)=", f
    print "df/dx(3)=", dfdx
-\end{lstlisting}
+\end{example}
 which violates the DRY principle: Don't Repeat Yourself.\index{DRY principle}
 The definition of the function essentially occurs in 2 places.
 In contrast, using AD this code might look like
-\begin{lstlisting}
+\begin{example}
    Ad f, x
    x.value = 3
    x.der = 1
    f = (1.0 + sin(x))/(x*x*x - x*x);
    print "f(3)=", f.value
    print "df/dx(3)=", f.der
-\end{lstlisting}
+\end{example}
 giving the derivative automatically with the value of $f$ with
 the function defined only once.
 This example also answers the question "derivative with respect to what?".
@@ -1594,45 +1594,45 @@ data types, and using these new types in arithmetic expressions.
 % \subsection{New types}
 New data types bundle existing data types into a \emph{class} or \emph{struct}.
 An AD data type might be defined as
-\begin{lstlisting}
+\begin{example}
    struct Ad {
       double value;
       double der;
    };
-\end{lstlisting}
+\end{example}
 and used like this:
-\begin{lstlisting}
+\begin{example}
    Ad a;
    a.value = 2.0;
    a.der = 1.0;
-\end{lstlisting}
+\end{example}
 which declares the variable \Code{a} to have a value of \Code{2.0}
 and a derivative of 1.  By setting the derivative
 to \Code{1.0}, we simultaneously declare that the variable \Code{a} \emph{is}
 the independent parameter.
 
 Multiple independent variables require multiple derivatives, for example
-\begin{lstlisting}
+\begin{example}
    struct Ad {
       double value;
       vector<double> der;
    };
-\end{lstlisting}
+\end{example}
 
 The second programming language feature essential to AD is
 the ability to define how arithmetic functions and operations treat this
 new data type.
 For instance, consider multiplication of two \Code{Ad} variables:
-\begin{lstlisting}
+\begin{example}
    c = a * b;
-\end{lstlisting}
+\end{example}
 The AD implementor must provide a function which is called to carry out
 the multiplication. Using the chain rule of differentiation the code
 would look something like
-\begin{lstlisting}
+\begin{example}
    c.value = a.value * b.value;
    c.der = a.der * b.value + a.value * b.der;
-\end{lstlisting}
+\end{example}
 This principle is applied across all arithmetic operators $(+,-,*,/)$
 and mathematical functions. Functions like exponential (\Code{exp})
 or square root (\Code{sqrt}) are handled via overloaded functions,
@@ -1641,14 +1641,14 @@ are called by the compiler when the argument is type \Code{Ad}.
 The implementation includes the corresponding differentiation rule,
 for example the overloaded exponential function \Code{exp}
 could be defined like this:
-\begin{lstlisting}
+\begin{example}
    Ad exp(Ad a) {
       b.value = exp(a.value)  // call the double version of exp
       // derivative of exp(u) is exp(u) * du/dx
       b.der = b.value*a.der;
       return b
    }
-\end{lstlisting}
+\end{example}
 These overloaded operators and functions are the backbone of the
 automatic differentiation system.
 
@@ -1669,12 +1669,12 @@ that can be evaluated using AD, then the Jacobian
 \Matrix{J} = \left[ \frac{\partial f_i}{\partial x_j} \right]
 \end{displaymath}
 can be evaluated with code like
-\begin{lstlisting}
+\begin{example}
    eval (x, f)
    for (i=0; i<n; i++)
       for (j=0; j<m; j++)
          J(i,j) = f(i).der(j)
-\end{lstlisting}
+\end{example}
 Contrasting this with the three alternatives (manual coding, finite
 differences, and symbolic differentiation) is revealing in terms of
 safety, accuracy, and effort on the part of the user:
@@ -1905,14 +1905,14 @@ but among the benefits are
 With an AD implementation, computations like \Eqn{eqn:jac-omega} are avoided,
 and as in \Sectref{sect:AD-impl} the derivative could be taken
 from $\hat{\Matrix{D}}\hat{\Vector{y}}$ with code like:
-\begin{lstlisting}
+\begin{example}
    eval (x, rhat)
    int j = 1  // if omega is der[1]
    for (i=0; i<ne; i++) {
       J(2*i,j) = rhat(i).real.der(j)
       J(2*i+1,j) = rhat(i).imag.der(j)
    }
-\end{lstlisting}
+\end{example}
 
 \section{Branching}\label{sect:gpset}\index{branching}
 The \Newterm{parametric curves} computed by numerical continuation can be classified according to
@@ -2980,9 +2980,9 @@ New parameters can be defined and used just like the built-in parameters,
 and any parameter can be modified.
 New parameters are defined in the \flaps \Cmd{parameters} command
 \Sectref{ref:parameters}, for example
-\begin{lstlisting}
+\begin{example}
    parameters{rsbfreq{desc{Right Nacelle SB Freq}, limits{1:6}, units{1/(2*pi) Hz rad/sec} value= 4}
-\end{lstlisting}
+\end{example}
 defines a new parameter to be used in nacelle side-bending frequency
 variations.
 
@@ -3029,13 +3029,13 @@ The components of a parameter are
 All the items except \Subst{name} are optional, and all the optional
 parts may be changed. For example in \Code{reed.fp} the built-in parameter
 \Code{freq} is changed from
-\begin{lstlisting}
+\begin{example}
    freq(Frequency)[0.01:60]<0.159155 Hz rad/s> = 0 Hz
-\end{lstlisting}
+\end{example}
 to
-\begin{lstlisting}
+\begin{example}
    freq(Precession rate)[0:6e+04]<9.549297 rpm rad/s> = 0 rpm
-\end{lstlisting}
+\end{example}
 so that the output frequency represents precession of the propeller
 in \Code{rpm} instead of \Code{Hz}.
 
@@ -3168,9 +3168,9 @@ generalized-coordinate \Code{dof}.
 \end{description}
 
 The arguments to these function may be any valid expression, for example
-\begin{lstlisting}
+\begin{example}
 [2,3] *= freeplay(2*pi*tabangle, 2)
-\end{lstlisting}
+\end{example}
 where \Code{tabangle} has been created in \Cmd{pz} or with \Cmd{parameter}.
 
 % =================================================================
@@ -3226,15 +3226,15 @@ which must adhere to certain rules:
 	\item the entry point function must have a specific set
 		of arguments; for example if the function is in a file called \Code{myfcn.cpp}
 		the entry point must be
-\begin{lstlisting}
+\begin{example}
    int myfcn (Pset& pset, Mset& mset, ComplexMatrix& ca) {
       // operations on ca
       return 0;
    }
    // possibly more functions
-\end{lstlisting}
+\end{example}
 and if it is a named-section of the input file it must be
-\begin{lstlisting}
+\begin{example}
 myfcn {{
    int myfcn (Pset& pset, Mset& mset, ComplexMatrix& ca) {
       // operations on ca
@@ -3242,7 +3242,7 @@ myfcn {{
    }
    // possibly more functions
 }}
-\end{lstlisting}
+\end{example}
 \end{itemize}
 
 The names \Subst{myfcn, pset}, and \Subst{ca} are arbitrary, only
@@ -3255,44 +3255,44 @@ The arguments are:
 \item[\Code{Mset\& mset}] a collection of all matrices currently defined.
 	The most common use for this argument is to access elements of another matrix
 	using the 'element' member function,
-	\begin{lstlisting}
+	\begin{example}
 	template<typename T>
 	void mset.element(string const& role, int row, int col, std::complex<T>&)
-	\end{lstlisting}
+	\end{example}
 	for example, from example problem nacpv.cpp:
-	\begin{lstlisting}
+	\begin{example}
 	Complex rmass;
 	mset.element("mass",k1b,k1b,rmass);
-	\end{lstlisting}
+	\end{example}
 \item[\Code{ComplexMatrix\& ca}] the matrix to be modified. If this is a
 new matrix, e.g. a control-system matrix, this array will be all zeros,
 otherwise it will be the matrix after evaluating all other parametrizations,
 e.g. interpolation, and cast to complex if necessary. Elements may be accessed
 with statements like
-\begin{lstlisting}
+\begin{example}
    ca(i,j) = ...
-\end{lstlisting}
+\end{example}
 where $i$ and $j$ are the row and column indexes which are 1-based---that is,
 $i$ may range from $1$ to $nr$ and $j$ may range from $1$ to $nc$.
 \end{description}
 \par
 Parameter values are accessed with a member function of \Code{pset}, \Code{parval},
 like this:
-\begin{lstlisting}
+\begin{example}
    Real vtas;
    plt.parval("vtas", vtas);
-\end{lstlisting}
+\end{example}
 Real variables can be treated like \Cpp doubles
 (arithmetic, trig functions, etc), and can be mixed with \Cpp
 doubles and complex.
 
-\begin{lstlisting}
+\begin{example}
    Real sigma;
    plt.parval("sigma", sigma);
    Real freq;
    plt.parval("freq", freq);
    Complex s{sigma,freq};
-\end{lstlisting}
+\end{example}
 
 Other built-in functions\index{built-in!functions} that may be called
 from custom functions depend on generalized-coordinate amplitudes,
@@ -3320,23 +3320,23 @@ use of this feature.
 
 The entry point function for target processing must have the following
 definition:
-\begin{lstlisting}
+\begin{example}
    int myfcn (const pset& plt) {
       // operations with plt
       return 0;
    }
    // possibly more functions
-\end{lstlisting}
+\end{example}
 As with matrix functions, \Code{pset} is a set of all the available
 parameter, accessed with \Code{parval} and \Code{findp}.
 Target values for each parameter are in the \Code{solns} member,
 accessed like this:
-\begin{lstlisting}
+\begin{example}
    Par* freqp = plt.findp("freq");
    for (int i=0; i<plt.nsolns(); i++) {
       double freq = freqp->solns[i];
          ...
-\end{lstlisting}
+\end{example}
 
 
 \section{Matrix Parametrizations}\label{sect:pz}
@@ -3356,9 +3356,9 @@ parametrize matrices, including
 to parametrize a matrix. The \Cmd{mpz} command allows assigning
 an arithmetic expression (\Sectref{sect:expressions}) to a matrix element,
 for example a stiffness matrix might be given the expression
-\begin{lstlisting}
+\begin{example}
 [3,3] *= freeplay(0.05, 3)
-\end{lstlisting}
+\end{example}
 which multiplies the $(3,3)$ diagonal of the matrix by the value
 returned by built-in function \Code{freeplay} to give
 the equivalent stiffness according to the amplitude of dof 3.
@@ -3395,14 +3395,14 @@ A matrix modified in this manner can be an almost arbitrary function
 of parameters. The main restrictions are: 1) functions must be written in \Cpp;
 and 2) the function must have a specific argument list and return value.
 For example, a small function that modifies the (3,3) term of a stiffness matrix
-\begin{lstlisting}
+\begin{example}
 int mystif(Pset& pset, Mset& mset, ComplexMatrix& ca) {
    Real gap;
    pset.parval("gap", gap);
    ca(3,3) *= df::freeplay(pset, gap, 3);
    return 0;
 }
-\end{lstlisting}
+\end{example}
 where \Code{pset} is the current set of parameters, built-in and user-defined,
 \Code{mset} is the list of matrices available in \Cmd{flut},
 \Code{parval} is a function whos first argument is the name of a parameter,
@@ -3456,7 +3456,7 @@ name must end in .m. These scripts are run in either \Matlab or
 Octave\index{octave} by executing the \Flaps \Cmd{octlab} command
 
 For example, a \Flaps input file like this:
-\begin{lstlisting}
+\begin{example}
    import{lco.op4}
    octlab{script=reduce.m, i=mass}
    viz{mass}
@@ -3465,7 +3465,7 @@ reduce.m {{
 ext = [1:40 46:51];
 mass = mass(ext,ext);
 }}
-\end{lstlisting}
+\end{example}
 will read a \Nastran output4 file,
 then \Flaps command \Cmd{octlab} will copy all the imported matrices
 to \Matlab (or Octave, depending on which is available), execute
@@ -4569,9 +4569,9 @@ required, but also increasing flexibility:
 \begin{description}
 \item[nl1.fp] built-in functions are used in equations defined in
 \Code{pz}, for example
-\begin{lstlisting}
+\begin{example}
    [1,1] *= bilinear(0.01, 0.5, 1)
-\end{lstlisting}
+\end{example}
 multiplies the [1,1] term by the bilinear describing function with
 $\delta=0.01$, $r = 0.5$, and $|\hat{q}_1|$.
 
@@ -4585,14 +4585,14 @@ called \Code{freeplay} and \Code{bilinear}
 created automatically when 3 functions written in \Cpp are included as
 a section in the \Flaps input file. The 3 functions must have these names and
 calling arguments:
-	\begin{lstlisting}
+	\begin{example}
 vector<double> df_qs(const vector<double>& params)
 
 double df_fq(double y, const vector<double>& params)
 
 Interp* df_interp(const string& iid, const vector<double>& params,
     const vector<double>& qs, const vector<double>& fs)
-	\end{lstlisting}
+	\end{example}
 %%	returns a vector with the desired amplitudes
 %%	returns the factor which when multiplied by $\Matrix{K}\Vector{y}$ gives the force at the nonlinearity
 %% returns a pointer to a new Interp object containing one or more interpolants
@@ -4700,9 +4700,9 @@ at which the spinning shaft is precessing about the resting
 axis; this precessional\index{precession!frequency} motion can be expressed in revolutions
 per minute (rpm) instead of Hertz by changing the definition
 of frequency:
-\begin{lstlisting}
+\begin{example}
    parameter{freq(Precessional frequency)[0:10]<radps2rpm>}
-\end{lstlisting}
+\end{example}
 where the built-in constant \Code{radps2rpm} is used here to
 change the global definition to
 \Code{freq[0:10](Precessional frequency)<9.5493 rpm/(rad/s)>}
@@ -4754,7 +4754,7 @@ other becoming neutrally stable, as shown in \Figref{fig:bifurcation}.
 \end{figure}
 
 \newpage
-\chapter{\Flaps Manual}\label{chap:appendixa}
+\chapter{\Flaps\, Manual}\label{chap:manual}
 \include{manual.tex}
 
 % ------------------------------------------------------------------
@@ -4779,46 +4779,46 @@ lists the packages for apt and dnf; it should be easy to modify them
 to work with pacman, which is used in distros based on Arch Linux.
 Likewise for the less-used package managers like portage, zypper, and xbps.}
 and starting in the directory containing the tar file:
-\begin{lstlisting}
+\begin{example}
 >  tar zxf sfea-XXX.tar.gz
-\end{lstlisting}
+\end{example}
 will create a directory \Code{sfea-XXX}, the \Flaps root directory,
 populated with the source files necessary to build \Flaps.
 
 If this is the first time installing \Flaps it may be necessary to
 install certain packages; the PACKAGES file in the \Flaps root directory
 can be run as a script like this:
-\begin{lstlisting}
+\begin{example}
 > yes | sudo PACKAGES
-\end{lstlisting}
+\end{example}
 note that it is usually necessary to run it as superuser with sudo.
 PACKAGES will try to determine if this Linux uses apt or rpm for
 package management.
 
 Once you have the necessary packages installed all you should have
 to do is
-\begin{lstlisting}
+\begin{example}
 >  cd sfea-XXX
 >  ./configure --prefix=directory-where-to-install
 >  make install
-\end{lstlisting}
+\end{example}
 
 If this is successful you can run some tests:
-\begin{lstlisting}
+\begin{example}
 >  cd examples
 >  run all
-\end{lstlisting}
+\end{example}
 
 If the build is not successful it may be because some packages
 were not installed, or it may be necessary to adjust environment
 variables.
 
 Or maybe it is time to text or email
-\begin{lstlisting}
+\begin{example}
 Ed Meyer
 206-453-8778
 flapsconsulting@gmail.com
-\end{lstlisting}
+\end{example}
 
 % ------------------------------------------------------------------
 \newpage
@@ -5079,7 +5079,7 @@ contains data for \Code{npar} parameters at \Code{npt} points.
 
 \subsubsection{Example} A simple example with 2 blocks of data and
 3 parameters in each.
-\begin{lstlisting}
+\begin{example}
 $ mode_1
 +1 Dynamic Pressure
 +2 Frequency
@@ -5098,7 +5098,7 @@ mode_2
  6.4e+2 2.3 -2.01e-03
  6.5e+2 2.4 -2.03e-03
 *EOF
-\end{lstlisting}
+\end{example}
 
 \subsection{Universal File Formats}\label{sect:universal-file}
 \index{universal-file!format}
@@ -5112,7 +5112,7 @@ for convenience. Only the relevant items are shown. Datasets are enclosed
 by lines containing only -1 beginning in column 5.
 \par
 % \begin{verbatim}
-\begin{lstlisting}
+\begin{example}
 
 Universal Dataset Number 15
 Name:   Nodes
@@ -5288,7 +5288,7 @@ Additional Comments:  This dataset is written by I-DEAS Test.
                        identification line for a name.
                     6) Repeat Datasets for each Trace_Line
 
-\end{lstlisting}
+\end{example}
 % \end{verbatim}
 
 \subsection{LTI File Format}\label{sect:LTI-file}
@@ -5362,7 +5362,7 @@ When computing the determinant of a QR factorization, the determinant
 of $\Matrix{Q}$ is $\pm 1$ with the sign determined by the number
 of Householder reflections performed in the factorization,
 as pointed out by Julien Langou in a posting to the lapack-forum:
-\begin{lstlisting}
+\begin{example}
  http://icl.cs.utk.edu/lapack-forum/viewtopic.php?f=2&t=1741
  Re: determinant in QR factorization
  Post by Julien Langou B; Sat Feb 06, 2010 2:01 pm
@@ -5384,7 +5384,7 @@ as pointed out by Julien Langou in a posting to the lapack-forum:
  for R(i,i)).  All this to say that you should scan TAU from
  1 to n (m > n ) or 1 to n-1 (m <= n) and count the nonzero
  elements. Say you get k nonzeros in TAU.  Then $(-1)^k$.
-\end{lstlisting}
+\end{example}
 % ------------------------------------------------------------------
 
 \newpage

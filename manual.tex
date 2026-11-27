@@ -85,59 +85,59 @@ lists the packages for apt and dnf; it should be easy to modify them
 to work with pacman, which is used in distros based on Arch Linux.
 Likewise for the less-used package managers like portage, zypper, and xbps.}
 and starting in the directory containing the tar file:
-\begin{lstlisting}
+\begin{example}
 >  tar zxf sfea-XXX.tar.gz
-\end{lstlisting}
+\end{example}
 will create a directory \Code{sfea-XXX}, the \Flaps root directory,
 populated with the source files necessary to build \Flaps.
 
 If this is the first time installing \Flaps it may be necessary to
 install certain packages; the PACKAGES file in the \Flaps root directory
 can be run as a script like this:
-\begin{lstlisting}
+\begin{example}
 > yes | sudo PACKAGES
-\end{lstlisting}
+\end{example}
 note that it is usually necessary to run it as superuser with sudo.
 PACKAGES will try to determine if this Linux uses apt or rpm for
 package management.
 
 Once you have the necessary packages installed all you should have
 to do is
-\begin{lstlisting}
+\begin{example}
 >  cd sfea-XXX
 >  ./configure --prefix=myprefix
 >  make install
-\end{lstlisting}
+\end{example}
 where '\Code{myprefix}' is the directory where executables and
 other files are to be installed. The default is to install in
 the same directory.
 
 If this is successful you can run some tests, but first you must
 adjust your PATH so commands will be found:
-\begin{lstlisting}
+\begin{example}
 > export PATH=myprefix/bin:\$PATH
-\end{lstlisting}
+\end{example}
 
 then to run all the examples
-\begin{lstlisting}
+\begin{example}
 >  cd examples
 >  run all
-\end{lstlisting}
+\end{example}
 Graphics is disabled with 'run all' so to see graphics only
 run a few, e.g.
-\begin{lstlisting}
+\begin{example}
 >  run bif contour
-\end{lstlisting}
+\end{example}
 
 If the build is not successful it may be because some packages
 were not installed.
 
 Or maybe it is time to text or email
-\begin{lstlisting}
+\begin{example}
 Ed Meyer
 206-453-8778
 flapsconsulting@gmail.com
-\end{lstlisting}
+\end{example}
 
 \newpage
 \section{Input file}\label{sect:input-file}
@@ -146,12 +146,12 @@ flapsconsulting@gmail.com
 The syntax of a \flaps input file consists of hierarchy of
 \Spec{key\{value\}} pairs; the highest level is the input file,
 consisting of a set of \flaps functions and options:
-\begin{lstlisting}
+\begin{example}
    fcn{options}
    fcn{options}
 	  ...
    end
-\end{lstlisting}
+\end{example}
 For each of these \Spec{fcn} is the \Spec{key} and \Spec{options}
 is the \Spec{value}, and \Spec{end} is a function without arguments.
 Each set of options are themselves collections of \Spec{key\{value\}}
@@ -159,7 +159,7 @@ pairs. That is, \Spec{value}s are collections of
 \Spec{key\{value\}} pairs.
 
 A typical input file might look like:
-\begin{lstlisting}
+\begin{example}
    import{myfile.op4}      # import a Nastran output4 file
    # interpolate with respect to rf
    pz {i{gaf*}, output{A} }
@@ -168,7 +168,7 @@ A typical input file might look like:
    flut{ aid=core, indep{freq, sigma, vtas},
          alt=0, mass=M, stif=K, gaf=A }
    viz{aid=core, cid{1:2:7}, x=sigma, y=freq}
-\end{lstlisting}
+\end{example}
 
 A few things to note about this example:
 \begin{itemize}
@@ -236,57 +236,57 @@ A much simpler way to do this is to use a \Matlab sequence.
 
 \subsection{Sequences}\label{sect:sequences}\index{sequences}
 A more convenient way of writing a list of strings is \Matlab sequences:
-\begin{lstlisting}
+\begin{example}
 first : incr : last => first, first+incr, first+2*incr, ... last
-\end{lstlisting}
+\end{example}
 so the example above could be written
-\begin{lstlisting}
+\begin{example}
 (a1 : a234)
-\end{lstlisting}
+\end{example}
 Sequences may be composed of floating-point numbers,
-\begin{lstlisting}
+\begin{example}
 (0 : 0.5 : 20.0)
-\end{lstlisting}
+\end{example}
 integers,
-\begin{lstlisting}
+\begin{example}
 (0 : 5 : 20)
-\end{lstlisting}
+\end{example}
 or strings (note the increment must be numeric)
-\begin{lstlisting}
+\begin{example}
 mass(a : 2 : f)   # massa, massc, masse
-\end{lstlisting}
+\end{example}
 
 \subsection{Lists}\label{sect:lists}\index{list}\index{lists}
 A \Newterm{flaps list} can be a combination of wildcards \Sectref{sect:wildcards}
 and sequences \Sectref{sect:sequences}, for example
-\begin{lstlisting}
+\begin{example}
 1, 2, 4, 6, 8, 9, 10
-\end{lstlisting}
+\end{example}
 any of the items may be a sequence,
-\begin{lstlisting}
+\begin{example}
 1, 2:2:8, 9, 10
-\end{lstlisting}
+\end{example}
 and lists are usually the value part of a key/value pair, so they
 are usually enclosed in braces:
-\begin{lstlisting}
+\begin{example}
 cid{1, 2:2:8, 9, 10}
-\end{lstlisting}
+\end{example}
 
 Wildcards and sequences may be combined; for example \Code{control.fp} uses
-\begin{lstlisting}
+\begin{example}
 viz{cid{opt.1,*.b:2:h}, ...}
-\end{lstlisting}
+\end{example}
 to plot the optimization curve (1) and every-other contour.
 
 \subsection{Named-sections}
 Following the \flaps functions in the input file are
 optional \Newterm{named-sections} \index{named-section}\index{sections!named}
 with the syntax
-\begin{lstlisting}
+\begin{example}
 name.ext {{
   ...
 }}
-\end{lstlisting}
+\end{example}
 where the extension \Code{ext} determines the contents:
 \begin{description}
 \item[.cpp] \Cpp code for parameterizing a matrix \Sectref{sect:functions}
@@ -299,7 +299,7 @@ where the extension \Code{ext} determines the contents:
 		\Sectref{sect:lti}, \Sectref{sect:LTI-file}.
 \end{description}
 for example,
-\begin{lstlisting}
+\begin{example}
    import{myfile.op4}               # import a Nastran output4 file
    octlab{script=reduce.m, i=...}   # modify some matrices in Matlab/Octave
    pz {i=M, plugin=Mfcn}              # associate Mfcn.cpp with M
@@ -321,36 +321,36 @@ int gaffcn (pset& plt, int nr, int nc, ComplexMatrix& M) {
 reduce.m {{
   # Matlab/Octave statements
 }}
-\end{lstlisting}
+\end{example}
 
 \subsubsection{Examples}
 Here are a few examples of options; more can be found in the
 example problems (\Chapref{chap:examples}).
 \par
 Replacing the (2,2) diagonal of a stiffness matrix with an equation:
-\begin{lstlisting}
+\begin{example}
    pz { i=stif, o=Stif, [2,2]{Mass[2,2]*(freq2^2)} }
-\end{lstlisting}
+\end{example}
 \par
 Options following matrix names to specify the value of parameter \Spec{cg}
 associated with each matrix to be interpolated:
-\begin{lstlisting}
+\begin{example}
    pz {input{gm1{cg=-4}, gm2{cg=8}, gm3{cg=16}, gm4{cg=24}}, o{Mass}}
-\end{lstlisting}
+\end{example}
 \par
 Lists of values:
-\begin{lstlisting}
+\begin{example}
    flut { id=core, indep{freq,vtas,sigma},
          cg{0,10,20}, start{modes=(1:2:7)} }
-\end{lstlisting}
+\end{example}
 will do flutter solutions at 3 values of parameter \Spec{cg},
 tracking 4 modes at each value of \Spec{cg}.
 \par
 % Environment variables are expanded when used in specs; for example
-% \begin{lstlisting}
+% \begin{example}
 % settings{env="mat=3"}
 % flut { ...,  mass=mass$mat, stif=stif$mat, ... }
-% \end{lstlisting}
+% \end{example}
 
 \subsection{Output}
 Output from \flaps is, like all Linux commands, split into standard output
@@ -359,19 +359,17 @@ and standard error (stderr).
 \flaps writes minimal output to stderr, usually just the process id and
 execution times for each command. By default both go to the terminal if
 running from the command line; they can be redirected to files:
-\begin{lstlisting}
+\begin{example}
 > flaps input-file >out 2>err
-\end{lstlisting}
+\end{example}
 
 One of the goals in \flaps is to minimize the amount of printed
 output. One way to do this is to present matrices graphically
 instead of printed.
 
 \subsubsection{Matrix Visualization}\label{ref:matrix-display}
-Matrices are notoriously difficult to present in printed
-output. The approach taken in \flaps is to present all
-but the smallest matrices graphically. The \Cmd{viz}
-function (\Sectref{ref:viz})
+Matrices are difficult to present in printed output, so here we use
+a graphical approach. The \Cmd{viz} function (\Sectref{ref:viz})
 will display a matrix in a separate window with colors indicating
 the size of individual elements, and a file with a .mm extension
 will be written to the current directory. Other \Flaps commands write
@@ -386,42 +384,26 @@ The example files (\Chapref{chap:examples}) are a quick way to get
 started; find one that is similar to what you want to do and modify
 it to suit your needs. For example if you want to import a Nastran
 model in USCS units you could start with contour.fp:
-\begin{lstlisting}
+\begin{example}
 > flaps contour >out 2>err
-\end{lstlisting}
+\end{example}
 where most of the output goes to \Cmd{out}, and \Cmd{err} get timing info.
 Note that it is not necessary to include the extension.
 
 Installation instructions are in \Sectref{sect:installation}.
 
-\chapter{Functions}
+\section{Functions}
 These functions form the core capability of \flaps.
 
 % catalog function --------------------------------------------------------
-\Manpg{catalog}
-Prints a catalog of matrices matching specified
-conditions.
-By default, \Cmd{catalog} prints a catalog
-of all matrices;
-the list may be limited by specifying a list of matrix names,
-or wildcards (see \Sectref{sect:input-file} and \Sectref{sect:lists}).
 
-\paragraph{Output} consists of a list of the matrices matching the
-matrix names specified, printed on the standard output file.
-
-\paragraph{Examples}
-To catalog all matrices:
-\begin{lstlisting}
-catalog
-\end{lstlisting}
-To catalog all results from \Cmd{flut}:
-\begin{lstlisting}
-catalog { "curve,.*" }
-\end{lstlisting}
-note the name is in quotes to protect the comma.
-
+\begin{cmdref}{catalog}{options}
+{prints a list of all matrices and animated-mode files.
+Currently there are no options.}
+\end{cmdref}
 % export function --------------------------------------------------------
-\Manpg{export}
+
+\begin{cmdref}{export}{options}
 Creates a file of matrices in one of several formats determined
 by the extension of the output file:
 \begin{description}
@@ -436,146 +418,15 @@ or Octave\index{octave} the \Cmd{load} command will read the file.
    (\Sectref{ref:matrix-display}) \cite{matrixmarket}.\index{matrix!market}
 \end{description}
 
-\begin{Optlist}{}{The only specs are the output file name, append, and a list of
-matrices. The matrix list may
-include wildcards and sequences (\Sectref{sect:lists})}
-
-	\Opt{o(utput)?}{\{\String\}}{output file with an extension that
-	determines the format}{error}
-
-	\Opt{append}{}{append all matrices to the output}{not appended}
-
-\end{Optlist}
+\begin{subopts}
+	\subopt{i(nput)?}{\tStrList}{names of the matrices to export; may
+		include wildcards and sequences \Sectref{sect:lists}.}
+	\subopt{o(utput)?}{\tStr}{output file with an extension that
+		determines the format.}
+\end{subopts}
+\end{cmdref}
 
 % fem function --------------------------------------------------------
-\Manpg{fem}
-Allows for building simple beam models with concentrated masses,
-gyroscopics, doublet-lattice and rigid propeller unsteady aerodynamics.
-
-The global coordinate system used for examples is the traditional one
-used with aircraft, shown in \Figref{fig:globalcs}\index{coordinate system!global}.
-\begin{figure}[ht]
-		\includegraphics[height=4.0cm,width=8.5cm]{figures/manual/globalcs.eps}
-	\centering
-	\caption{Global coordinate system} \label{fig:globalcs}
-\end{figure}
-
-\begin{Optlist}{nodes\{options\}}{a list of node numbers and their coordinates
-in the global coordinate system }
-
-\Optnd{n}{\Coord}{global coordinates of node number n.}
-\end{Optlist}
-Sequences \Sectref{sect:sequences} are allowed, for example
-\begin{lstlisting}
-   nodes{ 1{0,0,0} : 49{0,6,0}, 100{1, 1.5, 1} }
-\end{lstlisting}
-
-\begin{Optlist}{beam\{options\}}{description of a single beam element between 2
-previously defined nodes; repeated to specify all beam elements}
-
-\Opt{n}{\Intlist}{1 to 6 degrees of freedom for node number n. This option
-must be repeated to specify the second node and (possibly) its dof}
-{If dof are not specified the last list of dof are used}
-
-\Opt{x}{\Coord}{global coordinates of a point on the local x axis;
-bending stiffness of the beam in the local x-y plane is determined by EIx.}
-{the last specified coordinates}
-
-\Opt{EIx}{\Float}{coefficient for bending stiffness in the local x-y plane}
-{the last specified value}
-
-\Opt{EIz}{\Float}{coefficient for bending stiffness in the local y-z plane}
-{the last specified value}
-
-\Opt{EA}{\Float}{coefficient for deformations along the local y axis}
-{the last specified value}
-
-\Opt{gj}{\Float}{coefficient for torsional deformations along the local y axis}
-{the last specified value}
-
-\end{Optlist}
-
-\begin{Optlist}{mass\{options\}}{a list of all the concentrate masses in the model,
-the node they are attached to, their mass and moment of inertia, and the value and
-orientation of its offset from the node}
-
-\Opt{mass}{\Float}{mass in Kg or lbm}
-{the last specified value}
-
-\Opt{moi}{$I_x,I_y,I_z$}{moments of inertia about the global x, y, and z axes}
-{the last specified value}
-
-\Opt{orient}{\Coord}{the orientation vector: a point on the line between
-the node and the concentrated mass} {the last specified value}
-
-\Opt{cg}{\Floatorstring}{either the distance (in meters) from the node
-to the concentrated mass along the orientation vector, or the name
-of a parameter with the distance} {the last specified value}
-
-\Optnd{nodes}{\Intlist}{a list of node numbers where concentrated masses
-are attached based on the last specified values of the properties}
-
-\end{Optlist}
-
-\begin{Optlist}{gyro\{options\}}{create a gyroscopic matrix comprising
-	one or more spinning parts, each one defined by a node number and
-	it's options:}\label{ref:fem-gyro}
-\Opt{n}{options }{node number (n) where the spinning part is mounted}{error}
-	\begin{Optlist}{options}{for this part:}
-		\Opt{orient}{\Coord}{global coordinates of a point on the spin axis;
-			a vector from the mount node to this point determines the
-			direction of rotation according to the right-hand rule} {error}
-		\Opt{amom}{\String\ or \Float}{the name of a parameter or the value of the
-			angular momentum} {1 $kg\text{-}m^2/s$ or 1 $lb_f\text{-}in\text{-}s$}
-	\end{Optlist}
-\end{Optlist}
-
-\begin{Optlist}{pgaf\{options\}}{unsteady aerodynamics for a
-propeller \Sectref{sect:whirl-aero}, specified as a list of properties
-followed by a list of node numbers where the propellers attach}
-
-\Opt{radius}{\String\ or \Float}{the name of a parameter or the value
-of the propeller radius} {1.0 m}
-
-\Opt{beta}{\String\ or \Float}{the name of a parameter or the value of
-the angle of attack of the propeller blade relative to the freestream, in the range
-34 to 58 degrees} {34 degrees}
-
-\Opt{lbar}{\String\ or \Float}{the name of a parameter or the value of the distance
-from the node to the propellor hub, divided by the radius} {1.0}
-
-\Opt{orient}{\Coord}{coordinates of a point on the spin axis} {error}
-
-\Opt{node}{\Intlist}{a list of node numbers where propellers with the
-above properties are attached} {error}
-
-\end{Optlist}
-
-\begin{Optlist}{dlm\{options\}}{unsteady aerodynamics for a 2 dimensional
-surface using the double-lattice method \cite{albano1969doublet}.
-The output matrix is a one-to-three dimensional interpolation depending
-on whether \Code{rf}, \Code{mach}, and \Code{rsf} are specified with multiple values}
-
-\Opt{panels}{m,n}{the number of panels in the chordwise and spanwise
-directions. \emph{Note that currently the spanwise panels are determined by
-the nodes of the beam to make transferring loads from the aero grid to
-the beam model easier}} {error}
-
-\Opt{chord}{\Float}{length of the chord at the root}{error}
-
-\Opt{ac}{\Floatorstring}{global x coordinate of the aerodynamic center
-($3/4$ chord) at the root, or the name of a parameter (for parameter studies)}
-{$(0,0,0)$}
-
-\Opt{mach}{\Floatlist}{Mach number(s) in the range 0 to 1}{0.5}
-
-\Opt{rf}{\Floatlist}{reduced frequencies ($\omega/V$) where the
-matrices are to be computed} { error }
-
-\Opt{rsf}{\Floatlist}{reduced stability factors ($\sigma/V$) where the
-matrices are to be computed} { 0 }
-
-\end{Optlist}
 
 \begin{cmdref}{fem}{options}
 A beam-modelling function with branch-mode and component-mode substructures,
@@ -630,7 +481,7 @@ aerodynamics.
 			\subopt{amom}{\tStr}{name of a parameter with angular momentum
 				as it's value.}
 		\end{subopts}
-	\subopt{pgaf}{\kv{n}{options}, ...{unsteady aerodynamics for a rigid
+	\subopt{pgaf}{\kv{n}, ...}{unsteady aerodynamics for a rigid
 		propeller attached to node \val{n}.}
 		\begin{subopts}
 			\subopt{radius}{\tFloat}{propeller radius}
@@ -641,14 +492,25 @@ aerodynamics.
 			\subopt{orient}{x, y, z}{global coordinates of a point on the
 				spin axis relative to the node.}
 		\end{subopts}
-	\subopt{dlm}{options}{doublet lattice unsteady aerodynamics}
+	\subopt{dlm}{options}{doublet lattice unsteady aerodynamics for a 2D
+		surface with uniform chord.}
 		\begin{subopts}
-			\subopt{\tInt}{x,y,z}{global coordinates of node number \cmd{n}}
+			\subopt{panels}{m}{the number of panels in the chordwise
+				direction. The number of panels in the spanwise direction
+				is determined by the number of nodes to simplify the transfer
+				of loads.}
+			\subopt{chord}{\tFloat}{the length of the chord at the root.}
+			\subopt{ac}{\tFloat}{global x coordinate of the aerodynamic center
+				(3/4 chord) at the root.}
+			\subopt{mach}{\tFloatList}{Mach number(s) in the range 0 to 1.}
+			\subopt{rf}{\tFloatList}{reduced frequencies $(\omega b/V)$.}
+			\subopt{rsf}{\tFloatList}{reduced stability factors $(\sigma b/V)$.}
+
 		\end{subopts}
 \end{subopts}
 
-Examples:
-\begin{flapsinput}
+Example:
+\begin{example}
    # Build the Goland wing with 2 propellers attached with Branch Modes
    fem{nodes{1{0,0,0} : 25{0,6,0}, 109{-0.5,2,0}, 119{-0.5,4.5,0}},
       ss{id=wing,
@@ -679,7 +541,7 @@ Examples:
       dlm{nodes=(1:25), panels=4, chord=1.83,
           rf=(0.2,0.7,2.0,5.0,7.0), mach=0.5, ac=-0.152 }
    }
-\end{flapsinput}
+\end{example}
 
 \end{cmdref}
 
@@ -696,11 +558,11 @@ Reads a file consisting of one or more \Flaps functions and calls them.
 \end{subopts}
 
 Examples:
-\begin{flapsinput}
+\begin{example}
 # run flaps with example file contour.fp (note the extension is not necessary,
 # send the output to 'out', and standard error to 'err'
 flaps contour >out 2>err
-\end{flapsinput}
+\end{example}
 
 \end{cmdref}
 
@@ -752,7 +614,7 @@ Options are in one of these categories:
 \end{subopts}
 
 Examples:
-\begin{flapsinput}
+\begin{example}
 # Core flutter analysis
 flut{id=core, indep{vtas,sigma,freq},
    mass=M, stif=K, gaf=Q, start{modes{1:4}}}
@@ -765,7 +627,7 @@ flut{id=CO, source=core, indep{fuel,alt,freq,vtas},
 # Fuel-altitude vtas contours
 flut{id=contour,source=CO, indep{fuel,alt,freq},
      start{vtas{100:20:240}}}
-\end{flapsinput}
+\end{example}
 
 \end{cmdref}
 
@@ -801,7 +663,7 @@ The format is determined from the file extension:
 \end{subopts}
 
 Examples:
-\begin{flapsinput}
+\begin{example}
 # import a Nastran output4 file in USCS units
 import{../ha145b.op4, units=USCS}
 # import a Matlab binary file
@@ -810,7 +672,7 @@ import{i=A.mm}
 import{i=Jacobian.mm}
 # import a Universal file
 import{model.uf}
-\end{flapsinput}
+\end{example}
 
 \end{cmdref}
 
@@ -855,7 +717,7 @@ The available parameterizations are
 \end{subopts}
 
 Examples:
-\begin{flapsinput}
+\begin{example}
 # assign an expression to the 2,2 term
 mpz{i=Stif, [2,2]{Mass[2,2]*(freq2^2)}}
 # interpolate a set of mass matrices with respect to cg
@@ -864,7 +726,7 @@ mpz{i{gm1{cg=-4}, gm2{cg=8}, gm3{cg=16}, gm4{cg=24}}, o=Mass}
 mpz{i=Q(26:3:35)modal, o=rfagaf, beta=(0.1,0.3)}
 # assign an evaluation function to a stiffness matrix
 mpz{i=Kbma,plugin=stiffcn}
-\end{flapsinput}
+\end{example}
 
 \end{cmdref}
 
@@ -897,10 +759,10 @@ on the current PATH; the first one found will be used.
 	\subopt{o(utput)?}{\tStrList}{names of the matrices to return}
 \end{subopts}
 Examples:
-\begin{flapsinput}
+\begin{example}
    # Do a free-vibration eigensolution
    octlab{i{Mass, Stif}, output{eigenvalues}}
-\end{flapsinput}
+\end{example}
 \end{cmdref}
 
 
@@ -927,7 +789,7 @@ Creates new parameters or modifies existing ones.
 	\subopt{units}{\tFloat, \tStr, \tStr}{factor, ounits, eunits: ounits=factor*eunits}
 \end{subopts}
 Examples:
-\begin{flapsinput}
+\begin{example}
    # define a new parameter for whirl flutter
    parameters{amom1{desc{Prop angular momentum}, limits{0:5000}, value = 2000}}
 	# set some values and limits
@@ -935,83 +797,35 @@ Examples:
 	# change the description and output units of frequency
    parameters{freq{desc{Precession rate}, limits{0:1000},
 	   units{60/(2*pi) rpm rad/s}}}
-\end{flapsinput}
+\end{example}
 \end{cmdref}
 
 
 % viz function --------------------------------------------------------
-\Manpg{viz}
-A system for various types of visualization:
+\cmdref{viz}{options}
+{A system for various types of visualization:
 \begin{itemize}
 \item 2D plots of results from \Cmd{flut}
 \item animations of the structure at points selected interactively on a 2D plot
 \item matrix values
 \end{itemize}
-% creating 2D plots and optionally viewing animations of aeroelastic modes selected
-% interactively from points on the plots.
+\Cmd{viz} may also be run as a program from the command line
+(\Sectref{ref:viz-cmdline}).}
 
-When \Cmd{viz} is run in a \flaps script the \Code{aid} option
-is used to specify one or more previous executions of \Cmd{flut},
-and the \Code{apf} option is used to include data in one or more
-plotfiles in ASCII format (with \Code{.apf} extensions).
-\index{apf plot files!in \Cmd{viz}}
-\Sectref{sect:apf-file} gives the format of \Code{.apf} files.
-\Cmd{viz} may also be run from the command line (\Sectref{ref:viz-cmdline}).
-
-\paragraph{Source of the data} to be plotted is specified
-using the \Code{aid} spec, which may take multiple right-hand-sides.
-
-\begin{description}
-	\Optnd{aid}{\Stringlist}{Analysis id(s) from previous executions of
-		\Cmd{flut}}
-\end{description}
-
-\paragraph{Parameters} x, y, and optionally z and w are the names listed
-in \Tableref{table:gpset-params} or user-defined parameters (\Sectref{sect:newpar}).
-% 2D plots may have one or both axes in a log scale by using the word \Newterm{log}
-% in a list, e.g. \Code{x=(vtas,log)}.
-The x and y parameter names may be followed by limits for the plot, e.g.
-\Code{x=vtas[0:300], y=sigma[-0.1:0.1]}.
-\begin{description}
-\Opt{x}{\String}{the name of a parameter to be used
-    as the independent variable in the 2D plot}{error}
-\Opt{y}{\Stringlist}{the name of one or more parameters
-	to be used as the dependent variable(s) in the 2D plot;
-%	the word \Code{log} causes the y-axis to have a log scale
-	}{error}
-\Optnd{v(iews)?}{\Stringlist}{a set of x,y combinations to be plotted; for
-	example views{vtas:sigma, vtas:freq}. These combinations are available by
-	pressing the \Code{X-Y Views} button}
-%% \Opt{w}{= string}{the name of a parameter to be used to color the curve according
-%%     to whether this parameter value is positive or negative.}{each curve has one color}
-%% \Opt{z}{= string}{the name of a parameter to be used
-%%     as the z variable in a 3D plot}{2D plot}
-\end{description}
-
-\paragraph{Choosing curves.} Curve identifiers consist of integers and characters
-separated by periods; for example the 4th contour from the 3rd crossing of
-the 2nd mode from flut would have ``2.3.d'' as an identifier. Curves can be
-requested or ignored by specifying curve identifiers explicitly or with wildcards
-\Sectref{sect:wildcards} and sequences \Sectref{sect:sequences}.
-The \Code{curve} and \Code{ignore} options specify
-which curves to plot:
-\begin{description}
-\Opt{c(urve)?}{\Stringlist}{a list of curve identifiers
-	to be plotted. This option may be repeated}{all curves}
-\Opt{c(urve)?}{\Intlist}{a list of curve numbers to be plotted. This option
-	may be repeated}{all curves}
-\end{description}
-\begin{description}
-\Opt{ign(ore)?}{\Stringlist}{a list of curve identifiers
-	to be ignored. This option may be repeated}{those specified with the \Code{curve} option}
-\Opt{ign(ore)?}{\Intlist}{a sequence of curve numbers to be plotted. This option
-	may be repeated}{those specified with the \Code{curve} option}
-\end{description}
-
-
-\paragraph{Output.}
+\begin{subopts}
+	\subopt{aid}{\tStrList}{a list of analysis ids from previous executions
+		of \cmd{flut}}
+	\subopt{x}{\tStr}{parameter to use for x, optionally followed by
+		limits, e.g. vtas[0:200]}
+	\subopt{y}{\tStrList}{one or more parameters to use for y, also
+		optionally followed by limits.}
+	\subopt{views}{\tStrList}{one or more sets of x-y combinations, saved
+		in the \cmd{views} button for quick changes of parameters}
+\end{subopts}
+	
 This function will display the requested data in a new
-window. Once the window is open and the data displayed
+window; \Figref{fig:methodsgf} is a typical example.
+Once the window is open and the data displayed
 the top row of buttons can perform various functions:
 \begin{description}
 	\item[Curves] Select which curves to plot by
@@ -1079,9 +893,9 @@ the animated mode visualizer \Cmd{amviz}.
 \paragraph{Matrix Visualization.}\index{matrix!visualization}\index{visualizing!matrices}
 Matrices can be visualized in a \flaps job by listing only the matrix
 names in the options to \Cmd{viz}, for example:
-\begin{lstlisting}
+\begin{example}
    viz{gaf(1:4)}
-\end{lstlisting}
+\end{example}
 A typical window produced this way is \Figref{fig:matview}.
 \begin{figure}[ht]
 		\includegraphics[height=3in,width=3.25in]{figures/manual/matview.pdf}
@@ -1112,9 +926,9 @@ The options to \Code{viz} are similar to the input-file
 version; the main difference is that the syntax is like
 other Unix commands. For example, to plot \Code{sigma} against \Code{veas}
 from a file called \Code{core.apf}:
-\begin{lstlisting}
+\begin{example}
 > viz -x veas -y sigma core
-\end{lstlisting}
+\end{example}
 Animated-mode visualization will be available by right-clicking on
 curves if visualization data was imported prior to the \Cmd{flut} function
 that produced the plotfile \Sectref{sect:universal-file}.
@@ -1124,7 +938,7 @@ computer memory and the number of arguments allowed on a command-line by
 the operating system (hundreds).
 
 Here is a synopsis of the command-line version of \Cmd{viz}:
-\begin{lstlisting}
+\begin{example}
 viz [options] .apf file(s)
     -x[min:max] xpar   the name of the x-parameter; optionally, limits
                        may be given in square brackets.
@@ -1138,7 +952,7 @@ viz [options] .apf file(s)
                          -c '[3:2:12,15]'
                        which is equivalent to
                          -c '3,5,7,9,11,15'
-\end{lstlisting}
+\end{example}
 There is only one option to \Cmd{amviz}: the name (or more precisely the path)
 of the Universal file (\Sectref{sect:universal-file} contains the format of
 a Universal file)\index{universal-file!in amviz}.
@@ -1147,9 +961,9 @@ necessary to include the extension.
 
 \paragraph{Examples.}
 The function
-\begin{lstlisting}
+\begin{example}
    viz { id=core, x=vtas, y=sigma, c{4:10} }
-\end{lstlisting}
+\end{example}
 in a \flaps script will produce a plot from a previous
 \Cmd{flut} run; clicking on the curves will produce
 animated modes provided the required data is available
@@ -1161,9 +975,9 @@ animated modes provided the required data is available
 \end{figure}
 % To plot on a log scale, include the word \Spec{log} in
 % the list of \Spec{x} or \Spec{y} parameters:
-% \begin{lstlisting}
+% \begin{example}
 %    viz { id=frf, x=(freq,log), y=(pilot,log) }
-% \end{lstlisting}
+% \end{example}
 
 \paragraph{See Also}
 \Cmd{flut} (\ref{ref:flut})
