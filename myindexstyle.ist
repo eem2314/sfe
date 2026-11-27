@@ -1,0 +1,5 @@
+% Custom index style to add letter headings (from Gemini)
+headings_flag 1
+heading_prefix "\\indexspace\\item \\textbf{"
+heading_suffix "}"
+
